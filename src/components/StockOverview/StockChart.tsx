@@ -34,7 +34,6 @@ export function StockChart({ stockName }: StockChartProps) {
             text: `Stock Quotes for ${stockName}`,
         },
         animationEnabled: true,
-        exportEnabled: true,
         charts: [
             {
                 axisX: {
@@ -90,8 +89,8 @@ export function StockChart({ stockName }: StockChartProps) {
     };
 
     const containerProps = {
-        width: "100%",
-        height: "450px",
+        width: "50em",
+        height: "30em",
         margin: "auto",
     };
 
