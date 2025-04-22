@@ -6,3 +6,10 @@ export async function getStockData(){
     console.log(stockData);
     return stockData;
 }
+
+export async function getStockQuotes(stockName: string){
+    const {data: stockQuotes} = await axios.get(`/api/stock/data`, {
+        params: {stockName}
+    });
+    return stockQuotes;
+}
