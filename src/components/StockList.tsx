@@ -1,4 +1,5 @@
 import {useStockData} from "../hooks/useStockData.ts";
+import {Box, Card} from "@mui/material";
 
 
 export function StockList() {
@@ -8,15 +9,37 @@ export function StockList() {
         return <div>Error</div>;
     }
 
-    if(isLoading) {
+    if (isLoading) {
         return <div>Loading...</div>;
     }
 
-    console.log(stockData);
-
     return (
-        stockData.map((item: string) => (
-            <div>{item}</div>
-        ))
+
+        <Box sx={{
+            width: '80vw',
+            maxWidth: 'lg'
+        }}>
+            {
+                stockData.map((item: string) => (
+                    <Card sx={{
+                        p: 3,
+                        m: 1,
+                        minWidth: '75%',
+                        boxShadow: 3,
+                        // Hover effect
+                        transition: '0.3s',
+                        cursor: 'pointer',
+                        '&:hover': {
+                            boxShadow: 6,
+                            backgroundColor: 'rgba(0, 0, 0, 0.2)',
+                        }
+                    }} key={item}>{item}</Card>
+                ))
+            }
+        </Box>
+
+
+
+
     )
 }
