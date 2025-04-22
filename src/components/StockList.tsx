@@ -16,7 +16,7 @@ export function StockList() {
 
     return (
         stockData.map((item: string) => (
-            <div>${item}</div>
+            <div>{item}</div>
         ))
     )
 }

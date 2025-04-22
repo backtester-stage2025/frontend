@@ -6,7 +6,6 @@ import {StockList} from "./components/StockList.tsx";
 
 function App() {
   axios.defaults.baseURL = import.meta.env.VITE_BACKEND_URL;
-  console.log("backend url = " + import.meta.env.BACKEND_URL);
   const queryClient = new QueryClient()
 
   return (
