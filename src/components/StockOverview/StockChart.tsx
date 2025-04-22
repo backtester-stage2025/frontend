@@ -1,5 +1,6 @@
 import CanvasJSReact from '@canvasjs/react-stockcharts';
 import { useStockQuotes } from '../../hooks/useStockQuotes';
+import {StockQuote} from "../../model/StockQuote";
 
 const CanvasJSStockChart = CanvasJSReact.CanvasJSStockChart;
 
@@ -18,9 +19,13 @@ export function StockChart({ stockName }: StockChartProps) {
         return <div>Error loading stock quotes for {stockName}</div>;
     }
 
-    const dataPoints = stockQuotes.map((quote: { date: string; value: number }) => ({
-        x: new Date(quote.date),
-        y: quote.value,
+    if (!stockQuotes || stockQuotes.length === 0) {
+        return <div>No stock quotes available for {stockName}</div>;
+    }
+
+    const dataPoints = stockQuotes?.map((quote: StockQuote) => ({
+        x: new Date(quote.dateTime),
+        y: quote.price,
     }));
 
     const options = {
@@ -56,8 +61,8 @@ export function StockChart({ stockName }: StockChartProps) {
         ],
         rangeSelector: {
             inputFields: {
-                startValue: new Date(stockQuotes[0].date),
-                endValue: new Date(stockQuotes[stockQuotes.length - 1].date),
+                startValue: new Date(stockQuotes[0].dateTime),
+                endValue: new Date(stockQuotes[stockQuotes.length - 1].dateTime),
                 valueFormatString: "MMM DD, YYYY",
             },
             buttons: [
