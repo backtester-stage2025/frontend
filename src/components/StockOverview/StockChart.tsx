@@ -1,5 +1,5 @@
 import CanvasJSReact from '@canvasjs/react-stockcharts';
-import { useStockQuotes } from '../../hooks/useStockQuotes';
+import {useStockQuotes} from '../../hooks/useStockQuotes';
 import {StockQuote} from "../../model/StockQuote";
 
 const CanvasJSStockChart = CanvasJSReact.CanvasJSStockChart;
@@ -8,8 +8,8 @@ interface StockChartProps {
     stockName: string;
 }
 
-export function StockChart({ stockName }: StockChartProps) {
-    const { isLoading, isError, stockQuotes } = useStockQuotes(stockName);
+export function StockChart({stockName}: StockChartProps) {
+    const {isLoading, isError, stockQuotes} = useStockQuotes(stockName);
 
     if (isLoading) {
         return <div>Loading stock quotes for {stockName}...</div>;
@@ -33,6 +33,12 @@ export function StockChart({ stockName }: StockChartProps) {
         title: {
             text: `Stock Quotes for ${stockName}`,
         },
+        subtitles: [
+            {
+                text: `(${new Date(stockQuotes[0].dateTime).toLocaleDateString()} - ${new Date(stockQuotes[stockQuotes.length - 1].dateTime).toLocaleDateString()})`,
+                fontColor: "gray",
+            },
+        ],
         animationEnabled: true,
         charts: [
             {
@@ -96,7 +102,7 @@ export function StockChart({ stockName }: StockChartProps) {
 
     return (
         <div>
-            <CanvasJSStockChart containerProps={containerProps} options={options} />
+            <CanvasJSStockChart containerProps={containerProps} options={options}/>
         </div>
     );
 }
