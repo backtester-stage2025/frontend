@@ -12,7 +12,8 @@ export function Navigation({isOpen, onClose}: Readonly<NavigationProps>) {
         <Drawer open={isOpen} onClose={onClose}>
             <List sx={{width: 200}}>
                 {[
-                    {label: 'Stock List', link: '/list', icon: <BoardsIcon/>}
+                    { label: 'Stock List', link: '/list', icon: <BoardsIcon/> },
+                    { label: 'Buy and Hold', link: '/buy-and-hold', icon: <BoardsIcon/> },
                 ].map((menuItem) => (
                     <ListItem disableGutters key={menuItem.link}>
                         <ListItemButton component={Link} to={menuItem.link} onClick={onClose}>
