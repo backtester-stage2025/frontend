@@ -1,6 +1,7 @@
 import CanvasJSReact from '@canvasjs/react-stockcharts';
 import {useStockQuotes} from '../../hooks/useStockQuotes';
 import {StockQuote} from "../../model/StockQuote";
+import {Loader} from "../Loader.tsx";
 
 const CanvasJSStockChart = CanvasJSReact.CanvasJSStockChart;
 
@@ -8,11 +9,11 @@ interface StockChartProps {
     stockName: string;
 }
 
-export function StockChart({stockName}: StockChartProps) {
+export function StockChart({stockName}: Readonly<StockChartProps>) {
     const {isLoading, isError, stockQuotes} = useStockQuotes(stockName);
 
     if (isLoading) {
-        return <div>Loading stock quotes for {stockName}...</div>;
+        return <Loader message={`Loading stock quotes for ${stockName}`}/>;
     }
 
     if (isError) {

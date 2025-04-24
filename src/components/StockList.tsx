@@ -1,21 +1,23 @@
 import {useStockData} from "../hooks/useStockData.ts";
 import {Box, Card} from "@mui/material";
 import {useNavigate} from "react-router-dom";
+import {Loader} from "./Loader.tsx";
 
 export function StockList() {
     const {isLoading, isError, stockData} = useStockData();
     const navigate = useNavigate();
 
+    if (isLoading) {
+        return <Loader message="Loading stocks..."/>;
+    }
+
     if (isError) {
         return <div>Error</div>;
     }
 
-    if (isLoading) {
-        return <div>Loading...</div>;
-    }
 
     return (
-        <div>
+        <>
             <h1>Available Stocks</h1>
             <Box sx={{
                 width: '80vw',
@@ -48,6 +50,6 @@ export function StockList() {
                     ))
                 }
             </Box>
-        </div>
+        </>
     );
 }
