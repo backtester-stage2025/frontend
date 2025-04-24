@@ -1,5 +1,6 @@
 import axios from "axios";
 import {StockQuote} from "../model/StockQuote";
+import {BuyAndHoldSimulationRequest} from "../model/BuyAndHoldSimulationRequest.ts";
 
 export async function getStockData() {
     const {data: stockData} = await axios.get(`/api/stock/names`);
@@ -11,4 +12,9 @@ export async function getStockQuotes(stockName: string): Promise<StockQuote[]> {
         params: {stockName}
     });
     return stockQuotes;
+}
+
+export async function simulateBuyAndHold(request: BuyAndHoldSimulationRequest) {
+    const {data: result} = await axios.post(`/api/backtest/report`, request);
+    return result;
 }
