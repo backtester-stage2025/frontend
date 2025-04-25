@@ -6,10 +6,10 @@ import {useBuyAndHold} from "../../hooks/useBuyAndHold.ts";
 import {Box, Dialog, DialogContent, DialogContentText, DialogTitle, TextField} from "@mui/material";
 
 const fields = [
-    {name: 'csvFileName', placeHolder: 'CSV file name', required: true},
-    {name: 'startDate', placeHolder: 'Start Date', required: true},
-    {name: 'endDate', placeHolder: 'End Date', required: true},
-    {name: 'startCapital', placeHolder: 'Start Capital', required: true}
+    {name: 'csvFileName', type: 'text', placeHolder: 'CSV file name', required: true},
+    {name: 'startDate', type: 'date', placeHolder: 'Start Date', required: true},
+    {name: 'endDate', type: 'date', placeHolder: 'End Date', required: true},
+    {name: 'startCapital', type: 'number', placeHolder: 'Start Capital', required: true}
 ];
 
 const simulationRequestSchema = z.object({
@@ -49,28 +49,22 @@ export function BuyAndHoldSimulationDialog() {
                 <DialogContent>
                     <DialogContentText>Fill in the form to simulate a buy and hold</DialogContentText>
                     <Box display="flex" flexDirection="column" gap={2} mt={2}>
-                        {fields.map((field, index) => (
+                        {fields.map((field) => (
                             <Controller
-                                key={index}
+                                key={field.name}
                                 name={field.name as keyof BuyAndHoldSimulationRequest}
                                 control={control}
                                 render={({ field: controllerField }) => {
-                                    let type: string = "text";
-
-                                    if (field.name === "startDate" || field.name === "endDate") {
-                                        type = "date";
-                                    } else if (field.name === "startCapital") {
-                                        type = "number";
-                                    }
-
                                     return (
                                         <TextField
                                             {...controllerField}
-                                            type={type}
+                                            type={field.type}
                                             fullWidth
                                             placeholder={field.placeHolder}
                                             label={field.placeHolder}
-                                            InputLabelProps={type === "date" ? { shrink: true } : undefined}
+                                            slotProps={{
+                                                inputLabel: field.type === "date" ? {shrink: true} : undefined
+                                            }}
                                             error={!!errors[field.name as keyof BuyAndHoldSimulationRequest]}
                                             helperText={errors[field.name as keyof BuyAndHoldSimulationRequest]?.message}
                                             required={field.required || false}
