@@ -15,6 +15,7 @@ import {
     DialogTitle,
     TextField
 } from "@mui/material";
+import {enGB} from "date-fns/locale";
 
 interface FormField {
     name: string;
@@ -77,7 +78,7 @@ export function BuyAndHoldSimulationDialog({isOpen, onSubmit, onClose}: Readonly
                     <DialogContentText>
                         Fill in the form to simulate a buy and hold
                     </DialogContentText>
-                    <LocalizationProvider dateAdapter={AdapterDateFns}>
+                    <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={enGB}>
                         <Box display="flex" flexDirection="column" gap={2} mt={2}>
                             {fields.map((field) => (
                                 <Controller
