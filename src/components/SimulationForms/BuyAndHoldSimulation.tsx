@@ -4,7 +4,7 @@ import {useBuyAndHold} from "../../hooks/useBuyAndHold.ts";
 import {BuyAndHoldSimulationRequest} from "../../model/BuyAndHoldSimulationRequest.ts";
 import {Button} from "@mui/material";
 import {BuyAndHoldSimulationResult} from "../../model/BuyAndHoldSimulationResult.ts";
-import {ResultScreen} from "./ResultScreen.tsx";
+import {BuyAndHoldResult} from "./BuyAndHoldResult.tsx";
 
 
 export function BuyAndHoldSimulation() {
@@ -29,10 +29,16 @@ export function BuyAndHoldSimulation() {
                 onClose={() => setIsDialogOpen(false)}
                 onSubmit={sendAndProcessRequest}
             />
-            <Button onClick={()=>setIsDialogOpen(true)} variant="contained">
+            <Button
+                onClick={()=>setIsDialogOpen(true)}
+                variant="contained"
+                sx={{
+                    m: 3
+                }}
+            >
                 Simulate Stocks
             </Button>
-            <ResultScreen
+            <BuyAndHoldResult
                 result={result}
                 isRunning={isRunning}
                 isError={isError}

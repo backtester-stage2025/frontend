@@ -16,7 +16,7 @@ function formatCurrency(value: number) {
     return `$${value.toFixed(2)}`;
 }
 
-export function ResultScreen({ result, isRunning, isError }: Readonly<ResultScreenProps>) {
+export function BuyAndHoldResult({ result, isRunning, isError }: Readonly<ResultScreenProps>) {
     if (isError) {
         return <Typography color="error">An error occurred.</Typography>;
     }
