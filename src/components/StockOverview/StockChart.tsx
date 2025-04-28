@@ -3,7 +3,7 @@ import {useStockQuotes} from '../../hooks/useStockQuotes';
 import {StockQuote} from "../../model/StockQuote";
 import {Loader} from "../Loader.tsx";
 import {useMovingAverage} from "../../hooks/useMovingAverage.ts";
-import {ChangeEvent, useEffect, useRef, useState} from 'react';
+import {ChangeEvent, useEffect, useState} from 'react';
 
 const CanvasJSStockChart = CanvasJSReact.CanvasJSStockChart;
 
@@ -13,7 +13,6 @@ interface StockChartProps {
 
 export function StockChart({stockName}: Readonly<StockChartProps>) {
     const {isLoading: isLoadingStockQuotes, isError: isErrorStockQuotes, stockQuotes} = useStockQuotes(stockName);
-    const chartRef = useRef<any>(null);
 
     const [dateRange, setDateRange] = useState({
         startDate: "",
@@ -34,8 +33,7 @@ export function StockChart({stockName}: Readonly<StockChartProps>) {
         isLoading: isLoadingMovingAverageShort,
         isError: isErrorMovingAverageShort,
         movingAverage: movingAverageShort
-    } =
-        useMovingAverage(stockName, dateRange.startDate, dateRange.endDate, periods.shortPeriod);
+    } = useMovingAverage(stockName, dateRange.startDate, dateRange.endDate, periods.shortPeriod);
 
     const {isLoading: isLoadingMovingAverageLong, isError: isErrorMovingAverageLong, movingAverage: movingAverageLong} =
         useMovingAverage(stockName, dateRange.startDate, dateRange.endDate, periods.longPeriod);
@@ -52,10 +50,7 @@ export function StockChart({stockName}: Readonly<StockChartProps>) {
 
     const handleApplyClick = () => {
         setPeriods(inputPeriods);
-        setHasApplied(true);
     };
-
-    const [hasApplied, setHasApplied] = useState(false);
 
     useEffect(() => {
         if (stockQuotes && stockQuotes.length > 0) {
@@ -73,41 +68,6 @@ export function StockChart({stockName}: Readonly<StockChartProps>) {
             });
         }
     }, [stockQuotes]);
-
-    useEffect(() => {
-        if (
-            chartRef.current?.chart &&
-            movingAverageShort &&
-            movingAverageLong &&
-            hasApplied
-        ) {
-            const chart = chartRef.current.chart;
-
-            const shortMADataPoints = Object.entries(movingAverageShort).map(([dateStr, value]) => ({
-                x: new Date(dateStr),
-                y: value
-            }));
-
-            const longMADataPoints = Object.entries(movingAverageLong).map(([dateStr, value]) => ({
-                x: new Date(dateStr),
-                y: value
-            }));
-
-            if (chart.options.charts[0].data[1]) {
-                chart.options.charts[0].data[1].name = `${periods.shortPeriod}-Day MA`;
-                chart.options.charts[0].data[1].dataPoints = shortMADataPoints;
-            }
-
-            if (chart.options.charts[0].data[2]) {
-                chart.options.charts[0].data[2].name = `${periods.longPeriod}-Day MA`;
-                chart.options.charts[0].data[2].dataPoints = longMADataPoints;
-            }
-
-            chart.render();
-            setHasApplied(false); // reset
-        }
-    }, [hasApplied, movingAverageShort, movingAverageLong, periods]);
-
 
     if (isLoadingStockQuotes || isLoadingMovingAverageShort || isLoadingMovingAverageLong) {
         return <Loader message={`Loading stock quotes for ${stockName}`}/>;
@@ -290,7 +250,6 @@ export function StockChart({stockName}: Readonly<StockChartProps>) {
             <CanvasJSStockChart
                 containerProps={containerProps}
                 options={options}
-                ref={chartRef}
             />
         </div>
     );
