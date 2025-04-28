@@ -1,13 +1,13 @@
 import {z} from "zod";
-import {BuyAndHoldSimulationRequest} from "../../model/BuyAndHoldSimulationRequest.ts";
+import {BuyAndHoldSimulationRequest} from "../../../model/BuyAndHoldSimulationRequest.ts";
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {LocalizationProvider} from "@mui/x-date-pickers/LocalizationProvider";
 import {AdapterDateFns} from "@mui/x-date-pickers/AdapterDateFns";
 import {Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from "@mui/material";
 import {enGB} from "date-fns/locale";
-import {useStockData} from "../../hooks/useStockData.ts";
-import {FieldController, FormField} from "./BuyAndHoldSimulationFieldController.tsx";
+import {useStockData} from "../../../hooks/useStockData.ts";
+import {FieldController, FormField} from "./FormController.tsx";
 
 
 const simulationRequestSchema = z.object({
@@ -30,7 +30,7 @@ interface BuyAndHoldSimulationProps {
 }
 
 
-export function BuyAndHoldSimulationDialog({isOpen, onSubmit, onClose}: Readonly<BuyAndHoldSimulationProps>) {
+export function SimulationDialog({isOpen, onSubmit, onClose}: Readonly<BuyAndHoldSimulationProps>) {
 
     const {stockData} = useStockData();
 

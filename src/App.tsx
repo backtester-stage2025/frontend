@@ -6,8 +6,8 @@ import {StockList} from "./components/StockList.tsx";
 import {useState} from "react";
 import {Header} from "./components/Header.tsx";
 import {Navigation} from "./components/Navigation.tsx"
-import {StockOverview} from "./components/StockOverview/StockOverview.tsx";
-import {BuyAndHoldSimulation} from "./components/SimulationForms/BuyAndHoldSimulation.tsx";
+import {StockOverview} from "./components/stock/StockOverview.tsx";
+import {Simulation} from "./components/simulation/Simulation.tsx";
 
 function App() {
     axios.defaults.baseURL = import.meta.env.VITE_BACKEND_URL;
@@ -23,7 +23,7 @@ function App() {
                     <Route path="/" element={<StockList/>}/>
                     <Route path="/list" element={<StockList/>}/>
                     <Route path="/stock-overview" element={<StockOverview/>}/>
-                    <Route path="/buy-and-hold" element={<BuyAndHoldSimulation/>}/>
+                    <Route path="/buy-and-hold" element={<Simulation/>}/>
                 </Routes>
             </BrowserRouter>
         </QueryClientProvider>

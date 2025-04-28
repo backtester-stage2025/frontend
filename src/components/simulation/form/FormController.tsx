@@ -1,7 +1,7 @@
 import {Control, Controller, FieldErrors} from "react-hook-form";
-import {BuyAndHoldSimulationRequest} from "../../model/BuyAndHoldSimulationRequest.ts";
+import {BuyAndHoldSimulationRequest} from "../../../model/BuyAndHoldSimulationRequest.ts";
 import {TextField} from "@mui/material";
-import {FormDatePicker, FormDropdown} from "./FormFieldRender.tsx";
+import {FormDatePicker, FormDropdown} from "./FormFields.tsx";
 
 export interface FormField {
     name: string;

@@ -1,8 +1,8 @@
 import {ControllerRenderProps} from "react-hook-form";
-import {BuyAndHoldSimulationRequest} from "../../model/BuyAndHoldSimulationRequest.ts";
+import {BuyAndHoldSimulationRequest} from "../../../model/BuyAndHoldSimulationRequest.ts";
 import {DatePicker} from "@mui/x-date-pickers/DatePicker";
 import {MenuItem, TextField} from "@mui/material";
-import {FormField} from "./BuyAndHoldSimulationFieldController.tsx";
+import {FormField} from "./FormController.tsx";
 
 interface FormFieldRenderProps {
     field: FormField;
