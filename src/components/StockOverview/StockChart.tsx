@@ -30,23 +30,6 @@ export function StockChart({stockName}: Readonly<StockChartProps>) {
         longPeriod: 50
     });
 
-    useEffect(() => {
-        if (stockQuotes && stockQuotes.length > 0) {
-            const longPeriodPadding = Math.max(periods.shortPeriod, periods.longPeriod) + 10;
-
-            const firstDate = new Date(stockQuotes[0].dateTime);
-            const paddedStartDate = new Date(firstDate);
-            paddedStartDate.setDate(paddedStartDate.getDate() - longPeriodPadding);
-
-            const lastDate = new Date(stockQuotes[stockQuotes.length - 1].dateTime);
-
-            setDateRange({
-                startDate: paddedStartDate.toISOString().split('T')[0],
-                endDate: lastDate.toISOString().split('T')[0],
-            });
-        }
-    }, [stockQuotes]);
-
     const {
         isLoading: isLoadingMovingAverageShort,
         isError: isErrorMovingAverageShort,
@@ -69,7 +52,10 @@ export function StockChart({stockName}: Readonly<StockChartProps>) {
 
     const handleApplyClick = () => {
         setPeriods(inputPeriods);
+        setHasApplied(true);
     };
+
+    const [hasApplied, setHasApplied] = useState(false);
 
     useEffect(() => {
         if (stockQuotes && stockQuotes.length > 0) {
@@ -79,15 +65,22 @@ export function StockChart({stockName}: Readonly<StockChartProps>) {
             const paddedStartDate = new Date(firstDate);
             paddedStartDate.setDate(paddedStartDate.getDate() - longPeriodPadding);
 
-            setDateRange(prevDateRange => ({
-                ...prevDateRange,
-                startDate: paddedStartDate.toISOString().split('T')[0]
-            }));
+            const lastDate = new Date(stockQuotes[stockQuotes.length - 1].dateTime);
+
+            setDateRange({
+                startDate: paddedStartDate.toISOString().split('T')[0],
+                endDate: lastDate.toISOString().split('T')[0],
+            });
         }
-    }, [periods.shortPeriod, periods.longPeriod, stockQuotes]);
+    }, [stockQuotes]);
 
     useEffect(() => {
-        if (chartRef.current && chartRef.current.chart && movingAverageShort && movingAverageLong) {
+        if (
+            chartRef.current?.chart &&
+            movingAverageShort &&
+            movingAverageLong &&
+            hasApplied
+        ) {
             const chart = chartRef.current.chart;
 
             const shortMADataPoints = Object.entries(movingAverageShort).map(([dateStr, value]) => ({
@@ -111,8 +104,10 @@ export function StockChart({stockName}: Readonly<StockChartProps>) {
             }
 
             chart.render();
+            setHasApplied(false); // reset
         }
-    }, [movingAverageShort, movingAverageLong, periods.shortPeriod, periods.longPeriod]);
+    }, [hasApplied, movingAverageShort, movingAverageLong, periods]);
+
 
     if (isLoadingStockQuotes || isLoadingMovingAverageShort || isLoadingMovingAverageLong) {
         return <Loader message={`Loading stock quotes for ${stockName}`}/>;
@@ -265,12 +260,6 @@ export function StockChart({stockName}: Readonly<StockChartProps>) {
                         onChange={handleShortPeriodChange}
                         min="5"
                         max="100"
-                        onKeyDown={e => {
-                            if (e.key === 'Enter') {
-                                e.preventDefault();
-                                handleApplyClick();
-                            }
-                        }}
                     />
                 </div>
                 <div>
@@ -282,12 +271,6 @@ export function StockChart({stockName}: Readonly<StockChartProps>) {
                         onChange={handleLongPeriodChange}
                         min="10"
                         max="200"
-                        onKeyDown={e => {
-                            if (e.key === 'Enter') {
-                                e.preventDefault();
-                                handleApplyClick();
-                            }
-                        }}
                     />
                 </div>
                 <button
