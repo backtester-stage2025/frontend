@@ -1,35 +1,13 @@
 import {z} from "zod";
 import {BuyAndHoldSimulationRequest} from "../../model/BuyAndHoldSimulationRequest.ts";
-import {Controller, useForm} from "react-hook-form";
+import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
-import {DatePicker} from "@mui/x-date-pickers/DatePicker";
 import {LocalizationProvider} from "@mui/x-date-pickers/LocalizationProvider";
 import {AdapterDateFns} from "@mui/x-date-pickers/AdapterDateFns";
-import {
-    Box,
-    Button,
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogContentText,
-    DialogTitle,
-    TextField
-} from "@mui/material";
+import {Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from "@mui/material";
 import {enGB} from "date-fns/locale";
-
-interface FormField {
-    name: string;
-    type: string;
-    placeholder: string;
-    required: boolean;
-}
-
-const fields: FormField[] = [
-    {name: "csvFileName", type: "text", placeholder: "CSV file name (no extension)", required: true},
-    {name: "startDate", type: "date", placeholder: "Start Date", required: true},
-    {name: "endDate", type: "date", placeholder: "End Date", required: true},
-    {name: "startCapital", type: "number", placeholder: "Start Capital", required: true}
-];
+import {useStockData} from "../../hooks/useStockData.ts";
+import {FieldController, FormField} from "./BuyAndHoldSimulationFieldController.tsx";
 
 
 const simulationRequestSchema = z.object({
@@ -51,7 +29,18 @@ interface BuyAndHoldSimulationProps {
     onClose: () => void
 }
 
+
 export function BuyAndHoldSimulationDialog({isOpen, onSubmit, onClose}: Readonly<BuyAndHoldSimulationProps>) {
+
+    const {stockData} = useStockData();
+
+    const fields: FormField[] = [
+        {name: "csvFileName", type: "select", placeholder: "CSV file name", required: true, options: stockData},
+        {name: "startDate", type: "date", placeholder: "Start Date", required: true},
+        {name: "endDate", type: "date", placeholder: "End Date", required: true},
+        {name: "startCapital", type: "number", placeholder: "Start Capital", required: true}
+    ];
+
     const {control, handleSubmit, formState: {errors}} = useForm<BuyAndHoldSimulationRequest>({
         resolver: zodResolver(simulationRequestSchema),
         defaultValues: {
@@ -80,47 +69,12 @@ export function BuyAndHoldSimulationDialog({isOpen, onSubmit, onClose}: Readonly
                     </DialogContentText>
                     <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={enGB}>
                         <Box display="flex" flexDirection="column" gap={2} mt={2}>
-                            {fields.map((field) => (
-                                <Controller
-                                    key={field.name}
-                                    name={field.name as keyof BuyAndHoldSimulationRequest}
-                                    control={control}
-                                    render={({field: controllerField}) => {
-                                        const error = !!errors[field.name as keyof BuyAndHoldSimulationRequest];
-                                        const helperText = errors[field.name as keyof BuyAndHoldSimulationRequest]?.message;
-
-                                        if (field.type === "date") {
-                                            return (
-                                                <DatePicker
-                                                    label={field.placeholder}
-                                                    value={controllerField.value instanceof Date ? controllerField.value : null}
-                                                    onChange={(date) => controllerField.onChange(date)}
-                                                    slotProps={{
-                                                        textField: {
-                                                            fullWidth: true,
-                                                            required: field.required,
-                                                            error,
-                                                            helperText
-                                                        }
-                                                    }}
-                                                />
-                                            );
-                                        }
-
-                                        return (
-                                            <TextField
-                                                {...controllerField}
-                                                type={field.type}
-                                                fullWidth
-                                                label={field.placeholder}
-                                                required={field.required}
-                                                error={error}
-                                                helperText={helperText}
-                                            />
-                                        );
-                                    }}
-                                />
-                            ))}
+                            {fields.map((field) => <FieldController
+                                key={field.name}
+                                control={control}
+                                errors={errors}
+                                field={field}
+                            />)}
                         </Box>
                     </LocalizationProvider>
                 </DialogContent>

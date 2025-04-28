@@ -15,7 +15,6 @@ export function BuyAndHoldSimulation() {
     const sendAndProcessRequest = (request: BuyAndHoldSimulationRequest) => {
         sendRequest(request, {
             onSuccess: (data) => {
-                console.log(data)
                 setResult(data)
                 setIsDialogOpen(false);
             }
