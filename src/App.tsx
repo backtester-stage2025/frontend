@@ -7,24 +7,51 @@ import {useState} from "react";
 import {Header} from "./components/Header.tsx";
 import {Navigation} from "./components/Navigation.tsx"
 import {StockOverview} from "./components/StockOverview/StockOverview.tsx";
+import {createTheme, ThemeProvider} from "@mui/material";
 
 function App() {
     axios.defaults.baseURL = import.meta.env.VITE_BACKEND_URL;
     const queryClient = new QueryClient()
     const [drawerOpen, setDrawerOpen] = useState(false);
 
+    const theme = createTheme({
+        palette: {
+            primary: {
+                main: '#725ac1', // paars
+            },
+            secondary: {
+                main: '#242038', // zwartpaars
+            },
+            background: {
+                default: '#ffffff', // wit
+                paper: '#efefef', // grijs
+            },
+            text: {
+                primary: '#242038', // zwartpaars
+                secondary: '#725ac1', // paars
+            },
+        },
+        typography: {
+            fontFamily: 'Roboto, sans-serif',
+            fontSize: 16,
+        },
+    });
+
+
     return (
-        <QueryClientProvider client={queryClient}>
-            <BrowserRouter>
-                <Header onOpenDrawer={() => setDrawerOpen(!drawerOpen)}/>
-                <Navigation isOpen={drawerOpen} onClose={() => setDrawerOpen(false)}/>
-                <Routes>
-                    <Route path="/" element={<StockList/>}/>
-                    <Route path="/list" element={<StockList/>}/>
-                    <Route path="/stock-overview" element={<StockOverview/>}/>
-                </Routes>
-            </BrowserRouter>
-        </QueryClientProvider>
+        <ThemeProvider theme={theme}>
+            <QueryClientProvider client={queryClient}>
+                <BrowserRouter>
+                    <Header onOpenDrawer={() => setDrawerOpen(!drawerOpen)}/>
+                    <Navigation isOpen={drawerOpen} onClose={() => setDrawerOpen(false)}/>
+                    <Routes>
+                        <Route path="/" element={<StockList/>}/>
+                        <Route path="/list" element={<StockList/>}/>
+                        <Route path="/stock-overview" element={<StockOverview/>}/>
+                    </Routes>
+                </BrowserRouter>
+            </QueryClientProvider>
+        </ThemeProvider>
     )
 }
 
