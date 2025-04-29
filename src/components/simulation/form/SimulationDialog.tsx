@@ -91,7 +91,10 @@ export function SimulationDialog({isOpen, onSubmit, onClose}: Readonly<BuyAndHol
             endDate: new Date(),
             startCapital: 10000,
             simulationType: SimulationTypes.RISK_BASED,
-            riskTolerance: 30
+            riskTolerance: 20,
+            useMovingAverageCrossover: true,
+            movingAverageShortDays: 10,
+            movingAverageLongDays: 20
         }
     })
 

@@ -2,19 +2,19 @@ import {SimulationDialog} from "./form/SimulationDialog.tsx";
 import {useState} from "react";
 import {useBuyAndSellRisk} from "../../hooks/useBuyAndSellRisk.ts";
 import {SimulationRequest} from "../../model/request/SimulationRequest.ts";
-import {Button} from "@mui/material";
-import {SimulationResult} from "../../model/SimulationResult.ts";
+import {Box, Button} from "@mui/material";
 import {SimulationResults} from "./results/SimulationResults.tsx";
+import {UserPortfolio} from "../../model/simulation/UserPortfolio.ts";
 
 
 export function Simulation() {
     const [isDialogOpen, setIsDialogOpen] = useState<boolean>(true);
-    const [result, setResult] = useState<SimulationResult | null>(null);
+    const [result, setResult] = useState<UserPortfolio[] | null>(null);
     const { sendRequest, isRunning, isError } = useBuyAndSellRisk()
 
     const sendAndProcessRequest = (request: SimulationRequest) => {
         sendRequest(request, {
-            onSuccess: (data) => {
+            onSuccess: (data: UserPortfolio[]) => {
                 setResult(data)
                 setIsDialogOpen(false);
             }
@@ -22,7 +22,7 @@ export function Simulation() {
     }
 
     return (
-        <div>
+        <Box sx={{width: "75%"}}>
             <SimulationDialog
                 isOpen={isDialogOpen}
                 onClose={() => setIsDialogOpen(false)}
@@ -35,13 +35,13 @@ export function Simulation() {
                     m: 3
                 }}
             >
-                Simulate Stocks
+                Simulate
             </Button>
             <SimulationResults
                 result={result}
                 isRunning={isRunning}
                 isError={isError}
             />
-        </div>
+        </Box>
     )
 }

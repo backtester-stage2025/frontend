@@ -2,6 +2,7 @@ import axios from "axios";
 import {StockQuote} from "../model/StockQuote";
 import {SimulationRequest} from "../model/request/SimulationRequest.ts";
 import {formatDateToLocalDateString} from "./formatService.ts";
+import {UserPortfolio} from "../model/simulation/UserPortfolio.ts";
 
 export async function getStockData() {
     const {data: stockData} = await axios.get(`/api/stock/names`);
@@ -15,7 +16,7 @@ export async function getStockQuotes(stockName: string): Promise<StockQuote[]> {
     return stockQuotes;
 }
 
-export async function simulateBuyAndSellRisk(request: SimulationRequest) {
+export async function simulateBuyAndSellRisk(request: SimulationRequest): Promise<UserPortfolio[]> {
     const payload = {
         ...request,
         startDate: formatDateToLocalDateString(request.startDate),

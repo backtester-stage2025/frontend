@@ -1,16 +1,17 @@
-import {SimulationResult} from "../../../model/SimulationResult.ts";
-import {Box, Card, CardContent, Chip, Grid, Paper, Typography} from "@mui/material";
+import {
+    Accordion,
+    AccordionDetails,
+    AccordionSummary,
+    Box,
+    Grid,
+    Paper,
+    Typography
+} from "@mui/material";
 import {Loader} from "../../Loader.tsx";
-import TrendingUpIcon from '@mui/icons-material/TrendingUp';
-import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
-import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
-import AssessmentIcon from '@mui/icons-material/Assessment';
-import {BackTestResult} from "./metrics/BackTestResult.tsx";
-import {formatCurrency} from "../../../services/formatService.ts";
-import {StockMetricsView} from "./metrics/StockMetricsView.tsx";
-
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import {UserPortfolio} from "../../../model/simulation/UserPortfolio.ts";
 interface ResultScreenProps {
-    result: SimulationResult | null;
+    result: UserPortfolio[] | null;
     isRunning: boolean;
     isError: boolean;
 }
@@ -35,62 +36,66 @@ export function SimulationResults({result, isRunning, isError}: Readonly<ResultS
         return null;
     }
 
-    const {startDate, endDate, startCapital, endCapital, stockMetrics} = result;
-    const profitLoss = endCapital - startCapital;
-    const isProfitable = profitLoss >= 0;
-    const profitLossPercent = ((profitLoss / startCapital) * 100).toFixed(2);
-
-
 
     return (
-        <Card sx={{mt: 4, borderRadius: 2, overflow: 'hidden', boxShadow: '0 4px 20px rgba(0,0,0,0.1)'}}>
-            <Box sx={{bgcolor: 'primary.main', color: 'white', py: 2, px: 3}}>
-                <Box sx={{display: 'flex', alignItems: 'center', gap: 1}}>
-                    <TrendingUpIcon/>
-                    <Typography variant="h5" fontWeight="500">
-                        Buy &amp; Hold Simulation Result
-                    </Typography>
-                </Box>
-            </Box>
-
-            <CardContent sx={{p: 3}}>
-                <Grid container spacing={3}>
-                    {/* Summary Section */}
-                    <Grid size={{xs: 12}} sx={{m: 1}}>
-                        <Paper elevation={1} sx={{p: 2, borderRadius: 2}}>
-                            <Grid container spacing={2}>
-                                <BackTestResult
-                                    icon={CalendarTodayIcon}
-                                    title="Period"
-                                >
-                                    <Typography variant="body1">{startDate} → {endDate}</Typography>
-                                </BackTestResult>
-
-                                <BackTestResult
-                                    icon={AccountBalanceWalletIcon}
-                                    title="Capital"
-                                >
-                                    <Typography variant="body1">
-                                        {formatCurrency(startCapital)} → {formatCurrency(endCapital)}
-                                    </Typography>
-                                </BackTestResult>
-
-                                <BackTestResult
-                                    icon={AssessmentIcon}
-                                    title="Performance"
-                                >
-                                    <Chip
-                                        label={`${isProfitable ? '+' : ''}${formatCurrency(profitLoss)} (${isProfitable ? '+' : ''}${profitLossPercent}%)`}
-                                        color={isProfitable ? "success" : "error"}
-                                        size="small"
-                                    />
-                                </BackTestResult>
+        <Box sx={{ mt: 4}}>
+            {result.map((portfolio) => (
+                <Accordion key={portfolio.date} disableGutters>
+                    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                        <Grid container spacing={2} alignItems="center" sx={{width: "100%"}}>
+                            <Grid size={{xs: 4}}>
+                                <Typography variant="subtitle1">
+                                    {portfolio.date}
+                                </Typography>
                             </Grid>
-                        </Paper>
-                    </Grid>
-                    <StockMetricsView stockMetrics={stockMetrics}/>
-                </Grid>
-            </CardContent>
-        </Card>
+                            <Grid size={{xs: 4}}>
+                                <Typography variant="body2">
+                                    Cash: ${portfolio.cashBalance.toFixed(2)}
+                                </Typography>
+                            </Grid>
+                            <Grid size={{xs: 4}}>
+                                <Typography variant="body2">
+                                    Total: ${portfolio.totalPortfolioValue.toFixed(2)}
+                                </Typography>
+                            </Grid>
+                        </Grid>
+                    </AccordionSummary>
+
+                    <AccordionDetails sx={{ bgcolor: '#fafafa' }}>
+                        <Grid container spacing={2} sx={{width: "100%"}}>
+                            <Grid size={{xs: 12, md: 6}}>
+                                <Typography variant="subtitle2" gutterBottom>
+                                    Share Holdings
+                                </Typography>
+                                <Box sx={{ pl: 2 }}>
+                                    {Object.entries(portfolio.shareHoldings).map(
+                                        ([symbol, qty]) => (
+                                            <Typography key={symbol} variant="body2">
+                                                {symbol}: {qty}
+                                            </Typography>
+                                        )
+                                    )}
+                                </Box>
+                            </Grid>
+
+                            <Grid size={{xs: 12, md: 6}}>
+                                <Typography variant="subtitle2" gutterBottom>
+                                    Shares Bought
+                                </Typography>
+                                <Box sx={{ pl: 2 }}>
+                                    {Object.entries(portfolio.sharesBought).map(
+                                        ([symbol, qty]) => (
+                                            <Typography key={symbol} variant="body2">
+                                                {symbol}: {qty}
+                                            </Typography>
+                                        )
+                                    )}
+                                </Box>
+                            </Grid>
+                        </Grid>
+                    </AccordionDetails>
+                </Accordion>
+            ))}
+        </Box>
     );
 }
