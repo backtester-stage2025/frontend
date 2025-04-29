@@ -1,12 +1,12 @@
 import {ControllerRenderProps} from "react-hook-form";
-import {BuyAndHoldSimulationRequest} from "../../../model/BuyAndHoldSimulationRequest.ts";
+import {SimulationRequest} from "../../../model/request/SimulationRequest.ts";
 import {DatePicker} from "@mui/x-date-pickers/DatePicker";
-import {MenuItem, TextField} from "@mui/material";
+import {Checkbox, FormControlLabel, MenuItem, TextField} from "@mui/material";
 import {FormField} from "./FormController.tsx";
 
 interface FormFieldRenderProps {
     field: FormField;
-    controllerField: ControllerRenderProps<BuyAndHoldSimulationRequest, keyof BuyAndHoldSimulationRequest>
+    controllerField: ControllerRenderProps<SimulationRequest, keyof SimulationRequest>
     error: boolean;
     helperText: string | undefined;
 }
@@ -56,5 +56,22 @@ export function FormDropdown(
                 <MenuItem disabled>Loading options...</MenuItem>
             )}
         </TextField>
+    );
+}
+
+export function FormCheckbox(
+    {field, controllerField}: Readonly<FormFieldRenderProps>
+) {
+    return (
+        <FormControlLabel
+            control={
+                <Checkbox
+                    checked={!!controllerField.value}
+                    onChange={(e) => controllerField.onChange(e.target.checked)}
+                    required={field.required}
+                />
+            }
+            label={field.placeholder}
+        />
     );
 }

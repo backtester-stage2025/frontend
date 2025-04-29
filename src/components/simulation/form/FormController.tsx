@@ -1,30 +1,30 @@
 import {Control, Controller, FieldErrors} from "react-hook-form";
-import {BuyAndHoldSimulationRequest} from "../../../model/BuyAndHoldSimulationRequest.ts";
+import {SimulationRequest} from "../../../model/request/SimulationRequest.ts";
 import {TextField} from "@mui/material";
-import {FormDatePicker, FormDropdown} from "./FormFields.tsx";
+import {FormCheckbox, FormDatePicker, FormDropdown} from "./FormField.tsx";
 
 export interface FormField {
     name: string;
-    type: string;
+    type: "text" | "number" | "date" | "select" | "checkbox";
     placeholder: string;
     required: boolean;
     options?: string[];
 }
 
 interface FieldControllerProps {
-    errors: FieldErrors<BuyAndHoldSimulationRequest>
-    control: Control<BuyAndHoldSimulationRequest>
+    errors: FieldErrors<SimulationRequest>
+    control: Control<SimulationRequest>
     field: FormField
 }
 
 export function FieldController({control, errors, field}: Readonly<FieldControllerProps>) {
     return (
         <Controller
-            name={field.name as keyof BuyAndHoldSimulationRequest}
+            name={field.name as keyof SimulationRequest}
             control={control}
             render={({field: controllerField}) => {
-                const error = !!errors[field.name as keyof BuyAndHoldSimulationRequest];
-                const helperText = errors[field.name as keyof BuyAndHoldSimulationRequest]?.message;
+                const error = !!errors[field.name as keyof SimulationRequest];
+                const helperText = errors[field.name as keyof SimulationRequest]?.message;
 
                 if (field.type === "date") {
                     return <FormDatePicker
@@ -37,6 +37,15 @@ export function FieldController({control, errors, field}: Readonly<FieldControll
 
                 if (field.type === "select") {
                     return <FormDropdown
+                        field={field}
+                        controllerField={controllerField}
+                        error={error}
+                        helperText={helperText}
+                    />
+                }
+
+                if (field.type === "checkbox") {
+                    return <FormCheckbox
                         field={field}
                         controllerField={controllerField}
                         error={error}

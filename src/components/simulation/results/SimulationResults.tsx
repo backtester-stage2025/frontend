@@ -1,4 +1,4 @@
-import {BuyAndHoldSimulationResult} from "../../../model/BuyAndHoldSimulationResult.ts";
+import {SimulationResult} from "../../../model/SimulationResult.ts";
 import {Box, Card, CardContent, Chip, Grid, Paper, Typography} from "@mui/material";
 import {Loader} from "../../Loader.tsx";
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
@@ -7,19 +7,12 @@ import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import AssessmentIcon from '@mui/icons-material/Assessment';
 import {MetricGroup, MetricGroupProps} from "./metrics/MetricGroup.tsx";
 import {BackTestResult} from "./metrics/BackTestResult.tsx";
+import {formatCurrency, formatPercent} from "../../../services/formatService.ts";
 
 interface ResultScreenProps {
-    result: BuyAndHoldSimulationResult | null;
+    result: SimulationResult | null;
     isRunning: boolean;
     isError: boolean;
-}
-
-function formatPercent(value: number) {
-    return `${value.toFixed(2)}%`;
-}
-
-function formatCurrency(value: number) {
-    return `$${value.toFixed(2)}`;
 }
 
 

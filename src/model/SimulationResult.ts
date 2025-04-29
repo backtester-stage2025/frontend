@@ -1,6 +1,6 @@
 import {StockMetrics} from "./StockMetrics.ts";
 
-export interface BuyAndHoldSimulationResult {
+export interface SimulationResult {
     startDate: string;
     endDate: string;
     startCapital: number;

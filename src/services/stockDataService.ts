@@ -1,6 +1,7 @@
 import axios from "axios";
 import {StockQuote} from "../model/StockQuote";
-import {BuyAndHoldSimulationRequest} from "../model/BuyAndHoldSimulationRequest.ts";
+import {SimulationRequest} from "../model/request/SimulationRequest.ts";
+import {formatDateToLocalDateString} from "./formatService.ts";
 
 export async function getStockData() {
     const {data: stockData} = await axios.get(`/api/stock/names`);
@@ -14,7 +15,16 @@ export async function getStockQuotes(stockName: string): Promise<StockQuote[]> {
     return stockQuotes;
 }
 
-export async function simulateBuyAndHold(request: BuyAndHoldSimulationRequest) {
-    const {data: result} = await axios.post(`/api/backtest/report`, request);
+export async function simulateBuyAndHold(request: SimulationRequest) {
+    const payload = {
+        ...request,
+        startDate: formatDateToLocalDateString(request.startDate),
+        endDate: formatDateToLocalDateString(request.endDate)
+    };
+
+    const { data: result } = await axios.post(`/api/backtest/buy-and-sell-risk`, payload);
+    console.log("r");
+    console.log(result);
+    console.log("/r");
     return result;
 }

@@ -1,18 +1,18 @@
 import {SimulationDialog} from "./form/SimulationDialog.tsx";
 import {useState} from "react";
 import {useBuyAndHold} from "../../hooks/useBuyAndHold.ts";
-import {BuyAndHoldSimulationRequest} from "../../model/BuyAndHoldSimulationRequest.ts";
+import {SimulationRequest} from "../../model/request/SimulationRequest.ts";
 import {Button} from "@mui/material";
-import {BuyAndHoldSimulationResult} from "../../model/BuyAndHoldSimulationResult.ts";
+import {SimulationResult} from "../../model/SimulationResult.ts";
 import {SimulationResults} from "./results/SimulationResults.tsx";
 
 
 export function Simulation() {
     const [isDialogOpen, setIsDialogOpen] = useState<boolean>(true);
-    const [result, setResult] = useState<BuyAndHoldSimulationResult | null>(null);
+    const [result, setResult] = useState<SimulationResult | null>(null);
     const { sendRequest, isRunning, isError } = useBuyAndHold()
 
-    const sendAndProcessRequest = (request: BuyAndHoldSimulationRequest) => {
+    const sendAndProcessRequest = (request: SimulationRequest) => {
         sendRequest(request, {
             onSuccess: (data) => {
                 setResult(data)
