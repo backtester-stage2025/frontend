@@ -5,16 +5,15 @@ import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
 import AssessmentIcon from '@mui/icons-material/Assessment';
-import {MetricGroup, MetricGroupProps} from "./metrics/MetricGroup.tsx";
 import {BackTestResult} from "./metrics/BackTestResult.tsx";
-import {formatCurrency, formatPercent} from "../../../services/formatService.ts";
+import {formatCurrency} from "../../../services/formatService.ts";
+import {StockMetricsView} from "./metrics/StockMetricsView.tsx";
 
 interface ResultScreenProps {
     result: SimulationResult | null;
     isRunning: boolean;
     isError: boolean;
 }
-
 
 
 export function SimulationResults({result, isRunning, isError}: Readonly<ResultScreenProps>) {
@@ -41,35 +40,7 @@ export function SimulationResults({result, isRunning, isError}: Readonly<ResultS
     const isProfitable = profitLoss >= 0;
     const profitLossPercent = ((profitLoss / startCapital) * 100).toFixed(2);
 
-    const details: MetricGroupProps[] = [
-        {
-            title: "Returns",
-            properties: [
-                {name: "Daily Return (Avg)", value: formatPercent(stockMetrics.averageDailyReturn)},
-                {name: "Annual Return (Avg)", value: formatPercent(stockMetrics.averageAnnualReturn)}
-            ]
-        },
-        {
-            title: "Risk",
-            properties: [
-                {name: "Daily Risk", value: formatPercent(stockMetrics.dailyRisk)},
-                {name: "Annual Risk", value: formatPercent(stockMetrics.annualRisk)}
-            ]
-        },
-        {
-            title: "Drawdowns",
-            properties: [
-                {name: "Average Drawdown", value: formatPercent(stockMetrics.averageDrawdownPercentage)},
-                {name: "Maximum Drawdown", value: formatPercent(stockMetrics.maxDrawdownPercentage)}
-            ]
-        },
-        {
-            title: "Distribution",
-            properties: [
-                {name: "Skewness", value: stockMetrics.skewness.toFixed(2)}
-            ]
-        }
-    ]
+
 
     return (
         <Card sx={{mt: 4, borderRadius: 2, overflow: 'hidden', boxShadow: '0 4px 20px rgba(0,0,0,0.1)'}}>
@@ -117,16 +88,7 @@ export function SimulationResults({result, isRunning, isError}: Readonly<ResultS
                             </Grid>
                         </Paper>
                     </Grid>
-
-                    {/* Stock Metrics Section */}
-                    <Grid size={{xs: 12}} sx={{m: 1}}>
-                        <Box sx={{display: 'flex', alignItems: 'center', gap: 1, mb: 2}}>
-                            <Typography variant="h6" fontWeight="500">Stock Metrics</Typography>
-                        </Box>
-                        <Grid container spacing={2}>
-                            {details.map(MetricGroup)}
-                        </Grid>
-                    </Grid>
+                    <StockMetricsView stockMetrics={stockMetrics}/>
                 </Grid>
             </CardContent>
         </Card>

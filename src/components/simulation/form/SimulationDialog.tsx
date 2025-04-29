@@ -89,9 +89,9 @@ export function SimulationDialog({isOpen, onSubmit, onClose}: Readonly<BuyAndHol
             csvFileName: '',
             startDate: new Date(),
             endDate: new Date(),
-            startCapital: 1000,
+            startCapital: 10000,
             simulationType: SimulationTypes.RISK_BASED,
-            riskTolerance: 20
+            riskTolerance: 30
         }
     })
 
@@ -100,6 +100,7 @@ export function SimulationDialog({isOpen, onSubmit, onClose}: Readonly<BuyAndHol
             ...data,
             csvFileName: data.csvFileName + '.csv',
         }
+        console.log(request)
         onSubmit(request);
     }
 

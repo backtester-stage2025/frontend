@@ -32,13 +32,14 @@ export function FormDatePicker(
 }
 
 export function FormDropdown(
-    {field, controllerField, error, helperText}: Readonly<FormFieldRenderProps>
+    { field, controllerField, error, helperText }: Readonly<FormFieldRenderProps>
 ) {
     const optionsReady = field.options && field.options.length > 0;
 
     return (
         <TextField
             {...controllerField}
+            id={field.name}
             select
             fullWidth
             label={field.placeholder}
@@ -47,7 +48,7 @@ export function FormDropdown(
             helperText={helperText}
         >
             {optionsReady ? (
-                field.options!.map(opt => (
+                field.options!.map((opt) => (
                     <MenuItem key={opt} value={opt}>
                         {opt}
                     </MenuItem>
@@ -67,6 +68,7 @@ export function FormCheckbox(
             control={
                 <Checkbox
                     checked={!!controllerField.value}
+                    id={field.name}
                     onChange={(e) => controllerField.onChange(e.target.checked)}
                     required={field.required}
                 />

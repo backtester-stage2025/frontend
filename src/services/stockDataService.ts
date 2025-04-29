@@ -15,7 +15,7 @@ export async function getStockQuotes(stockName: string): Promise<StockQuote[]> {
     return stockQuotes;
 }
 
-export async function simulateBuyAndHold(request: SimulationRequest) {
+export async function simulateBuyAndSellRisk(request: SimulationRequest) {
     const payload = {
         ...request,
         startDate: formatDateToLocalDateString(request.startDate),
@@ -23,8 +23,6 @@ export async function simulateBuyAndHold(request: SimulationRequest) {
     };
 
     const { data: result } = await axios.post(`/api/backtest/buy-and-sell-risk`, payload);
-    console.log("r");
     console.log(result);
-    console.log("/r");
     return result;
 }

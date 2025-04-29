@@ -1,6 +1,6 @@
 import {SimulationDialog} from "./form/SimulationDialog.tsx";
 import {useState} from "react";
-import {useBuyAndHold} from "../../hooks/useBuyAndHold.ts";
+import {useBuyAndSellRisk} from "../../hooks/useBuyAndSellRisk.ts";
 import {SimulationRequest} from "../../model/request/SimulationRequest.ts";
 import {Button} from "@mui/material";
 import {SimulationResult} from "../../model/SimulationResult.ts";
@@ -10,7 +10,7 @@ import {SimulationResults} from "./results/SimulationResults.tsx";
 export function Simulation() {
     const [isDialogOpen, setIsDialogOpen] = useState<boolean>(true);
     const [result, setResult] = useState<SimulationResult | null>(null);
-    const { sendRequest, isRunning, isError } = useBuyAndHold()
+    const { sendRequest, isRunning, isError } = useBuyAndSellRisk()
 
     const sendAndProcessRequest = (request: SimulationRequest) => {
         sendRequest(request, {
