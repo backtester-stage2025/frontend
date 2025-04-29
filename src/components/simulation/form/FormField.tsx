@@ -3,6 +3,7 @@ import {SimulationRequest} from "../../../model/request/SimulationRequest.ts";
 import {DatePicker} from "@mui/x-date-pickers/DatePicker";
 import {Checkbox, FormControlLabel, MenuItem, TextField} from "@mui/material";
 import {FormField} from "./FormController.tsx";
+import {ChangeEvent} from "react";
 
 interface FormFieldRenderProps {
     field: FormField;
@@ -63,13 +64,21 @@ export function FormDropdown(
 export function FormCheckbox(
     {field, controllerField}: Readonly<FormFieldRenderProps>
 ) {
+    const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) : void => {
+        const isChecked = e.target.checked;
+        controllerField.onChange(isChecked);
+        if (field.checkBoxToggle != null) {
+            field.checkBoxToggle(isChecked);
+        }
+    }
+
     return (
         <FormControlLabel
             control={
                 <Checkbox
                     checked={!!controllerField.value}
                     id={field.name}
-                    onChange={(e) => controllerField.onChange(e.target.checked)}
+                    onChange={onChangeHandler}
                     required={field.required}
                 />
             }

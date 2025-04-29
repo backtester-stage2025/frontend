@@ -9,6 +9,8 @@ export interface FormField {
     placeholder: string;
     required: boolean;
     options?: string[];
+    shouldRender?: boolean;
+    checkBoxToggle?: (isChecked: boolean) => void;
 }
 
 interface FieldControllerProps {
@@ -18,6 +20,7 @@ interface FieldControllerProps {
 }
 
 export function FieldController({control, errors, field}: Readonly<FieldControllerProps>) {
+    if (field.shouldRender === false) return null;
     return (
         <Controller
             name={field.name as keyof SimulationRequest}

@@ -4,7 +4,6 @@ import {
     AccordionSummary,
     Box,
     Grid,
-    Paper,
     Typography
 } from "@mui/material";
 import {Loader} from "../../Loader.tsx";
@@ -13,20 +12,10 @@ import {UserPortfolio} from "../../../model/simulation/UserPortfolio.ts";
 interface ResultScreenProps {
     result: UserPortfolio[] | null;
     isRunning: boolean;
-    isError: boolean;
 }
 
 
-export function SimulationResults({result, isRunning, isError}: Readonly<ResultScreenProps>) {
-    if (isError) {
-        return (
-            <Paper elevation={3} sx={{p: 3, mt: 4, bgcolor: "#FFF5F5", borderLeft: "4px solid #F56565"}}>
-                <Typography color="error" variant="h6" sx={{display: 'flex', alignItems: 'center', gap: 1}}>
-                    An error occurred while processing your simulation.
-                </Typography>
-            </Paper>
-        );
-    }
+export function SimulationResults({result, isRunning}: Readonly<ResultScreenProps>) {
 
     if (isRunning) {
         return <Loader/>;

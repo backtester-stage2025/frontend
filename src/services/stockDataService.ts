@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, {AxiosError} from "axios";
 import {StockQuote} from "../model/StockQuote";
 import {SimulationRequest} from "../model/request/SimulationRequest.ts";
 import {formatDateToLocalDateString} from "./formatService.ts";
@@ -23,7 +23,14 @@ export async function simulateBuyAndSellRisk(request: SimulationRequest): Promis
         endDate: formatDateToLocalDateString(request.endDate)
     };
 
-    const { data: result } = await axios.post(`/api/backtest/buy-and-sell-risk`, payload);
-    console.log(result);
-    return result;
+    try {
+        const { data: result } = await axios.post(`/api/backtest/buy-and-sell-risk`, payload);
+        return result;
+    } catch (error) {
+        console.log(error);
+        const axiosError = error as AxiosError<string>;
+        console.log(axiosError);
+        const message = axiosError.response?.data ?? "An unknown error occurred.";
+        throw new Error(message);
+    }
 }
