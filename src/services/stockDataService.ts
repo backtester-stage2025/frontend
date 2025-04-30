@@ -24,7 +24,7 @@ export async function simulateBuyAndSellRisk(request: SimulationRequest): Promis
     };
 
     try {
-        const {data: result} = await axios.post(`/api/backtest/buy-and-sell-risk`, payload);
+        const {data: result} = await axios.post(`/api/backtest/run-simulation`, payload);
         return result;
     } catch (error) {
         console.log(error);
