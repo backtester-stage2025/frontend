@@ -63,8 +63,6 @@ export function StockChart({stockName}: Readonly<StockChartProps>) {
         }
     }, [stockQuotes]);
 
-    // No need for this useEffect anymore as validation is handled in the MovingAverageControls component
-
     if (isLoadingStockQuotes || isLoadingMovingAverageShort || isLoadingMovingAverageLong) {
         return <Loader message={`Loading stock quotes for ${stockName}`}/>;
     }

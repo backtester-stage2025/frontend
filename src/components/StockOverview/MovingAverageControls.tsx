@@ -1,5 +1,5 @@
 import {ChangeEvent, useEffect, useState} from 'react';
-import {Box, Button, Grid, TextField} from '@mui/material';
+import {Box, Button, Grid, TextField, Typography} from '@mui/material';
 
 export const MIN_SHORT_PERIOD = 5;
 export const MAX_SHORT_PERIOD = 100;
@@ -32,7 +32,8 @@ export function MovingAverageControls({
         longPeriod: ""
     });
 
-    const validateShortPeriod = (value: number): string => {
+    const validateShortPeriod = (value: number | null): string => {
+        if (value === null) return "";
         if (value < MIN_SHORT_PERIOD) {
             return `Short period must be at least ${MIN_SHORT_PERIOD}`;
         }
@@ -45,7 +46,8 @@ export function MovingAverageControls({
         return "";
     };
 
-    const validateLongPeriod = (value: number): string => {
+    const validateLongPeriod = (value: number | null): string => {
+        if (value === null) return "";
         if (value < MIN_LONG_PERIOD) {
             return `Long period must be at least ${MIN_LONG_PERIOD}`;
         }
@@ -59,14 +61,18 @@ export function MovingAverageControls({
     };
 
     const handleShortPeriodChange = (e: ChangeEvent<HTMLInputElement>) => {
-        const value = parseInt(e.target.value) || 0;
-        setInputPeriods(prev => ({...prev, shortPeriod: value}));
+        const rawValue = e.target.value;
+
+        const value = rawValue === '' ? null : parseInt(rawValue);
+        setInputPeriods(prev => ({...prev, shortPeriod: value ?? 0}));
         setInputErrors(prev => ({...prev, shortPeriod: validateShortPeriod(value)}));
     };
 
     const handleLongPeriodChange = (e: ChangeEvent<HTMLInputElement>) => {
-        const value = parseInt(e.target.value) || 0;
-        setInputPeriods(prev => ({...prev, longPeriod: value}));
+        const rawValue = e.target.value;
+
+        const value = rawValue === '' ? null : parseInt(rawValue);
+        setInputPeriods(prev => ({...prev, longPeriod: value ?? 0}));
         setInputErrors(prev => ({...prev, longPeriod: validateLongPeriod(value)}));
     };
 
@@ -94,40 +100,50 @@ export function MovingAverageControls({
 
     return (
         <Box component="form" sx={{mb: 3}}>
-            <Grid container spacing={2} alignItems="center">
+            <Grid container spacing={2} alignItems="top">
                 <Grid size={{xs: 15, md: 5}}>
                     <TextField
                         id="shortPeriod"
                         label="Short MA Period"
                         type="number"
-                        value={inputPeriods.shortPeriod}
+                        value={inputPeriods.shortPeriod === 0 ? '' : inputPeriods.shortPeriod}
                         onChange={handleShortPeriodChange}
                         slotProps={{
                             htmlInput: {min: MIN_SHORT_PERIOD, max: MAX_SHORT_PERIOD}
                         }}
                         error={!!inputErrors.shortPeriod}
-                        helperText={inputErrors.shortPeriod}
                         fullWidth
                         variant="outlined"
                         size="small"
+                        sx={{mb: 0.5}}
                     />
+                    {inputErrors.shortPeriod && (
+                        <Typography color="error" variant="caption" sx={{display: 'block', ml: 2}}>
+                            {inputErrors.shortPeriod}
+                        </Typography>
+                    )}
                 </Grid>
                 <Grid size={{xs: 15, md: 5}}>
                     <TextField
                         id="longPeriod"
                         label="Long MA Period"
                         type="number"
-                        value={inputPeriods.longPeriod}
+                        value={inputPeriods.longPeriod === 0 ? '' : inputPeriods.longPeriod}
                         onChange={handleLongPeriodChange}
                         slotProps={{
                             htmlInput: {min: MIN_LONG_PERIOD, max: MAX_LONG_PERIOD}
                         }}
                         error={!!inputErrors.longPeriod}
-                        helperText={inputErrors.longPeriod}
                         fullWidth
                         variant="outlined"
                         size="small"
+                        sx={{mb: 0.5}}
                     />
+                    {inputErrors.longPeriod && (
+                        <Typography color="error" variant="caption" sx={{display: 'block', ml: 2}}>
+                            {inputErrors.longPeriod}
+                        </Typography>
+                    )}
                 </Grid>
                 <Grid size={{xs: 15, md: 2}}>
                     <Button
