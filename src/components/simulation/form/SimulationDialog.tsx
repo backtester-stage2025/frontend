@@ -3,20 +3,12 @@ import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {LocalizationProvider} from "@mui/x-date-pickers/LocalizationProvider";
 import {AdapterDateFns} from "@mui/x-date-pickers/AdapterDateFns";
-import {
-    Box,
-    Button,
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogContentText,
-    DialogTitle,
-} from "@mui/material";
+import {Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle,} from "@mui/material";
 import {enGB} from "date-fns/locale";
 import {useStockData} from "../../../hooks/useStockData.ts";
 import {FieldController, FormField} from "./FormController.tsx";
 import {SimulationTypes} from "../../../model/request/SimulationTypes.ts";
-import { useState, useEffect } from "react";
+import {useEffect, useState} from "react";
 import {ErrorOverlay} from "./ErrorOverlay.tsx";
 import {simulationRequestSchema} from "./SimulationRequestSchema.ts";
 import {CloseButton} from "../../util/CloseButton.tsx";
@@ -29,7 +21,13 @@ interface BuyAndHoldSimulationProps {
     serverError: Error | null
 }
 
-export function SimulationDialog({isOpen, onSubmit, onClose, isServerError, serverError}: Readonly<BuyAndHoldSimulationProps>) {
+export function SimulationDialog({
+                                     isOpen,
+                                     onSubmit,
+                                     onClose,
+                                     isServerError,
+                                     serverError
+                                 }: Readonly<BuyAndHoldSimulationProps>) {
     const {stockData} = useStockData();
     const [showErrorOverlay, setShowErrorOverlay] = useState(isServerError);
     const [movingAverage, setMovingAverage] = useState<boolean>(true);
@@ -57,8 +55,20 @@ export function SimulationDialog({isOpen, onSubmit, onClose, isServerError, serv
             required: false,
             checkBoxToggle: setMovingAverage
         },
-        {name: "movingAverageShortDays", type: "number", placeholder: "Moving average (Short)", required: false, shouldRender: movingAverage},
-        {name: "movingAverageLongDays", type: "number", placeholder: "Moving average (Long)", required: false, shouldRender: movingAverage},
+        {
+            name: "movingAverageShortDays",
+            type: "number",
+            placeholder: "Moving average (Short)",
+            required: false,
+            shouldRender: movingAverage
+        },
+        {
+            name: "movingAverageLongDays",
+            type: "number",
+            placeholder: "Moving average (Long)",
+            required: false,
+            shouldRender: movingAverage
+        },
 
     ];
 
@@ -98,7 +108,7 @@ export function SimulationDialog({isOpen, onSubmit, onClose, isServerError, serv
 
                 <DialogTitle>Strategy Tester</DialogTitle>
 
-                <DialogContent sx={{ position: 'relative' }}>
+                <DialogContent sx={{position: 'relative'}}>
                     <DialogContentText>
                         Fill in the form to test your strategy
                     </DialogContentText>

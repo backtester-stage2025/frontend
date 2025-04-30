@@ -18,7 +18,7 @@ export function CloseButton({onClose, color}: Readonly<CloseButtonProps>) {
                 ...(color && {color: color}),
             }}
         >
-            <CloseIcon />
+            <CloseIcon/>
         </Button>
     )
 }

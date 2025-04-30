@@ -33,7 +33,7 @@ export function FormDatePicker(
 }
 
 export function FormDropdown(
-    { field, controllerField, error, helperText }: Readonly<FormFieldRenderProps>
+    {field, controllerField, error, helperText}: Readonly<FormFieldRenderProps>
 ) {
     const optionsReady = field.options && field.options.length > 0;
 
@@ -64,7 +64,7 @@ export function FormDropdown(
 export function FormCheckbox(
     {field, controllerField}: Readonly<FormFieldRenderProps>
 ) {
-    const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) : void => {
+    const onChangeHandler = (e: ChangeEvent<HTMLInputElement>): void => {
         const isChecked = e.target.checked;
         controllerField.onChange(isChecked);
         if (field.checkBoxToggle != null) {

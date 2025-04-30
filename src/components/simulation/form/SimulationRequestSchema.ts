@@ -5,8 +5,8 @@ const maxMovingAverage = 1000
 
 export const simulationRequestSchema = z.object({
     csvFileName: z.string().nonempty("CSV file name is required"),
-    startDate: z.coerce.date({ required_error: "Start Date is required" }),
-    endDate: z.coerce.date({ required_error: "End Date is required" }),
+    startDate: z.coerce.date({required_error: "Start Date is required"}),
+    endDate: z.coerce.date({required_error: "End Date is required"}),
     startCapital: z.coerce.number({
         required_error: "Start Capital is required",
         invalid_type_error: "Start Capital must be a number",
