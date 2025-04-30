@@ -1,7 +1,7 @@
 import CanvasJSReact from '@canvasjs/react-stockcharts';
 import {useStockQuotes} from '../../hooks/useStockQuotes';
 import {StockQuote} from "../../model/StockQuote";
-import {Loader} from "../Loader.tsx";
+import {Loader} from "../util/Loader.tsx";
 
 const CanvasJSStockChart = CanvasJSReact.CanvasJSStockChart;
 

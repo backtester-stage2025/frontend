@@ -5,7 +5,7 @@ interface LoaderProps {
     message?: string;
 }
 
-export function Loader({message = "Loading stock data..."}: Readonly<LoaderProps>) {
+export function Loader({message = "Loading..."}: Readonly<LoaderProps>) {
     return (
         <Box
             sx={{
