@@ -38,11 +38,15 @@ export const simulationRequestSchema = z.object({
     path: ["movingAverageShortDays"],
     message: "Moving Average Short and Long days are required when Moving Average Crossover is enabled",
 }).refine((data) => {
-    if (data.useMovingAverageCrossover && data.movingAverageShortDays !== undefined && data.movingAverageLongDays !== undefined) {
+    if (
+        data.useMovingAverageCrossover &&
+        data.movingAverageShortDays !== undefined &&
+        data.movingAverageLongDays !== undefined
+    ) {
         return data.movingAverageShortDays < data.movingAverageLongDays;
     }
     return true;
 }, {
-    path: ["useMovingAverageCrossover", "movingAverageShortDays", "movingAverageLongDays"],
-    message: "Crossover requires minimum and maximum days"
+    path: ["movingAverageLongDays"],
+    message: "Long MA must be greater than Short MA when Moving Average Crossover is enabled",
 });
