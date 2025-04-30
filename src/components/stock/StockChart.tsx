@@ -3,7 +3,10 @@ import {useStockQuotes} from '../../hooks/useStockQuotes';
 import {StockQuote} from "../../model/StockQuote";
 import {Loader} from "../util/Loader.tsx";
 import {useMovingAverage} from "../../hooks/useMovingAverage.ts";
-import {ChangeEvent, useEffect, useRef, useState} from 'react';
+import {useEffect, useState} from 'react';
+import {Alert, Paper, Typography} from '@mui/material';
+import {ShowChart} from '@mui/icons-material';
+import {MovingAverageControls} from './MovingAverageControls';
 
 const CanvasJSStockChart = CanvasJSReact.CanvasJSStockChart;
 
@@ -13,7 +16,6 @@ interface StockChartProps {
 
 export function StockChart({stockName}: Readonly<StockChartProps>) {
     const {isLoading: isLoadingStockQuotes, isError: isErrorStockQuotes, stockQuotes} = useStockQuotes(stockName);
-    const chartRef = useRef<any>(null);
 
     const [dateRange, setDateRange] = useState({
         startDate: "",
@@ -25,37 +27,24 @@ export function StockChart({stockName}: Readonly<StockChartProps>) {
         longPeriod: 50
     });
 
-    const [inputPeriods, setInputPeriods] = useState({
-        shortPeriod: 20,
-        longPeriod: 50
-    });
-
     const {
         isLoading: isLoadingMovingAverageShort,
         isError: isErrorMovingAverageShort,
         movingAverage: movingAverageShort
-    } =
-        useMovingAverage(stockName, dateRange.startDate, dateRange.endDate, periods.shortPeriod);
+    } = useMovingAverage(stockName, dateRange.startDate, dateRange.endDate, periods.shortPeriod);
 
-    const {isLoading: isLoadingMovingAverageLong, isError: isErrorMovingAverageLong, movingAverage: movingAverageLong} =
-        useMovingAverage(stockName, dateRange.startDate, dateRange.endDate, periods.longPeriod);
+    const {
+        isLoading: isLoadingMovingAverageLong,
+        isError: isErrorMovingAverageLong,
+        movingAverage: movingAverageLong
+    } = useMovingAverage(stockName, dateRange.startDate, dateRange.endDate, periods.longPeriod);
 
-    const handleShortPeriodChange = (e: ChangeEvent<HTMLInputElement>) => {
-        const value = parseInt(e.target.value);
-        setInputPeriods(prev => ({...prev, shortPeriod: value}));
+    const handlePeriodsChange = (shortPeriod: number, longPeriod: number) => {
+        setPeriods({
+            shortPeriod,
+            longPeriod
+        });
     };
-
-    const handleLongPeriodChange = (e: ChangeEvent<HTMLInputElement>) => {
-        const value = parseInt(e.target.value);
-        setInputPeriods(prev => ({...prev, longPeriod: value}));
-    };
-
-    const handleApplyClick = () => {
-        setPeriods(inputPeriods);
-        setHasApplied(true);
-    };
-
-    const [hasApplied, setHasApplied] = useState(false);
 
     useEffect(() => {
         if (stockQuotes && stockQuotes.length > 0) {
@@ -74,51 +63,24 @@ export function StockChart({stockName}: Readonly<StockChartProps>) {
         }
     }, [stockQuotes]);
 
-    useEffect(() => {
-        if (
-            chartRef.current?.chart &&
-            movingAverageShort &&
-            movingAverageLong &&
-            hasApplied
-        ) {
-            const chart = chartRef.current.chart;
-
-            const shortMADataPoints = Object.entries(movingAverageShort).map(([dateStr, value]) => ({
-                x: new Date(dateStr),
-                y: value
-            }));
-
-            const longMADataPoints = Object.entries(movingAverageLong).map(([dateStr, value]) => ({
-                x: new Date(dateStr),
-                y: value
-            }));
-
-            if (chart.options.charts[0].data[1]) {
-                chart.options.charts[0].data[1].name = `${periods.shortPeriod}-Day MA`;
-                chart.options.charts[0].data[1].dataPoints = shortMADataPoints;
-            }
-
-            if (chart.options.charts[0].data[2]) {
-                chart.options.charts[0].data[2].name = `${periods.longPeriod}-Day MA`;
-                chart.options.charts[0].data[2].dataPoints = longMADataPoints;
-            }
-
-            chart.render();
-            setHasApplied(false); // reset
-        }
-    }, [hasApplied, movingAverageShort, movingAverageLong, periods]);
-
-
     if (isLoadingStockQuotes || isLoadingMovingAverageShort || isLoadingMovingAverageLong) {
         return <Loader message={`Loading stock quotes for ${stockName}`}/>;
     }
 
     if (isErrorStockQuotes || isErrorMovingAverageShort || isErrorMovingAverageLong) {
-        return <div>Error loading stock quotes for {stockName}</div>;
+        return (
+            <Alert severity="error" sx={{mt: 2, width: "100%"}}>
+                Error loading stock quotes for {stockName}. Please try again later.
+            </Alert>
+        );
     }
 
     if (!stockQuotes || stockQuotes.length === 0) {
-        return <div>No stock quotes available for {stockName}</div>;
+        return (
+            <Alert severity="warning" sx={{mt: 2, width: "100%"}}>
+                No stock quotes available for {stockName}. Please try a different stock.
+            </Alert>
+        );
     }
 
     const dataPoints = stockQuotes?.map((quote: StockQuote) => ({
@@ -142,11 +104,14 @@ export function StockChart({stockName}: Readonly<StockChartProps>) {
         theme: "light2",
         title: {
             text: `Stock Quotes for ${stockName}`,
+            fontFamily: "Roboto, sans-serif",
+            fontSize: 24,
         },
         subtitles: [
             {
                 text: `(${new Date(stockQuotes[0].dateTime).toLocaleDateString()} - ${new Date(stockQuotes[stockQuotes.length - 1].dateTime).toLocaleDateString()})`,
                 fontColor: "gray",
+                fontFamily: "Roboto, sans-serif",
             },
         ],
         animationEnabled: false,
@@ -195,6 +160,7 @@ export function StockChart({stockName}: Readonly<StockChartProps>) {
                     verticalAlign: "top",
                     horizontalAlign: "center",
                     dockInsidePlotArea: false,
+                    fontFamily: "Roboto, sans-serif",
                 },
             },
         ],
@@ -236,62 +202,27 @@ export function StockChart({stockName}: Readonly<StockChartProps>) {
     };
 
     const containerProps = {
-        width: "50em",
-        height: "30em",
+        width: "90vh",
+        height: "50vh",
         margin: "auto",
     };
 
     return (
-        <div>
-            <div className="controls"
-                 style={{
-                     marginBottom: '20px',
-                     display: 'flex',
-                     justifyContent: 'center',
-                     gap: '20px',
-                     alignItems: 'center'
-                 }}>
-                <div>
-                    <label htmlFor="shortPeriod">Short MA Period: </label>
-                    <input
-                        type="number"
-                        id="shortPeriod"
-                        value={inputPeriods.shortPeriod}
-                        onChange={handleShortPeriodChange}
-                        min="5"
-                        max="100"
-                    />
-                </div>
-                <div>
-                    <label htmlFor="longPeriod">Long MA Period: </label>
-                    <input
-                        type="number"
-                        id="longPeriod"
-                        value={inputPeriods.longPeriod}
-                        onChange={handleLongPeriodChange}
-                        min="10"
-                        max="200"
-                    />
-                </div>
-                <button
-                    onClick={handleApplyClick}
-                    style={{
-                        padding: '5px 15px',
-                        backgroundColor: '#4CAF50',
-                        color: 'white',
-                        border: 'none',
-                        borderRadius: '4px',
-                        cursor: 'pointer'
-                    }}
-                >
-                    Apply
-                </button>
-            </div>
+        <Paper elevation={3} sx={{p: 3, borderRadius: 2}}>
+            <Typography variant="h5" component="h2" gutterBottom sx={{display: 'flex', alignItems: 'center'}}>
+                <ShowChart sx={{mr: 1}}/> {stockName} Moving Average Analysis
+            </Typography>
+
+            <MovingAverageControls
+                initialShortPeriod={periods.shortPeriod}
+                initialLongPeriod={periods.longPeriod}
+                onPeriodsChange={handlePeriodsChange}
+            />
+
             <CanvasJSStockChart
                 containerProps={containerProps}
                 options={options}
-                ref={chartRef}
             />
-        </div>
+        </Paper>
     );
 }
