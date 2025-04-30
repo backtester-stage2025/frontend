@@ -1,5 +1,6 @@
 import {Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText} from '@mui/material'
-import BoardsIcon from '@mui/icons-material/Dashboard'
+import ListIcon from '@mui/icons-material/List';
+import ShowChartIcon from '@mui/icons-material/ShowChart';
 import {Link} from 'react-router-dom'
 
 interface NavigationProps {
@@ -12,7 +13,8 @@ export function Navigation({isOpen, onClose}: Readonly<NavigationProps>) {
         <Drawer open={isOpen} onClose={onClose}>
             <List sx={{width: 200}}>
                 {[
-                    {label: 'Stock List', link: '/list', icon: <BoardsIcon/>}
+                    { label: 'Stock List', link: '/stock-list', icon: <ListIcon/> },
+                    { label: 'Strategy Tester', link: '/strategy-tester', icon: <ShowChartIcon/> },
                 ].map((menuItem) => (
                     <ListItem disableGutters key={menuItem.link}>
                         <ListItemButton component={Link} to={menuItem.link} onClick={onClose}>
