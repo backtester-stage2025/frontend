@@ -21,9 +21,9 @@ function App() {
                 <Navigation isOpen={drawerOpen} onClose={() => setDrawerOpen(false)}/>
                 <Routes>
                     <Route path="/" element={<StockList/>}/>
-                    <Route path="/list" element={<StockList/>}/>
+                    <Route path="/stock-list" element={<StockList/>}/>
                     <Route path="/stock-overview" element={<StockOverview/>}/>
-                    <Route path="/buy-and-hold" element={<Simulation/>}/>
+                    <Route path="/strategy-tester" element={<Simulation/>}/>
                 </Routes>
             </BrowserRouter>
         </QueryClientProvider>

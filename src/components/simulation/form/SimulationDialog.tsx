@@ -96,11 +96,11 @@ export function SimulationDialog({isOpen, onSubmit, onClose, isServerError, serv
                     error={serverError}
                 />
 
-                <DialogTitle>Buy And Hold Simulation</DialogTitle>
+                <DialogTitle>Strategy Tester</DialogTitle>
 
                 <DialogContent sx={{ position: 'relative' }}>
                     <DialogContentText>
-                        Fill in the form to simulate a buy and hold
+                        Fill in the form to test your strategy
                     </DialogContentText>
 
                     <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={enGB}>
