@@ -1,7 +1,7 @@
 import {useStockData} from "../hooks/useStockData.ts";
 import {Box, Card} from "@mui/material";
 import {useNavigate} from "react-router-dom";
-import {Loader} from "./Loader.tsx";
+import {Loader} from "./util/Loader.tsx";
 
 export function StockList() {
     const {isLoading, isError, stockData} = useStockData();

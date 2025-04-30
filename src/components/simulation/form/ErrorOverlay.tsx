@@ -1,5 +1,5 @@
-import {Box, Button, Paper, Typography} from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
+import {Box, Paper, Typography} from "@mui/material";
+import {CloseButton} from "../../util/CloseButton.tsx";
 
 interface ErrorOverlayProps {
     isOpen: boolean
@@ -37,21 +37,10 @@ export function ErrorOverlay({isOpen, error, setIsOpen}: Readonly<ErrorOverlayPr
                     pointerEvents: 'auto', // clickable
                 }}
             >
+                <CloseButton onClose={() => {setIsOpen(false)}} color="#D00"/>
                 <Typography color="error" variant="h6" sx={{ pr: 4 }}>
                     {error?.message}
                 </Typography>
-                <Button
-                    onClick={() => setIsOpen(false)}
-                    sx={{
-                        position: 'absolute',
-                        top: 8,
-                        right: 8,
-                        minWidth: 'auto',
-                        color: '#DD0000',
-                    }}
-                >
-                    <CloseIcon />
-                </Button>
             </Paper>
         </Box>
     )

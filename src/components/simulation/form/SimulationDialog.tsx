@@ -19,7 +19,7 @@ import {SimulationTypes} from "../../../model/request/SimulationTypes.ts";
 import { useState, useEffect } from "react";
 import {ErrorOverlay} from "./ErrorOverlay.tsx";
 import {simulationRequestSchema} from "./SimulationRequestSchema.ts";
-import CloseIcon from "@mui/icons-material/Close";
+import {CloseButton} from "../../util/CloseButton.tsx";
 
 interface BuyAndHoldSimulationProps {
     isOpen: boolean
@@ -88,17 +88,7 @@ export function SimulationDialog({isOpen, onSubmit, onClose, isServerError, serv
 
     return (
         <Dialog open={isOpen} onClose={onClose}>
-            <Button
-                onClick={onClose}
-                sx={{
-                    position: 'absolute',
-                    top: 8,
-                    right: 8,
-                    minWidth: 'auto'
-                }}
-            >
-                <CloseIcon />
-            </Button>
+            <CloseButton onClose={onClose}/>
             <form onSubmit={handleSubmit(onSubmitHandler)}>
                 <ErrorOverlay
                     isOpen={showErrorOverlay}

@@ -6,7 +6,7 @@ import {
     Grid,
     Typography
 } from "@mui/material";
-import {Loader} from "../../Loader.tsx";
+import {Loader} from "../../util/Loader.tsx";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import {UserPortfolio} from "../../../model/simulation/UserPortfolio.ts";
 interface ResultScreenProps {
