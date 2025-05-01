@@ -75,7 +75,7 @@ export function SimulationDialog({
     const {control, handleSubmit, formState: {errors}} = useForm<SimulationRequest>({
         resolver: zodResolver(simulationRequestSchema),
         defaultValues: {
-            csvFileName: '',
+            stockName: '',
             startDate: new Date(),
             endDate: new Date(),
             startCapital: 10000,
@@ -90,7 +90,7 @@ export function SimulationDialog({
     const onSubmitHandler = (data: SimulationRequest) => {
         const request = {
             ...data,
-            csvFileName: data.csvFileName + '.csv',
+            stockName: data.stockName + '.csv',
         }
         console.log(request)
         onSubmit(request);

@@ -1,14 +1,14 @@
 import axios from "axios";
 
 export async function getMovingAverage(
-    csvFileName: string,
+    stockName: string,
     startDate: string,
     endDate: string,
     period: number
 ) {
     const {data: movingAverage} = await axios.get<Map<Date, number[]>>(`/api/stock-analysis/moving-averages`, {
         params: {
-            csvFileName: csvFileName + ".csv",
+            stockName: stockName + ".csv",
             startDate: startDate,
             endDate: endDate,
             period: period
