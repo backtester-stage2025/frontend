@@ -10,6 +10,7 @@ import {SimulationDialog} from "../form/SimulationDialog.tsx";
 import {StockMetricsView} from "./metrics/StockMetricsView.tsx";
 import {ProfitChart} from "./portfolio/ProfitChart.tsx";
 import {TransactionHistory} from "./portfolio/TransactionHistory.tsx";
+import {StockHoldingChart} from "./portfolio/StockHoldingChart.tsx";
 
 export function EnhancedSimulation() {
     const [isDialogOpen, setIsDialogOpen] = useState(true);
@@ -102,6 +103,10 @@ export function EnhancedSimulation() {
                                     {result && (
                                         <>
                                             <ProfitChart portfolioData={result}/>
+
+                                            <Box sx={{mt: 3, mb: 2}}>
+                                                <StockHoldingChart portfolioData={result}/>
+                                            </Box>
 
                                             <TransactionHistory portfolioData={result}
                                                                 showOnlyTradesDays={showOnlyTradesDays}

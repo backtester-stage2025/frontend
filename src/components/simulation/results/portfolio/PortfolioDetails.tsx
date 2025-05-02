@@ -121,7 +121,7 @@ export function PortfolioDetails({portfolio}: Readonly<{ portfolio: UserPortfoli
                                     sx={{display: 'flex', alignItems: 'center'}}>
                             Share Holdings
                             <Chip
-                                label={Object.keys(portfolio.shareHoldings).length}
+                                label={totalPositions}
                                 size="small"
                                 color="primary"
                                 sx={{ml: 1, height: 20}}
