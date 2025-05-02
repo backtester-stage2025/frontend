@@ -37,13 +37,12 @@ export function TransactionHistory({
     const [rowsPerPage, setRowsPerPage] = useState(50);
     const [searchTerm, setSearchTerm] = useState('');
     const [sortBy, setSortBy] = useState<'date' | 'value'>('date');
-    const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+    const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
     const [expandedId, setExpandedId] = useState<string | null>(null);
-//TODO: when filtering, always go back to page 1 to make sure everything is visible
 
     const filteredAndSortedData = useMemo(() => {
         let filtered = portfolioData.filter(portfolio =>
-            !showOnlyTradesDays || Object.values(portfolio.sharesBought).some(qty => qty !== 0)
+            !showOnlyTradesDays || Object.values(portfolio.sharesBought).some(st => st.totalSharesBought !== 0)
         );
 
         if (searchTerm) {
@@ -90,7 +89,7 @@ export function TransactionHistory({
 
     const renderTransactionRow = (portfolio: UserPortfolio) => {
         const portfolioId = portfolio.date;
-        const hasTradesOnDay = Object.values(portfolio.sharesBought).some(qty => qty !== 0);
+        const hasTradesOnDay = Object.values(portfolio.sharesBought).some(st => st.totalSharesBought !== 0);
 
         return (
             <Accordion
@@ -138,25 +137,25 @@ export function TransactionHistory({
                             </Typography>
                         </Grid>
                         <Grid size={{xs: 12, sm: 3}} sx={{display: {xs: 'none', sm: 'block'}}}>
-                            {Object.keys(portfolio.sharesBought).some(key => portfolio.sharesBought[key] !== 0) && (
+                            {Object.values(portfolio.sharesBought).some(st => st.totalSharesBought !== 0) && (
                                 <Box sx={{display: 'flex', flexWrap: 'wrap', gap: 0.5}}>
-                                    {Object.entries(portfolio.sharesBought)
-                                        .filter(([_, qty]) => qty !== 0)
+                                    {Object.values(portfolio.sharesBought)
+                                        .filter(st => st.totalSharesBought !== 0)
                                         .slice(0, 3)
-                                        .map(([symbol, qty]) => (
+                                        .map(st => (
                                             <Chip
-                                                key={symbol}
-                                                label={`${symbol} ${qty > 0 ? '+' : ''}${qty}`}
+                                                key={st.stockName}
+                                                label={`${st.stockName} ${st.totalSharesBought > 0 ? '+' : ''}${st.totalSharesBought}`}
                                                 size="small"
                                                 sx={{
-                                                    bgcolor: qty > 0 ? 'success.light' : 'error.light',
+                                                    bgcolor: st.totalSharesBought > 0 ? 'success.light' : 'error.light',
                                                     color: 'white',
                                                     fontSize: '0.7rem'
                                                 }}
                                             />
                                         ))}
-                                    {Object.entries(portfolio.sharesBought)
-                                        .filter(([_, qty]) => qty !== 0)
+                                    {Object.values(portfolio.sharesBought)
+                                        .filter(st => st.totalSharesBought !== 0)
                                         .length > 3 && (
                                         <Chip
                                             label="..."
@@ -206,12 +205,14 @@ export function TransactionHistory({
                         size="small"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        InputProps={{
-                            startAdornment: (
-                                <InputAdornment position="start">
-                                    <SearchIcon fontSize="small"/>
-                                </InputAdornment>
-                            ),
+                        slotProps={{
+                            input: {
+                                startAdornment: (
+                                    <InputAdornment position="start">
+                                        <SearchIcon fontSize="small"/>
+                                    </InputAdornment>
+                                ),
+                            },
                         }}
                     />
                 </Grid>
