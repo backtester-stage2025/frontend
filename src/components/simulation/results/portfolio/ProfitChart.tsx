@@ -11,10 +11,15 @@ export function ProfitChart({portfolioData}: Readonly<{ portfolioData: UserPortf
 
         const initialValue = portfolioData[0].totalPortfolioValue;
 
-        return portfolioData.map(item => ({
-            date: item.date,
-            profit: item.totalPortfolioValue - initialValue
-        }));
+        return portfolioData.map(item => {
+            const profit = item.totalPortfolioValue - initialValue;
+            return {
+                date: item.date,
+                profit,
+                profitPositive: profit >= 0 ? profit : null,
+                profitNegative: profit < 0 ? profit : null,
+            };
+        });
     }, [portfolioData]);
 
     const dataMax = Math.max(...(chartData.length > 0 ? chartData.map(item => item.profit) : [0]));
@@ -61,13 +66,23 @@ export function ProfitChart({portfolioData}: Readonly<{ portfolioData: UserPortf
                         />
                         <Area
                             type="monotone"
-                            dataKey="profit"
-                            stroke="#1976d2"
-                            fill="#1976d2"
+                            dataKey="profitPositive"
+                            stroke="#388e3c"
+                            fill="#388e3c"
                             fillOpacity={0.3}
                             dot={false}
                             activeDot={{r: 6}}
                             name="Profit"
+                        />
+                        <Area
+                            type="monotone"
+                            dataKey="profitNegative"
+                            stroke="#d32f2f"
+                            fill="#d32f2f"
+                            fillOpacity={0.3}
+                            dot={false}
+                            activeDot={{r: 6}}
+                            name="Loss"
                         />
                     </AreaChart>
                 </ResponsiveContainer>
