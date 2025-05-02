@@ -18,7 +18,7 @@ import {
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import SearchIcon from '@mui/icons-material/Search';
 import FilterListIcon from '@mui/icons-material/FilterList';
-import {PortfolioDetails} from "./PortfolioDetails.tsx";
+import {PortfolioDetails} from "../portfolio/PortfolioDetails.tsx";
 import {UserPortfolio} from "../../../../model/simulation/UserPortfolio.ts";
 import {formatEuro} from "../../../../services/formatService.ts";
 
