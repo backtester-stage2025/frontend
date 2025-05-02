@@ -5,6 +5,7 @@ import {SimulationRequest} from "../../model/request/SimulationRequest.ts";
 import {Box, Button} from "@mui/material";
 import {SimulationResults} from "./results/SimulationResults.tsx";
 import {UserPortfolio} from "../../model/simulation/UserPortfolio.ts";
+import {Loader} from "../util/Loader.tsx";
 
 
 export function Simulation() {
@@ -19,6 +20,10 @@ export function Simulation() {
                 setIsDialogOpen(false);
             }
         });
+    }
+
+    if (isRunning) {
+        return <Loader message="Running simulation..."/>;
     }
 
     return (
