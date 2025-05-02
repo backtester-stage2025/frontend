@@ -5,9 +5,9 @@ import {formatDateToLocalDateString} from "./formatService.ts";
 import {UserPortfolio} from "../model/simulation/UserPortfolio.ts";
 import {StockDetails} from "../model/StockDetails.ts";
 
-export async function getStockDetails() {
+export async function getStockDetails(): Promise<StockDetails[]> {
     const {data: stockData} = await axios.get(`/api/stock/details`);
-    return stockData.map((details:StockDetails)=>details.companyName);
+    return stockData;
 }
 
 export async function getStockQuotes(stockName: string): Promise<StockQuote[]> {

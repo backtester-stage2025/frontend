@@ -1,11 +1,12 @@
 import {useNavigate} from "react-router-dom";
 import {Card} from "@mui/material";
+import {StockDetails} from "../../model/StockDetails.ts";
 
 interface StockCardProps {
-    name: string
+    details: StockDetails
 }
 
-export function StockCard({name}: Readonly<StockCardProps>) {
+export function StockCard({details}: Readonly<StockCardProps>) {
     const navigate = useNavigate();
 
     return (
@@ -22,10 +23,11 @@ export function StockCard({name}: Readonly<StockCardProps>) {
                     backgroundColor: 'rgba(0, 0, 0, 0.2)',
                 }
             }}
-            key={name}
-            onClick={() => navigate(`/stock-overview?stockName=${name}`)}
+            key={details.officialName}
+            onClick={() => navigate(`/stock-overview?stockName=${details.officialName}`)}
         >
-            {name}
+            {details.companyName}
+            {details.officialName}
         </Card>
     )
 }

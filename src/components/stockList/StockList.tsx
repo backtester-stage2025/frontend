@@ -2,6 +2,7 @@ import {useStockData} from "../../hooks/useStockData.ts";
 import {Box} from "@mui/material";
 import {Loader} from "../util/Loader.tsx";
 import {StockCard} from "./StockCard.tsx";
+import {StockDetails} from "../../model/StockDetails.ts";
 
 export function StockList() {
     const {isLoading, isError, stockData} = useStockData();
@@ -26,7 +27,9 @@ export function StockList() {
                 justifyContent: 'center',
                 margin: '0 auto'
             }}>
-                {stockData.map((stockName:string) => <StockCard  key={stockName} name={stockName}/>)}
+                {stockData?.map((stockDetails:StockDetails) =>
+                    <StockCard  key={stockDetails.officialName} details={stockDetails}/>)
+                }
             </Box>
         </>
     );
