@@ -22,6 +22,7 @@ import TrendingDownIcon from '@mui/icons-material/TrendingDown';
 import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 
 export function PortfolioDetails({portfolio}: Readonly<{ portfolio: UserPortfolio }>) {
+    const totalPositions = Object.values(portfolio.shareHoldings).filter(sh => sh.totalSharesOwned> 0).length;
     const totalShares = Object.values(portfolio.shareHoldings).reduce((sum, sh) => sum + sh.totalSharesOwned, 0);
     const totalBought = Object.values(portfolio.sharesBought).filter(st => st.totalSharesBought > 0).reduce((sum, st) => sum + st.totalSharesBought, 0);
     const totalSold = Object.values(portfolio.sharesBought).filter(st => st.totalSharesBought < 0).reduce((sum, st) => sum + Math.abs(st.totalSharesBought), 0);
@@ -49,7 +50,7 @@ export function PortfolioDetails({portfolio}: Readonly<{ portfolio: UserPortfoli
                             <Box sx={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 1}}>
                                 <Typography variant="subtitle2" color="text.secondary">Positions</Typography>
                             </Box>
-                            <Typography variant="h6">{Object.keys(portfolio.shareHoldings).length}</Typography>
+                            <Typography variant="h6">{totalPositions}</Typography>
                             <Typography variant="caption" color="text.secondary">
                                 {totalShares} total shares
                             </Typography>
@@ -138,6 +139,7 @@ export function PortfolioDetails({portfolio}: Readonly<{ portfolio: UserPortfoli
                             </TableHead>
                             <TableBody>
                                 {Object.values(portfolio.shareHoldings)
+                                    .filter(sh => sh.totalSharesOwned > 0)
                                     .sort((a, b) => b.totalSharesOwned - a.totalSharesOwned)
                                     .map(sh => (
                                         <TableRow
