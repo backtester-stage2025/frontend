@@ -7,10 +7,10 @@ import {UserPortfolio} from "../../../model/simulation/UserPortfolio.ts";
 import {useBuyAndSellRisk} from "../../../hooks/useBuyAndSellRisk.ts";
 import {SimulationRequest} from "../../../model/request/SimulationRequest.ts";
 import {SimulationDialog} from "../form/SimulationDialog.tsx";
-import {StockMetricsView} from "./metrics/StockMetricsView.tsx";
 import {ProfitChart} from "./portfolio/ProfitChart.tsx";
 import {TransactionHistory} from "./portfolio/TransactionHistory.tsx";
 import {StockHoldingChart} from "./portfolio/StockHoldingChart.tsx";
+import {StockMetricsContent} from "./metrics/StockMetricsContent.tsx";
 
 export function EnhancedSimulation() {
     const [isDialogOpen, setIsDialogOpen] = useState(true);
@@ -88,53 +88,56 @@ export function EnhancedSimulation() {
                 <>
                     <Box sx={{borderBottom: 1, borderColor: 'divider', mb: 2}}>
                         <Tabs value={tabValue} onChange={handleTabChange} aria-label="simulation tabs">
-                            <Tab label="Portfolio Results"/>
+                            <Tab label="Overview"/>
+                            <Tab label="Holdings"/>
+                            <Tab label="Transactions"/>
                             <Tab label="Stock Metrics" disabled={!simulationReport && !isLoadingReport}/>
                         </Tabs>
                     </Box>
 
-                    {/* Portfolio Results Tab */}
+                    {/* Profit chart Tab */}
                     {tabValue === 0 && (
                         <Box>
                             {isRunning ? (
                                 <Loader/>
                             ) : (
-                                <>
-                                    {result && (
-                                        <>
-                                            <ProfitChart portfolioData={result}/>
+                                result && <ProfitChart portfolioData={result}/>
+                            )}
+                        </Box>
+                    )}
 
-                                            <Box sx={{mt: 3, mb: 2}}>
-                                                <StockHoldingChart portfolioData={result}/>
-                                            </Box>
+                    {/* Holdings Tab */}
+                    {tabValue === 1 && (
+                        <Box>
+                            {isRunning ? (
+                                <Loader/>
+                            ) : (
+                                result && <StockHoldingChart portfolioData={result}/>
+                            )}
+                        </Box>
+                    )}
 
-                                            <TransactionHistory portfolioData={result}
-                                                                showOnlyTradesDays={showOnlyTradesDays}
-                                                                onToggleFilter={handleToggleFilter}
-                                            />
-                                        </>
-                                    )}
-                                </>
+                    {/* Transactions Tab */}
+                    {tabValue === 2 && (
+                        <Box>
+                            {isRunning ? (
+                                <Loader/>
+                            ) : (
+                                result && (
+                                    <TransactionHistory
+                                        portfolioData={result}
+                                        showOnlyTradesDays={showOnlyTradesDays}
+                                        onToggleFilter={handleToggleFilter}
+                                    />
+                                )
                             )}
                         </Box>
                     )}
 
                     {/* Stock Metrics Tab */}
-                    {tabValue === 1 && (
-                        isLoadingReport ? (
-                            <Loader/>
-                        ) : (
-                            simulationReport ? (
-                                <StockMetricsView stockMetrics={simulationReport.stockMetrics}/>
-                            ) : (
-                                <Box sx={{p: 3, textAlign: 'center'}}>
-                                    <Typography color="text.secondary">
-                                        No stock metrics available. Please run a simulation first.
-                                    </Typography>
-                                </Box>
-                            )
-                        )
-                    )}
+                    {tabValue === 3 &&
+                        <StockMetricsContent isLoadingReport={isLoadingReport} simulationReport={simulationReport}/>
+                    }
                 </>
             )}
         </Box>
