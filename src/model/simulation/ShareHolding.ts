@@ -1,4 +1,4 @@
-export interface ShareHolding  {
+export interface ShareHolding {
     stockName: string;
     totalSharesOwned: number;
     price: number;
