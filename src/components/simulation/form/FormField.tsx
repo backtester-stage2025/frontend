@@ -1,7 +1,7 @@
 import {ControllerRenderProps} from "react-hook-form";
 import {SimulationRequest} from "../../../model/request/SimulationRequest.ts";
 import {DatePicker} from "@mui/x-date-pickers/DatePicker";
-import {Checkbox, FormControlLabel, MenuItem, TextField} from "@mui/material";
+import {Checkbox, FormControlLabel, InputAdornment, MenuItem, TextField} from "@mui/material";
 import {FormField} from "./FormController.tsx";
 import {ChangeEvent} from "react";
 
@@ -83,6 +83,29 @@ export function FormCheckbox(
                 />
             }
             label={field.placeholder}
+        />
+    );
+}
+
+export function FormTextFieldWithAdornment(
+    {field, controllerField, error, helperText}: Readonly<FormFieldRenderProps>
+) {
+    return (
+        <TextField
+            {...controllerField}
+            type={field.type}
+            fullWidth
+            label={field.placeholder}
+            required={field.required}
+            error={error}
+            helperText={helperText}
+            slotProps={{
+                input: {
+                    endAdornment: (
+                        <InputAdornment position="end">days</InputAdornment>
+                    ),
+                },
+            }}
         />
     );
 }

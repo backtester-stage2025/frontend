@@ -1,7 +1,7 @@
 import {Control, Controller, FieldErrors} from "react-hook-form";
 import {SimulationRequest} from "../../../model/request/SimulationRequest.ts";
 import {TextField} from "@mui/material";
-import {FormCheckbox, FormDatePicker, FormDropdown} from "./FormField.tsx";
+import {FormCheckbox, FormDatePicker, FormDropdown, FormTextFieldWithAdornment} from "./FormField.tsx";
 
 export interface FormField {
     name: string;
@@ -54,6 +54,15 @@ export function FieldController({control, errors, field}: Readonly<FieldControll
                         error={error}
                         helperText={helperText}
                     />
+                }
+
+                if (field.name === "movingAverageShortDays" || field.name === "movingAverageLongDays") {
+                    return <FormTextFieldWithAdornment
+                        field={field}
+                        controllerField={controllerField}
+                        error={error}
+                        helperText={helperText}
+                    />;
                 }
 
                 return (
