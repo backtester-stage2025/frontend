@@ -3,10 +3,11 @@ import {StockQuote} from "../model/StockQuote";
 import {SimulationRequest} from "../model/request/SimulationRequest.ts";
 import {formatDateToLocalDateString} from "./formatService.ts";
 import {UserPortfolio} from "../model/simulation/UserPortfolio.ts";
+import {StockDetails} from "../model/StockDetails.ts";
 
-export async function getStockData() {
-    const {data: stockData} = await axios.get(`/api/stock/names`);
-    return stockData;
+export async function getStockDetails() {
+    const {data: stockData} = await axios.get(`/api/stock/details`);
+    return stockData.map((details:StockDetails)=>details.companyName);
 }
 
 export async function getStockQuotes(stockName: string): Promise<StockQuote[]> {
