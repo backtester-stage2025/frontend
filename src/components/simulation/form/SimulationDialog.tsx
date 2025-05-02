@@ -136,7 +136,7 @@ export function SimulationDialog({
     return (
         <Dialog open={isOpen} onClose={onClose}>
             <CloseButton onClose={onClose}/>
-            <form onSubmit={handleSubmit(onSubmitHandler)}>
+            <form onSubmit={handleSubmit(onSubmit)}>
                 <ErrorOverlay
                     isOpen={showErrorOverlay}
                     setIsOpen={setShowErrorOverlay}
