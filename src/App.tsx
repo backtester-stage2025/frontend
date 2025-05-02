@@ -9,7 +9,7 @@ import {Navigation} from "./components/Navigation.tsx"
 import {Simulation} from "./components/simulation/Simulation.tsx";
 import {createTheme, ThemeProvider} from "@mui/material";
 import {StockOverview} from "./components/stock/StockOverview.tsx";
-import EnhancedSimulation from "./components/simulation/results/Simulation.tsx";
+import {EnhancedSimulation} from "./components/simulation/results/EnhancedSimulation.tsx";
 
 function App() {
     axios.defaults.baseURL = import.meta.env.VITE_BACKEND_URL;

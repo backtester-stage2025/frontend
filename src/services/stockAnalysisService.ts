@@ -8,7 +8,7 @@ export async function getMovingAverage(
 ) {
     const {data: movingAverage} = await axios.get<Map<Date, number[]>>(`/api/stock-analysis/moving-averages`, {
         params: {
-            stockName: stockName + ".csv",
+            stockName: stockName,
             startDate: startDate,
             endDate: endDate,
             period: period

@@ -36,7 +36,7 @@ export function SimulationDialog({
     }, [isServerError]);
 
     const fields: FormField[] = [
-        {name: "csvFileName", type: "select", placeholder: "CSV file name", required: true, options: stockData},
+        {name: "stockName", type: "select", placeholder: "Stock Name", required: true, options: stockData},
         {name: "startDate", type: "date", placeholder: "Start Date", required: true},
         {name: "endDate", type: "date", placeholder: "End Date", required: true},
         {name: "startCapital", type: "number", placeholder: "Start Capital", required: true},
@@ -87,19 +87,10 @@ export function SimulationDialog({
         }
     })
 
-    const onSubmitHandler = (data: SimulationRequest) => {
-        const request = {
-            ...data,
-            stockName: data.stockName + '.csv',
-        }
-        console.log(request)
-        onSubmit(request);
-    }
-
     return (
         <Dialog open={isOpen} onClose={onClose}>
             <CloseButton onClose={onClose}/>
-            <form onSubmit={handleSubmit(onSubmitHandler)}>
+            <form onSubmit={handleSubmit(onSubmit)}>
                 <ErrorOverlay
                     isOpen={showErrorOverlay}
                     setIsOpen={setShowErrorOverlay}

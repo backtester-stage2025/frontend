@@ -6,6 +6,6 @@ export function formatPercent(value: number) {
     return `${value.toFixed(2)}%`;
 }
 
-export function formatCurrency(value: number) {
-    return `$${value.toFixed(2)}`;
-}
+export function formatEuro(value: number) {
+    return new Intl.NumberFormat('de-DE', {style: 'currency', currency: 'EUR'}).format(value);
+};
