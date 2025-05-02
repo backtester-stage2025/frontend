@@ -7,7 +7,7 @@ import {Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, Di
 import {enGB} from "date-fns/locale";
 import {useStockData} from "../../../hooks/useStockData.ts";
 import {FieldController, FormField} from "./FormController.tsx";
-import {SimulationTypes} from "../../../model/request/SimulationTypes.ts";
+import {SimulationTypes, simulationTypeOptions} from "../../../model/request/SimulationTypes.ts";
 import {useEffect, useState} from "react";
 import {ErrorOverlay} from "./ErrorOverlay.tsx";
 import {simulationRequestSchema} from "./SimulationRequestSchema.ts";
@@ -36,7 +36,7 @@ export function SimulationDialog({
     }, [isServerError]);
 
     const fields: FormField[] = [
-        {name: "csvFileName", type: "select", placeholder: "CSV file name", required: true, options: stockData},
+        {name: "csvFileName", type: "select", placeholder: "Stock Name", required: true, options: stockData},
         {name: "startDate", type: "date", placeholder: "Start Date", required: true},
         {name: "endDate", type: "date", placeholder: "End Date", required: true},
         {name: "startCapital", type: "number", placeholder: "Start Capital", required: true},
@@ -46,7 +46,7 @@ export function SimulationDialog({
             type: "select",
             placeholder: "Simulation Type",
             required: true,
-            options: Object.values(SimulationTypes)
+            options: simulationTypeOptions.map(option => option.label)
         },
         {
             name: "useMovingAverageCrossover",
@@ -91,7 +91,8 @@ export function SimulationDialog({
         const request = {
             ...data,
             csvFileName: data.csvFileName + '.csv',
-        }
+        };
+
         console.log(request)
         onSubmit(request);
     }
@@ -136,3 +137,4 @@ export function SimulationDialog({
         </Dialog>
     )
 }
+
