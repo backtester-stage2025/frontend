@@ -1,5 +1,5 @@
 import {useNavigate} from "react-router-dom";
-import {Card} from "@mui/material";
+import {Card, CardContent, Typography} from "@mui/material";
 import {StockDetails} from "../../model/StockDetails.ts";
 
 interface StockCardProps {
@@ -26,8 +26,14 @@ export function StockCard({details}: Readonly<StockCardProps>) {
             key={details.officialName}
             onClick={() => navigate(`/stock-overview?stockName=${details.officialName}`)}
         >
-            {details.companyName}
-            {details.officialName}
+            <CardContent>
+                <Typography variant="h6" fontWeight="bold">
+                    {details.companyName}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                    {details.officialName}
+                </Typography>
+            </CardContent>
         </Card>
     )
 }
