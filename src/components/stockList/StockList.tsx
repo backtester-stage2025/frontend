@@ -10,7 +10,7 @@ export function StockList() {
     const [searchTerm, setSearchTerm] = useState("");
 
     if (isLoading) {
-        return <Loader message="Loading stocks..."/>;
+        return <Loader message="Loading available stocks..."/>;
     }
 
     if (isError) {

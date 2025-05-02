@@ -2,7 +2,7 @@ import {useQuery} from "@tanstack/react-query";
 import {getStockQuotes} from "../services/stockDataService";
 
 export function useStockQuotes(stockName: string) {
-    const {isLoading, isError, data: stockQuotes} = useQuery({
+    const {isLoading, isError, data: stockQuotes, error} = useQuery({
         queryKey: ['stockQuotes', stockName],
         queryFn: () => getStockQuotes(stockName),
         enabled: !!stockName
@@ -10,6 +10,7 @@ export function useStockQuotes(stockName: string) {
     return {
         isLoading,
         isError,
-        stockQuotes
+        stockQuotes,
+        error
     }
 }
