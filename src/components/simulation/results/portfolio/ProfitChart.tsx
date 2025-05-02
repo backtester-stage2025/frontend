@@ -2,7 +2,7 @@ import {UserPortfolio} from "../../../../model/simulation/UserPortfolio.ts";
 import {useMemo} from "react";
 import {Box, Typography} from "@mui/material";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
-import {CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis} from "recharts";
+import {CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis} from "recharts";
 import {formatEuro} from "../../../../services/formatService.ts";
 
 export function ProfitChart({portfolioData}: Readonly<{ portfolioData: UserPortfolio[] }>) {
@@ -18,7 +18,7 @@ export function ProfitChart({portfolioData}: Readonly<{ portfolioData: UserPortf
     }, [portfolioData]);
 
     return (
-        <Box sx={{height: 400, width: '100%', mt: 3}}>
+        <Box sx={{height: 450, width: '100%', mt: 3}}>
             <Typography variant="h6" gutterBottom sx={{display: 'flex', alignItems: 'center', gap: 1}}>
                 <TrendingUpIcon color="primary"/>
                 Profit Evolution (€)
@@ -26,18 +26,22 @@ export function ProfitChart({portfolioData}: Readonly<{ portfolioData: UserPortf
             <ResponsiveContainer width="100%" height="90%">
                 <LineChart
                     data={chartData}
-                    margin={{top: 5, right: 30, left: 20, bottom: 5}}
+                    margin={{top: 5, right: 30, left: 20, bottom: 40}}
                 >
                     <CartesianGrid strokeDasharray="3 3"/>
-                    <XAxis dataKey="date"/>
-                    <YAxis
-                        tickFormatter={(value) => formatEuro(value).split('.')[0]}
-                    />
+                    <XAxis
+                        dataKey="date"
+                        angle={-45}
+                        textAnchor="end"
+                        interval="preserveStartEnd"
+                        height={60}
+                    /> <YAxis
+                    tickFormatter={(value) => value.toLocaleString('en-US')}
+                />
                     <Tooltip
                         formatter={(value: number) => formatEuro(value)}
                         labelFormatter={(label) => `Date: ${label}`}
                     />
-                    <Legend/>
                     <Line
                         type="monotone"
                         dataKey="profit"

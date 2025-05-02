@@ -51,10 +51,10 @@ export function SimulationResults({result, isRunning}: Readonly<ResultScreenProp
                                     Share Holdings
                                 </Typography>
                                 <Box sx={{pl: 2}}>
-                                    {Object.entries(portfolio.shareHoldings).map(
-                                        ([symbol, qty]) => (
-                                            <Typography key={symbol} variant="body2">
-                                                {symbol}: {qty}
+                                    {Object.values(portfolio.shareHoldings).map(
+                                        (sh) => (
+                                            <Typography key={sh.stockName} variant="body2">
+                                                {sh.stockName}: {sh.totalSharesOwned}
                                             </Typography>
                                         )
                                     )}
@@ -66,10 +66,10 @@ export function SimulationResults({result, isRunning}: Readonly<ResultScreenProp
                                     Shares Bought
                                 </Typography>
                                 <Box sx={{pl: 2}}>
-                                    {Object.entries(portfolio.sharesBought).map(
-                                        ([symbol, qty]) => (
-                                            <Typography key={symbol} variant="body2">
-                                                {symbol}: {qty}
+                                    {Object.values(portfolio.sharesBought).map(
+                                        (st) => (
+                                            <Typography key={st.stockName} variant="body2">
+                                                {st.stockName}: {st.totalSharesBought}
                                             </Typography>
                                         )
                                     )}

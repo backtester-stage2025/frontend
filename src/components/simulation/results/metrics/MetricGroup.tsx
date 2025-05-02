@@ -15,7 +15,7 @@ export function MetricGroup({title, properties}: Readonly<MetricGroupProps>) {
                 </Typography>
                 <Box sx={{display: 'flex', flexDirection: 'column'}}>
                     {properties.map((property, index) => (
-                        <Box key={property.name}>
+                        <Box key={index}>
                             <Metric {...property} />
                             {index < properties.length - 1 && <Divider sx={{my: 1.5}}/>}
                         </Box>

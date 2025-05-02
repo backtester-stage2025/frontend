@@ -22,16 +22,10 @@ import TrendingDownIcon from '@mui/icons-material/TrendingDown';
 import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 
 export function PortfolioDetails({portfolio}: Readonly<{ portfolio: UserPortfolio }>) {
-    const totalShares = Object.values(portfolio.shareHoldings).reduce((sum, qty) => sum + qty, 0);
-    const totalBought = Object.values(portfolio.sharesBought).filter(qty => qty > 0).reduce((sum, qty) => sum + qty, 0);
-    const totalSold = Object.values(portfolio.sharesBought).filter(qty => qty < 0).reduce((sum, qty) => sum + Math.abs(qty), 0);
-    const hasActivity = Object.values(portfolio.sharesBought).some(qty => qty !== 0);
-
-    const stockValues = Object.entries(portfolio.shareHoldings).map(([symbol, qty]) => ({
-        symbol,
-        quantity: qty,
-        estimatedValue: qty * 100
-    }));
+    const totalShares = Object.values(portfolio.shareHoldings).reduce((sum, sh) => sum + sh.totalSharesOwned, 0);
+    const totalBought = Object.values(portfolio.sharesBought).filter(st => st.totalSharesBought > 0).reduce((sum, st) => sum + st.totalSharesBought, 0);
+    const totalSold = Object.values(portfolio.sharesBought).filter(st => st.totalSharesBought < 0).reduce((sum, st) => sum + Math.abs(st.totalSharesBought), 0);
+    const hasActivity = Object.values(portfolio.sharesBought).some(st => st.totalSharesBought !== 0);
 
     return (
         <AccordionDetails sx={{bgcolor: '#fafafa', p: 3}}>
@@ -83,7 +77,7 @@ export function PortfolioDetails({portfolio}: Readonly<{ portfolio: UserPortfoli
                                     </Box>
                                     <Typography variant="h6">{totalBought} shares</Typography>
                                     <Typography variant="caption" sx={{color: 'rgba(255,255,255,0.8)'}}>
-                                        {Object.entries(portfolio.sharesBought).filter(([_, qty]) => qty > 0).length} stocks
+                                        {Object.values(portfolio.sharesBought).filter(st => st.totalSharesBought > 0).length} stocks
                                     </Typography>
                                 </Card>
                             </Grid>
@@ -107,7 +101,7 @@ export function PortfolioDetails({portfolio}: Readonly<{ portfolio: UserPortfoli
                                     </Box>
                                     <Typography variant="h6">{totalSold} shares</Typography>
                                     <Typography variant="caption" sx={{color: 'rgba(255,255,255,0.8)'}}>
-                                        {Object.entries(portfolio.sharesBought).filter(([_, qty]) => qty < 0).length} stocks
+                                        {Object.values(portfolio.sharesBought).filter(st => st.totalSharesBought < 0).length} stocks
                                     </Typography>
                                 </Card>
                             </Grid>
@@ -143,17 +137,17 @@ export function PortfolioDetails({portfolio}: Readonly<{ portfolio: UserPortfoli
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {Object.entries(portfolio.shareHoldings)
-                                    .sort((a, b) => b[1] - a[1])
-                                    .map(([symbol, qty]) => (
+                                {Object.values(portfolio.shareHoldings)
+                                    .sort((a, b) => b.totalSharesOwned - a.totalSharesOwned)
+                                    .map(sh => (
                                         <TableRow
-                                            key={symbol}
+                                            key={sh.stockName}
                                             sx={{'&:nth-of-type(odd)': {bgcolor: 'rgba(0, 0, 0, 0.02)'}}}
                                         >
-                                            <TableCell sx={{fontWeight: 500}}>{symbol}</TableCell>
-                                            <TableCell align="right">{qty.toLocaleString()}</TableCell>
+                                            <TableCell sx={{fontWeight: 500}}>{sh.stockName}</TableCell>
+                                            <TableCell align="right">{sh.totalSharesOwned.toLocaleString()}</TableCell>
                                             <TableCell align="right">
-                                                {formatEuro(stockValues.find(stock => stock.symbol === symbol)?.estimatedValue ?? 0)}
+                                                {formatEuro(sh.price * sh.totalSharesOwned)}
                                             </TableCell>
                                         </TableRow>
                                     ))}
@@ -169,7 +163,7 @@ export function PortfolioDetails({portfolio}: Readonly<{ portfolio: UserPortfoli
                             Trading Activity
                             {hasActivity && (
                                 <Chip
-                                    label={Object.values(portfolio.sharesBought).filter(qty => qty !== 0).length}
+                                    label={Object.values(portfolio.sharesBought).filter(st => st.totalSharesBought !== 0).length}
                                     size="small"
                                     color="secondary"
                                     sx={{ml: 1, height: 20}}
@@ -190,17 +184,17 @@ export function PortfolioDetails({portfolio}: Readonly<{ portfolio: UserPortfoli
                                 </TableHead>
                                 <TableBody>
                                     {Object.entries(portfolio.sharesBought)
-                                        .filter(([_, qty]) => qty !== 0)
-                                        .sort((a, b) => Math.abs(b[1]) - Math.abs(a[1]))
-                                        .map(([symbol, qty]) => (
-                                            <TableRow key={symbol}>
-                                                <TableCell sx={{fontWeight: 500}}>{symbol}</TableCell>
+                                        .filter(([, st]) => st.totalSharesBought !== 0)
+                                        .sort((a, b) => Math.abs(b[1].totalSharesBought) - Math.abs(a[1].totalSharesBought))
+                                        .map(([, st]) => (
+                                            <TableRow key={st.stockName}>
+                                                <TableCell sx={{fontWeight: 500}}>{st.stockName}</TableCell>
                                                 <TableCell align="right">
                                                     <Chip
-                                                        label={qty > 0 ? 'BUY' : 'SELL'}
+                                                        label={st.totalSharesBought > 0 ? 'BUY' : 'SELL'}
                                                         size="small"
                                                         sx={{
-                                                            bgcolor: qty > 0 ? 'success.main' : 'error.main',
+                                                            bgcolor: st.totalSharesBought > 0 ? 'success.main' : 'error.main',
                                                             color: 'white',
                                                             fontWeight: 'bold',
                                                             minWidth: '60px'
@@ -208,13 +202,13 @@ export function PortfolioDetails({portfolio}: Readonly<{ portfolio: UserPortfoli
                                                     />
                                                 </TableCell>
                                                 <TableCell align="right">
-                                                    <Tooltip title={qty > 0 ? "Bought" : "Sold"}>
+                                                    <Tooltip title={st.totalSharesBought > 0 ? "Bought" : "Sold"}>
                                                         <Typography
                                                             variant="body2"
                                                             fontWeight="medium"
-                                                            sx={{color: qty > 0 ? 'success.dark' : 'error.dark'}}
+                                                            sx={{color: st.totalSharesBought > 0 ? 'success.dark' : 'error.dark'}}
                                                         >
-                                                            {Math.abs(qty).toLocaleString()}
+                                                            {Math.abs(st.totalSharesBought).toLocaleString()}
                                                         </Typography>
                                                     </Tooltip>
                                                 </TableCell>

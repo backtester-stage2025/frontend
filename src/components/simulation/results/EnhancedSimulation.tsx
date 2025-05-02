@@ -29,22 +29,20 @@ export function EnhancedSimulation() {
                 setResult(data);
                 setIsDialogOpen(false);
 
-                if (data && data.length > 0) {
+                if (data?.length) {
                     const firstDate = new Date(data[0].date);
                     const lastDate = new Date(data[data.length - 1].date);
+                    const firstPortfolioWithShares = data.find(
+                        portfolio => Object.keys(portfolio.sharesBought).length > 0
+                    );
 
-                    let stockName = "";
-                    for (const portfolio of data) {
-                        const boughtShares = Object.keys(portfolio.sharesBought);
-                        if (boughtShares.length > 0) {
-                            stockName = boughtShares[0];
-                            break;
-                        }
-                    }
+                    const stockName = firstPortfolioWithShares
+                        ? Object.values(firstPortfolioWithShares.sharesBought)[0].stockName
+                        : undefined;
 
                     if (stockName) {
                         const reportRequest: StockReportRequest = {
-                            stockName: stockName,
+                            stockName,
                             startCapital: data[0].totalPortfolioValue,
                             startDate: firstDate,
                             endDate: lastDate
@@ -95,26 +93,26 @@ export function EnhancedSimulation() {
                     </Box>
 
                     {/* Portfolio Results Tab */}
-                {tabValue === 0 && (
-                    <Box>
-                        {isRunning ? (
-                            <Loader/>
-                        ) : (
-                            <>
-                                {result && (
-                                    <>
-                                        <ProfitChart portfolioData={result}/>
+                    {tabValue === 0 && (
+                        <Box>
+                            {isRunning ? (
+                                <Loader/>
+                            ) : (
+                                <>
+                                    {result && (
+                                        <>
+                                            <ProfitChart portfolioData={result}/>
 
-                                        <TransactionHistory portfolioData={result}
-                                                            showOnlyTradesDays={showOnlyTradesDays}
-                                                            onToggleFilter={handleToggleFilter}
-                                        />
-                                    </>
-                                )}
-                            </>
-                        )}
-                    </Box>
-                )}
+                                            <TransactionHistory portfolioData={result}
+                                                                showOnlyTradesDays={showOnlyTradesDays}
+                                                                onToggleFilter={handleToggleFilter}
+                                            />
+                                        </>
+                                    )}
+                                </>
+                            )}
+                        </Box>
+                    )}
 
                     {/* Stock Metrics Tab */}
                     {tabValue === 1 && (

@@ -24,8 +24,6 @@ export async function getStockQuotes(stockName: string): Promise<StockQuote[]> {
 }
 
 export async function simulateBuyAndSellRisk(request: SimulationRequest): Promise<UserPortfolio[]> {
-    console.log("Stock name 1: ", request.stockName)
-
     const payload = {
         ...request,
         startDate: formatDateToLocalDateString(request.startDate),
@@ -50,7 +48,6 @@ async function safeApiCall<T>(apiCall: () => Promise<T>): Promise<T> {
 }
 
 export async function getSimulationReport(request: StockReportRequest): Promise<SimulationReport> {
-    console.log("Stock name 2: ", request.stockName)
     const payload = {
         ...request,
         startDate: formatDateToLocalDateString(request.startDate),
