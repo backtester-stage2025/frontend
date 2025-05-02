@@ -81,7 +81,7 @@ export function SimulationDialog({
     const {control, handleSubmit, formState: {errors}} = useForm<SimulationRequest>({
         resolver: zodResolver(simulationRequestSchema),
         defaultValues: {
-            csvFileName: '',
+            stockName: '',
             startDate: new Date(),
             endDate: new Date(),
             startCapital: 10000,
