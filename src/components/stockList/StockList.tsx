@@ -1,12 +1,12 @@
 import {useStockData} from "../../hooks/useStockData.ts";
-import {Box, TextField, Typography} from "@mui/material";
+import {Alert, Box, TextField, Typography} from "@mui/material";
 import {useState} from "react";
 import {Loader} from "../util/Loader.tsx";
 import {StockCard} from "./StockCard.tsx";
 import {StockDetails} from "../../model/StockDetails.ts";
 
 export function StockList() {
-    const {isLoading, isError, stockData} = useStockData();
+    const {isLoading, isError, stockData, error} = useStockData();
     const [searchTerm, setSearchTerm] = useState("");
 
     if (isLoading) {
@@ -14,7 +14,11 @@ export function StockList() {
     }
 
     if (isError) {
-        return <div>Error</div>;
+        return (
+            <Alert severity="error" sx={{mt: 2, width: "100%"}}>
+                Error loading stock list: {error?.message}
+            </Alert>
+        )
     }
 
     const filteredStocks = stockData?.filter((stock: StockDetails) => {
