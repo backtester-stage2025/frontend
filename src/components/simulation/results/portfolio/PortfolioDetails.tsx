@@ -185,10 +185,10 @@ export function PortfolioDetails({portfolio}: Readonly<{ portfolio: UserPortfoli
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                    {Object.entries(portfolio.sharesBought)
-                                        .filter(([, st]) => st.totalSharesBought !== 0)
-                                        .sort((a, b) => Math.abs(b[1].totalSharesBought) - Math.abs(a[1].totalSharesBought))
-                                        .map(([, st]) => (
+                                    {Object.values(portfolio.sharesBought)
+                                        .filter(st => st.totalSharesBought !== 0)
+                                        .sort((a, b) => Math.abs(b.totalSharesBought) - Math.abs(a.totalSharesBought))
+                                        .map(st => (
                                             <TableRow key={st.stockName}>
                                                 <TableCell sx={{fontWeight: 500}}>{st.stockName}</TableCell>
                                                 <TableCell align="right">

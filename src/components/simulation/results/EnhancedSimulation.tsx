@@ -7,9 +7,9 @@ import {UserPortfolio} from "../../../model/simulation/UserPortfolio.ts";
 import {useBuyAndSellRisk} from "../../../hooks/useBuyAndSellRisk.ts";
 import {SimulationRequest} from "../../../model/request/SimulationRequest.ts";
 import {SimulationDialog} from "../form/SimulationDialog.tsx";
-import {ProfitChart} from "./portfolio/ProfitChart.tsx";
+import {ProfitChart} from "./charts/ProfitChart.tsx";
 import {TransactionHistory} from "./portfolio/TransactionHistory.tsx";
-import {StockHoldingChart} from "./portfolio/StockHoldingChart.tsx";
+import {StockHoldingChart} from "./charts/StockHoldingChart.tsx";
 import {StockMetricsContent} from "./metrics/StockMetricsContent.tsx";
 
 export function EnhancedSimulation() {
