@@ -17,8 +17,14 @@ export function StockList() {
         return <div>Error</div>;
     }
 
-    const filteredStocks = stockData?.filter((stock: StockDetails) =>
-        stock.officialName.toLowerCase().includes(searchTerm.toLowerCase())
+    const filteredStocks = stockData?.filter((stock: StockDetails) => {
+        const term = searchTerm.toLowerCase();
+        const officialName = stock.officialName.toLowerCase();
+        const companyName = stock.companyName.toLowerCase();
+        const companyKey = companyName + ":" + officialName;
+        return companyKey.includes(term);
+    }
+
     ) || [];
 
     const visibleStocks = filteredStocks.slice(0, 5);
