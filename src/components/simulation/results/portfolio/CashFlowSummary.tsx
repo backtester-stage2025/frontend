@@ -1,11 +1,13 @@
 import {Box, Grid, Typography} from "@mui/material";
+import {formatEuro} from "../../../../services/formatService.ts";
 
 interface CashFlowSummaryProps {
     totalBought: number;
     totalSold: number;
+    totalTransactionFees: number;
 }
 
-export function CashFlowSummary({totalBought, totalSold}: Readonly<CashFlowSummaryProps>) {
+export function CashFlowSummary({totalBought, totalSold, totalTransactionFees}: Readonly<CashFlowSummaryProps>) {
     return (
         <Box sx={{
             mt: 2,
@@ -22,10 +24,12 @@ export function CashFlowSummary({totalBought, totalSold}: Readonly<CashFlowSumma
                 <Grid size={{xs: 6}}>
                     <Typography variant="body2" color="text.secondary">Total Buys:</Typography>
                     <Typography variant="body2" color="text.secondary">Total Sells:</Typography>
+                    <Typography variant="body2" color="text.secondary">Transaction Fees:</Typography>
                 </Grid>
                 <Grid size={{xs: 6}} sx={{textAlign: 'right'}}>
                     <Typography variant="body2" color="success.main">{totalBought} shares</Typography>
                     <Typography variant="body2" color="error.main">{totalSold} shares</Typography>
+                    <Typography variant="body2" color="warning.main">{formatEuro(totalTransactionFees)}</Typography>
                 </Grid>
             </Grid>
         </Box>
