@@ -1,11 +1,11 @@
 import {Control, Controller, FieldErrors} from "react-hook-form";
 import {SimulationRequest} from "../../../model/request/SimulationRequest.ts";
-import {TextField} from "@mui/material";
+import {Autocomplete, TextField} from "@mui/material";
 import {FormCheckbox, FormDatePicker, FormDropdown} from "./FormField.tsx";
 
 export interface FormField {
     name: string;
-    type: "text" | "number" | "date" | "select" | "checkbox";
+    type: "text" | "number" | "date" | "select" | "checkbox" | "autocomplete";
     placeholder: string;
     required: boolean;
     options?: string[];
@@ -54,6 +54,35 @@ export function FieldController({control, errors, field}: Readonly<FieldControll
                         error={error}
                         helperText={helperText}
                     />
+                }
+
+                if (field.type === "autocomplete") {
+                    return (
+                        <Autocomplete
+                            options={field.options || []}
+                            value={controllerField.value !== null && controllerField.value !== undefined
+                                ? String(controllerField.value)
+                                : null
+                            }
+                            onChange={(_, newValue) => {
+                                // Extract the broker name before the fee information if present
+                                const value = newValue?.includes('(')
+                                    ? newValue.substring(0, newValue.indexOf('(')).trim()
+                                    : newValue;
+                                controllerField.onChange(value);
+                            }}
+                            renderInput={(params) => (
+                                <TextField
+                                    {...params}
+                                    label={field.placeholder}
+                                    required={field.required}
+                                    error={error}
+                                    helperText={helperText}
+                                    fullWidth
+                                />
+                            )}
+                        />
+                    );
                 }
 
                 return (

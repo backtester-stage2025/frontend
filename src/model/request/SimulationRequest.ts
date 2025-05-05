@@ -1,6 +1,7 @@
 import {SimulationTypes} from "./SimulationTypes.ts";
 
 export interface SimulationRequest {
+    broker: string;
     stockName: string;
     startDate: Date;
     endDate: Date;

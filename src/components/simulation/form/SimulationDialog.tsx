@@ -3,7 +3,7 @@ import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {LocalizationProvider} from "@mui/x-date-pickers/LocalizationProvider";
 import {AdapterDateFns} from "@mui/x-date-pickers/AdapterDateFns";
-import {Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle,} from "@mui/material";
+import {Alert, Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle,} from "@mui/material";
 import {enGB} from "date-fns/locale";
 import {useStockData} from "../../../hooks/useStockData.ts";
 import {FieldController, FormField} from "./FormController.tsx";
@@ -12,6 +12,9 @@ import {useEffect, useState} from "react";
 import {ErrorOverlay} from "./ErrorOverlay.tsx";
 import {simulationRequestSchema} from "./SimulationRequestSchema.ts";
 import {CloseButton} from "../../util/CloseButton.tsx";
+import {useBrokers} from "../../../hooks/useBrokers.ts";
+import {Loader} from "../../util/Loader.tsx";
+import {Broker} from "../../../model/Broker.ts";
 
 interface BuyAndHoldSimulationProps {
     isOpen: boolean
@@ -29,14 +32,46 @@ export function SimulationDialog({
                                      serverError
                                  }: Readonly<BuyAndHoldSimulationProps>) {
     const {stockData} = useStockData();
+    const {isLoading: isLoadingBrokers, isError: isErrorLoadingBrokers, brokers} = useBrokers();
     const [showErrorOverlay, setShowErrorOverlay] = useState(isServerError);
     const [movingAverage, setMovingAverage] = useState<boolean>(true);
     useEffect(() => {
         setShowErrorOverlay(isServerError);
     }, [isServerError]);
 
+    const {control, handleSubmit, formState: {errors}} = useForm<SimulationRequest>({
+        resolver: zodResolver(simulationRequestSchema),
+        defaultValues: {
+            broker: '',
+            stockName: '',
+            startDate: new Date(),
+            endDate: new Date(),
+            startCapital: 10000,
+            simulationType: SimulationTypes.RISK_BASED,
+            riskTolerance: 20,
+            useMovingAverageCrossover: true,
+            movingAverageShortDays: 10,
+            movingAverageLongDays: 20
+        }
+    })
+
+    if (isLoadingBrokers) {
+        return <Loader/>
+    }
+    if (isErrorLoadingBrokers) {
+        return (
+            <Alert severity="error" sx={{mt: 2, width: "100%"}}>
+                Error loading brokers
+            </Alert>
+        );
+    }
+
     const fields: FormField[] = [
-        {name: "stockName", type: "select", placeholder: "Stock Name", required: true, options: stockData},
+        {
+            name: "broker", type: "autocomplete", placeholder: "Broker", required: true,
+            options: brokers?.map((b: Broker) => `${b.name} (Fee: ${b.transactionFee.toFixed(2)}€)`)
+        },
+        {name: "stockName", type: "autocomplete", placeholder: "Stock Name", required: true, options: stockData},
         {name: "startDate", type: "date", placeholder: "Start Date", required: true},
         {name: "endDate", type: "date", placeholder: "End Date", required: true},
         {name: "startCapital", type: "number", placeholder: "Start Capital", required: true},
@@ -71,21 +106,6 @@ export function SimulationDialog({
         },
 
     ];
-
-    const {control, handleSubmit, formState: {errors}} = useForm<SimulationRequest>({
-        resolver: zodResolver(simulationRequestSchema),
-        defaultValues: {
-            stockName: '',
-            startDate: new Date(),
-            endDate: new Date(),
-            startCapital: 10000,
-            simulationType: SimulationTypes.RISK_BASED,
-            riskTolerance: 20,
-            useMovingAverageCrossover: true,
-            movingAverageShortDays: 10,
-            movingAverageLongDays: 20
-        }
-    })
 
     return (
         <Dialog open={isOpen} onClose={onClose}>
