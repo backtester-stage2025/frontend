@@ -4,6 +4,7 @@ import {Metric, MetricProps} from "./Metric.tsx";
 export interface MetricGroupProps {
     title: string;
     properties: MetricProps[];
+    color?: string;
 }
 
 export function MetricGroup({title, properties}: Readonly<MetricGroupProps>) {
