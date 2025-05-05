@@ -8,29 +8,41 @@ export function StockMetricsView({stockMetrics}: Readonly<{ stockMetrics: StockM
         {
             title: "Returns",
             properties: [
-                {name: "Daily Return (Avg)", value: formatPercent(stockMetrics.averageDailyReturn)},
-                {name: "Annual Return (Avg)", value: formatPercent(stockMetrics.averageAnnualReturn)}
-            ]
+                {
+                    name: "Daily Return (Avg)",
+                    value: formatPercent(stockMetrics.averageDailyReturn),
+                    isPositive: stockMetrics.averageDailyReturn >= 0
+                },
+                {
+                    name: "Annual Return (Avg)",
+                    value: formatPercent(stockMetrics.averageAnnualReturn),
+                    isPositive: stockMetrics.averageAnnualReturn >= 0
+                }
+            ],
+            color: "success.main"
         },
         {
             title: "Risk",
             properties: [
                 {name: "Daily Risk", value: formatPercent(stockMetrics.dailyRisk)},
                 {name: "Annual Risk", value: formatPercent(stockMetrics.annualRisk)}
-            ]
+            ],
+            color: "warning.main"
         },
         {
             title: "Drawdowns",
             properties: [
                 {name: "Average Drawdown", value: formatPercent(stockMetrics.averageDrawdownPercentage)},
                 {name: "Maximum Drawdown", value: formatPercent(stockMetrics.maxDrawdownPercentage)}
-            ]
+            ],
+            color: "error.main"
         },
         {
             title: "Distribution",
             properties: [
-                {name: "Skewness", value: stockMetrics.skewness.toFixed(2)}
-            ]
+                {name: "Skewness", value: stockMetrics.skewness.toFixed(2), isPositive: stockMetrics.skewness > 0}
+            ],
+            color: "info.main"
         }
     ]
     return (
@@ -39,7 +51,9 @@ export function StockMetricsView({stockMetrics}: Readonly<{ stockMetrics: StockM
                 <Typography variant="h6" fontWeight="500">Stock Metrics</Typography>
             </Box>
             <Grid container spacing={2}>
-                {details.map(MetricGroup)}
+                {details.map(group =>
+                    <MetricGroup {...group} key={group.title}/>
+                )}
             </Grid>
         </Grid>
     )
