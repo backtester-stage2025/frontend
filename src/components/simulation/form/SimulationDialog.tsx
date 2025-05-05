@@ -42,7 +42,7 @@ export function SimulationDialog({
     const {control, handleSubmit, formState: {errors}} = useForm<SimulationRequest>({
         resolver: zodResolver(simulationRequestSchema),
         defaultValues: {
-            broker: '',
+            brokerName: '',
             stockName: '',
             startDate: new Date(),
             endDate: new Date(),
@@ -68,7 +68,7 @@ export function SimulationDialog({
 
     const fields: FormField[] = [
         {
-            name: "broker", type: "autocomplete", placeholder: "Broker", required: true,
+            name: "brokerName", type: "autocomplete", placeholder: "Broker", required: true,
             options: brokers?.map((b: Broker) => `${b.name} (Fee: ${b.transactionFee.toFixed(2)}€)`)
         },
         {name: "stockName", type: "autocomplete", placeholder: "Stock Name", required: true, options: stockData},
