@@ -6,6 +6,8 @@ import {UserPortfolio} from "../model/simulation/UserPortfolio.ts";
 import {StockReportRequest} from "../model/request/StockReportRequest.ts";
 import {SimulationReport} from "../model/simulation/SimulationReport.ts";
 import {StockDetails} from "../model/StockDetails.ts";
+import {StockReportRequest} from "../model/request/StockReportRequest.ts";
+import {SimulationReport} from "../model/simulation/SimulationReport.ts";
 
 export async function getStockDetails(): Promise<StockDetails[]> {
     return safeApiCall(async () => {
