@@ -37,9 +37,9 @@ export function SimulationDialog({
 
     const fields: FormField[] = [
         {
-            name: "csvFileName",
+            name: "stockName",
             type: "select",
-            placeholder: "CSV file name",
+            placeholder: "Stock Name",
             required: true,
             options: stockData?.map((details)=> details.companyName)
         },
@@ -94,8 +94,21 @@ export function SimulationDialog({
     })
 
     const onSubmitHandler = (data: SimulationRequest) => {
-        console.log(data)
-        onSubmit(data);
+        const officialStockName = stockData?.find(
+            stockDetails=> stockDetails.companyName === data.stockName
+        )?.officialName;
+
+        if(!officialStockName) {
+            console.error("Could not find matching stock")
+            return;
+        }
+
+        const result = {
+            ...data,
+            stockName: officialStockName,
+        }
+        console.log(result)
+        onSubmit(result);
     }
 
     return (
