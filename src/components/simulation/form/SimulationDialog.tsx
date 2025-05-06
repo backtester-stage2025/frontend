@@ -37,9 +37,9 @@ export function SimulationDialog({
 
     const fields: FormField[] = [
         {
-            name: "csvFileName",
+            name: "stockName",
             type: "select",
-            placeholder: "CSV file name",
+            placeholder: "Stock Name",
             required: true,
             options: stockData?.map((details)=> details.companyName)
         },
