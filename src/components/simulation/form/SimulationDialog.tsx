@@ -29,7 +29,14 @@ export function SimulationDialog({
                                      serverError
                                  }: Readonly<BuyAndHoldSimulationProps>) {
     const {stockData} = useStockData();
-    const [showErrorOverlay, setShowErrorOverlay] = useState(isServerError);
+    const [error, setError] = useState<Error | null>(serverError ?? null);
+    const [showErrorOverlay, setShowErrorOverlay] = useState<boolean>(!!serverError);
+
+    useEffect(() => {
+        setError(serverError ?? null);
+        setShowErrorOverlay(!!serverError);
+    }, [serverError]);
+
     const [movingAverage, setMovingAverage] = useState<boolean>(true);
     useEffect(() => {
         setShowErrorOverlay(isServerError);
@@ -92,24 +99,39 @@ export function SimulationDialog({
             movingAverageLongDays: 20
         }
     })
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
+    const showSubmitError = (error: string)=>  {
+        setError(Error(error))
+        setShowErrorOverlay(true)
+        console.error(error)
+        setIsSubmitting(false);
+    }
 
     const onSubmitHandler = (data: SimulationRequest) => {
-        const officialStockName = stockData?.find(
-            stockDetails=> stockDetails.companyName === data.stockName
+        setIsSubmitting(true);
+        if (!stockData || stockData.length === 0) {
+            showSubmitError("Stock data is not available.")
+            return;
+        }
+
+        const officialStockName = stockData.find(
+            stockDetails => stockDetails.companyName === data.stockName
         )?.officialName;
 
-        if(!officialStockName) {
-            console.error("Could not find matching stock")
+        if (!officialStockName) {
+            showSubmitError(`Could not find a matching stock for "${data.stockName}".`)
             return;
         }
 
         const result = {
             ...data,
             stockName: officialStockName,
-        }
-        console.log(result)
+        };
+
         onSubmit(result);
-    }
+        setIsSubmitting(false);
+    };
 
     return (
         <Dialog open={isOpen} onClose={onClose}>
@@ -118,7 +140,7 @@ export function SimulationDialog({
                 <ErrorOverlay
                     isOpen={showErrorOverlay}
                     setIsOpen={setShowErrorOverlay}
-                    error={serverError}
+                    error={error}
                 />
 
                 <DialogTitle>Strategy Tester</DialogTitle>
@@ -143,8 +165,8 @@ export function SimulationDialog({
                 </DialogContent>
 
                 <DialogActions>
-                    <Button type="submit" variant="contained" color="primary">
-                        Simulate
+                    <Button type="submit" variant="contained" color="primary" disabled={isSubmitting}>
+                        {isSubmitting ? "Simulating..." : "Simulate"}
                     </Button>
                 </DialogActions>
             </form>
