@@ -1,14 +1,8 @@
-import {
-    Accordion,
-    AccordionDetails,
-    AccordionSummary,
-    Box,
-    Grid,
-    Typography
-} from "@mui/material";
+import {Accordion, AccordionDetails, AccordionSummary, Box, Grid, Typography} from "@mui/material";
 import {Loader} from "../../util/Loader.tsx";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import {UserPortfolio} from "../../../model/simulation/UserPortfolio.ts";
+
 interface ResultScreenProps {
     result: UserPortfolio[] | null;
     isRunning: boolean;
@@ -27,10 +21,10 @@ export function SimulationResults({result, isRunning}: Readonly<ResultScreenProp
 
 
     return (
-        <Box sx={{ mt: 4}}>
+        <Box sx={{mt: 4}}>
             {result.map((portfolio) => (
                 <Accordion key={portfolio.date} disableGutters>
-                    <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                    <AccordionSummary expandIcon={<ExpandMoreIcon/>}>
                         <Grid container spacing={2} alignItems="center" sx={{width: "100%"}}>
                             <Grid size={{xs: 4}}>
                                 <Typography variant="subtitle1">
@@ -50,13 +44,13 @@ export function SimulationResults({result, isRunning}: Readonly<ResultScreenProp
                         </Grid>
                     </AccordionSummary>
 
-                    <AccordionDetails sx={{ bgcolor: '#fafafa' }}>
+                    <AccordionDetails sx={{bgcolor: '#fafafa'}}>
                         <Grid container spacing={2} sx={{width: "100%"}}>
                             <Grid size={{xs: 12, md: 6}}>
                                 <Typography variant="subtitle2" gutterBottom>
                                     Share Holdings
                                 </Typography>
-                                <Box sx={{ pl: 2 }}>
+                                <Box sx={{pl: 2}}>
                                     {Object.entries(portfolio.shareHoldings).map(
                                         ([symbol, qty]) => (
                                             <Typography key={symbol} variant="body2">
@@ -71,7 +65,7 @@ export function SimulationResults({result, isRunning}: Readonly<ResultScreenProp
                                 <Typography variant="subtitle2" gutterBottom>
                                     Shares Bought
                                 </Typography>
-                                <Box sx={{ pl: 2 }}>
+                                <Box sx={{pl: 2}}>
                                     {Object.entries(portfolio.sharesBought).map(
                                         ([symbol, qty]) => (
                                             <Typography key={symbol} variant="body2">

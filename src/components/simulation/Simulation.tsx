@@ -10,7 +10,7 @@ import {UserPortfolio} from "../../model/simulation/UserPortfolio.ts";
 export function Simulation() {
     const [isDialogOpen, setIsDialogOpen] = useState<boolean>(true);
     const [result, setResult] = useState<UserPortfolio[] | null>(null);
-    const { sendRequest, isRunning, isError, error } = useBuyAndSellRisk()
+    const {sendRequest, isRunning, isError, error} = useBuyAndSellRisk()
 
     const sendAndProcessRequest = (request: SimulationRequest) => {
         sendRequest(request, {
@@ -31,7 +31,7 @@ export function Simulation() {
                 serverError={error}
             />
             <Button
-                onClick={()=>setIsDialogOpen(true)}
+                onClick={() => setIsDialogOpen(true)}
                 variant="contained"
                 sx={{
                     m: 3

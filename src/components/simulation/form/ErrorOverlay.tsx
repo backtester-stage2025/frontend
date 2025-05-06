@@ -7,7 +7,7 @@ interface ErrorOverlayProps {
     setIsOpen: (isOpen: boolean) => void
 }
 
-export function ErrorOverlay({isOpen, error, setIsOpen}: Readonly<ErrorOverlayProps>){
+export function ErrorOverlay({isOpen, error, setIsOpen}: Readonly<ErrorOverlayProps>) {
     if (!isOpen) return null;
 
     return (
@@ -37,8 +37,10 @@ export function ErrorOverlay({isOpen, error, setIsOpen}: Readonly<ErrorOverlayPr
                     pointerEvents: 'auto', // clickable
                 }}
             >
-                <CloseButton onClose={() => {setIsOpen(false)}} color="#D00"/>
-                <Typography color="error" variant="h6" sx={{ pr: 4 }}>
+                <CloseButton onClose={() => {
+                    setIsOpen(false)
+                }} color="#D00"/>
+                <Typography color="error" variant="h6" sx={{pr: 4}}>
                     {error?.message}
                 </Typography>
             </Paper>
