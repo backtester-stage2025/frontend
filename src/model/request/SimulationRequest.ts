@@ -1,7 +1,7 @@
 import {SimulationTypes} from "./SimulationTypes.ts";
 
 export interface SimulationRequest {
-    csvFileName: string;
+    stockName: string;
     startDate: Date;
     endDate: Date;
     startCapital: number;

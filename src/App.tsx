@@ -2,7 +2,7 @@ import './App.css'
 import axios from "axios";
 import {QueryClient, QueryClientProvider} from "@tanstack/react-query";
 import {BrowserRouter, Route, Routes} from "react-router-dom";
-import {StockList} from "./components/StockList.tsx";
+import {StockList} from "./components/stockList/StockList.tsx";
 import {useState} from "react";
 import {Header} from "./components/Header.tsx";
 import {Navigation} from "./components/Navigation.tsx"
