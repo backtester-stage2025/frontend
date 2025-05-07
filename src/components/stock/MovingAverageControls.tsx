@@ -1,5 +1,5 @@
 import {ChangeEvent, useEffect, useState} from 'react';
-import {Box, Button, Grid, TextField, Typography} from '@mui/material';
+import {Box, Button, Grid, InputAdornment, TextField, Typography} from '@mui/material';
 
 export const MIN_SHORT_PERIOD = 5;
 export const MAX_SHORT_PERIOD = 100;
@@ -109,7 +109,12 @@ export function MovingAverageControls({
                         value={inputPeriods.shortPeriod === 0 ? '' : inputPeriods.shortPeriod}
                         onChange={handleShortPeriodChange}
                         slotProps={{
-                            htmlInput: {min: MIN_SHORT_PERIOD, max: MAX_SHORT_PERIOD}
+                            htmlInput: {min: MIN_SHORT_PERIOD, max: MAX_SHORT_PERIOD},
+                            input: {
+                                endAdornment: (
+                                    <InputAdornment position="end">days</InputAdornment>
+                                ),
+                            }
                         }}
                         error={!!inputErrors.shortPeriod}
                         fullWidth
@@ -131,7 +136,12 @@ export function MovingAverageControls({
                         value={inputPeriods.longPeriod === 0 ? '' : inputPeriods.longPeriod}
                         onChange={handleLongPeriodChange}
                         slotProps={{
-                            htmlInput: {min: MIN_LONG_PERIOD, max: MAX_LONG_PERIOD}
+                            htmlInput: {min: MIN_LONG_PERIOD, max: MAX_LONG_PERIOD},
+                            input: {
+                                endAdornment: (
+                                    <InputAdornment position="end">days</InputAdornment>
+                                ),
+                            }
                         }}
                         error={!!inputErrors.longPeriod}
                         fullWidth
