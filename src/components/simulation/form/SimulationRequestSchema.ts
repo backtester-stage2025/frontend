@@ -29,20 +29,41 @@ export const simulationRequestSchema = z.object({
         path: ["endDate"],
         message: "End Date must be after Start Date",
     })
-    .refine((data) =>
-        data.indicators.every((ind) => {
+    .superRefine((data, ctx) => {
+        data.indicators.forEach((ind, idx) => {
             if (ind.indicator === Indicator.MOVING_AVERAGE_CROSSOVER) {
-                return (
+                if (ind.movingAverageShortDays === undefined) {
+                    ctx.addIssue({
+                        path: ["indicators", idx, "movingAverageShortDays"],
+                        message: "Short MA days required for crossover",
+                        code: z.ZodIssueCode.custom,
+                    });
+                }
+                if (ind.movingAverageLongDays === undefined) {
+                    ctx.addIssue({
+                        path: ["indicators", idx, "movingAverageLongDays"],
+                        message: "Long MA days required for crossover",
+                        code: z.ZodIssueCode.custom,
+                    });
+                }
+                if (
                     ind.movingAverageShortDays !== undefined &&
                     ind.movingAverageLongDays !== undefined &&
-                    ind.movingAverageShortDays < ind.movingAverageLongDays
-                );
+                    ind.movingAverageShortDays >= ind.movingAverageLongDays
+                ) {
+                    ctx.addIssue({
+                        path: ["indicators", idx, "movingAverageLongDays"],
+                        message: "Long MA must be greater than Short MA",
+                        code: z.ZodIssueCode.custom,
+                    });
+                }
             }
-            if (ind.indicator === Indicator.BREAKOUT) {
-                return ind.breakoutDays !== undefined;
+            if (ind.indicator === Indicator.BREAKOUT && ind.breakoutDays === undefined) {
+                ctx.addIssue({
+                    path: ["indicators", idx, "breakoutDays"],
+                    message: "Breakout days required for breakout indicator",
+                    code: z.ZodIssueCode.custom,
+                });
             }
-            return true;
-        }), {
-        message: "Invalid indicator configuration or Long MA must be greater than Short MA",
-        path: ["indicators"],
+        });
     });
