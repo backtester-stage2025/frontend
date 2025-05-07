@@ -1,4 +1,4 @@
-import {SimulationRequest} from "../../../model/request/SimulationRequest.ts";
+import {IndicatorDetails, SimulationRequest} from "../../../model/request/SimulationRequest.ts";
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {LocalizationProvider} from "@mui/x-date-pickers/LocalizationProvider";
@@ -26,6 +26,10 @@ interface BuyAndHoldSimulationProps {
     serverError: Error | null
 }
 
+interface LocalIndicatorDetails extends IndicatorDetails {
+    id: string;
+}
+
 export function SimulationDialog({
                                      isOpen,
                                      onSubmit,
@@ -37,13 +41,7 @@ export function SimulationDialog({
     const {isLoading: isLoadingBrokers, isError: isErrorLoadingBrokers, brokers} = useBrokers();
     const [error, setError] = useState<Error | null>(serverError ?? null);
     const [showErrorOverlay, setShowErrorOverlay] = useState<boolean>(!!serverError);
-    const [indicators, setIndicators] = useState<{
-        id: string;
-        indicator: Indicator;
-        movingAverageShortDays?: number;
-        movingAverageLongDays?: number;
-        breakoutDays?: number
-    }[]>([]);
+    const [indicators, setIndicators] = useState<LocalIndicatorDetails[]>([]);
 
     useEffect(() => {
         setError(serverError ?? null);
@@ -55,7 +53,7 @@ export function SimulationDialog({
         setShowErrorOverlay(isServerError);
     }, [isServerError]);
 
-    const {control, handleSubmit, formState: {errors}} = useForm<SimulationRequest>({
+    const { control, handleSubmit, formState: { errors }} = useForm<SimulationRequest>({
         resolver: zodResolver(simulationRequestSchema),
         defaultValues: {
             brokerName: '',
@@ -137,7 +135,7 @@ export function SimulationDialog({
                 movingAverageShortDays: 0,
                 movingAverageLongDays: 0,
                 breakoutDays: 0
-            }
+            },
         ]);
     };
 
@@ -146,9 +144,11 @@ export function SimulationDialog({
     };
 
     const updateIndicator = (id: string, field: string, value: Indicator | number | undefined) => {
-        setIndicators(indicators.map((indicator) =>
-            indicator.id === id ? {...indicator, [field]: value} : indicator
-        ));
+        setIndicators(
+            indicators.map((indicator) =>
+                indicator.id === id ? { ...indicator, [field]: value } : indicator
+            )
+        );
     };
 
     const showSubmitError = (error: string) => {
@@ -174,10 +174,13 @@ export function SimulationDialog({
             return;
         }
 
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const sanitizedIndicators = indicators.map(({ id, ...rest }) => ({ ...rest }));
+
         const result = {
             ...data,
             stockName: officialStockName,
-            indicators,
+            indicators: sanitizedIndicators,
         };
 
         onSubmit(result);
