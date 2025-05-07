@@ -34,7 +34,6 @@ export function SimulationDialog({
                                      isOpen,
                                      onSubmit,
                                      onClose,
-                                     isServerError,
                                      serverError
                                  }: Readonly<BuyAndHoldSimulationProps>) {
     const {stockData} = useStockData();
@@ -48,12 +47,7 @@ export function SimulationDialog({
         setShowErrorOverlay(!!serverError);
     }, [serverError]);
 
-    const [movingAverage, setMovingAverage] = useState<boolean>(true);
-    useEffect(() => {
-        setShowErrorOverlay(isServerError);
-    }, [isServerError]);
-
-    const { control, handleSubmit, formState: { errors }} = useForm<SimulationRequest>({
+    const {control, handleSubmit, formState: {errors}} = useForm<SimulationRequest>({
         resolver: zodResolver(simulationRequestSchema),
         defaultValues: {
             brokerName: '',
@@ -101,29 +95,7 @@ export function SimulationDialog({
             placeholder: "Simulation Type",
             required: true,
             options: simulationTypeOptions
-        },
-        {
-            name: "useMovingAverageCrossover",
-            type: "checkbox",
-            placeholder: "Use moving average crossover",
-            required: false,
-            checkBoxToggle: setMovingAverage
-        },
-        {
-            name: "movingAverageShortDays",
-            type: "number",
-            placeholder: "Moving average (Short)",
-            required: false,
-            shouldRender: movingAverage
-        },
-        {
-            name: "movingAverageLongDays",
-            type: "number",
-            placeholder: "Moving average (Long)",
-            required: false,
-            shouldRender: movingAverage
-        },
-
+        }
     ];
 
     const addIndicator = () => {
@@ -146,7 +118,7 @@ export function SimulationDialog({
     const updateIndicator = (id: string, field: string, value: Indicator | number | undefined) => {
         setIndicators(
             indicators.map((indicator) =>
-                indicator.id === id ? { ...indicator, [field]: value } : indicator
+                indicator.id === id ? {...indicator, [field]: value} : indicator
             )
         );
     };
@@ -175,7 +147,7 @@ export function SimulationDialog({
         }
 
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const sanitizedIndicators = indicators.map(({ id, ...rest }) => ({ ...rest }));
+        const sanitizedIndicators = indicators.map(({id, ...rest}) => ({...rest}));
 
         const result = {
             ...data,
