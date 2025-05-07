@@ -14,7 +14,7 @@ export async function simulateBuyAndSellRisk(request: SimulationRequest): Promis
     };
 
     return safeApiCall(async () => {
-        const {data} = await axios.post(`/api/backtest/run-simulation`, payload);
+        const { data } = await axios.post(`/api/backtest/run-simulation`, payload);
         return data;
     });
 }

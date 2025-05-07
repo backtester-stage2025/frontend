@@ -1,30 +1,22 @@
-import {Button, IconButton, MenuItem, TextField} from "@mui/material";
-import {Delete} from "@mui/icons-material";
-import {Indicator} from "../../../model/request/Indicator.ts";
+import {Box, Button, IconButton, MenuItem, TextField} from "@mui/material";
+import {Add, Delete} from "@mui/icons-material";
+import {Indicator, indicatorOptions} from "../../../model/request/Indicator.ts";
 
 interface IndicatorFormProps {
-    indicators: {
-        id: string;
-        indicator: Indicator;
-        movingAverageShortDays?: number;
-        movingAverageLongDays?: number;
-        breakoutDays?: number;
-    }[];
+    indicators: { id: string; indicator: Indicator; movingAverageShortDays?: number; movingAverageLongDays?: number; breakoutDays?: number }[];
     addIndicator: () => void;
     removeIndicator: (id: string) => void;
-    updateIndicator: (id: string, key: string, value: Indicator | number | undefined) => void;
+    updateIndicator: (id: string, field: "indicator" | "movingAverageShortDays" | "movingAverageLongDays" | "breakoutDays", value: Indicator | number | undefined) => void;
 }
 
-export function IndicatorForm({
-                                  indicators,
-                                  addIndicator,
-                                  removeIndicator,
-                                  updateIndicator,
-                              }: Readonly<IndicatorFormProps>) {
+export function IndicatorForm({indicators, addIndicator, removeIndicator, updateIndicator}: Readonly<IndicatorFormProps>) {
     return (
-        <div>
+        <Box mt={3}>
+            <Button variant="contained" onClick={addIndicator} startIcon={<Add />}>
+                Add Indicator
+            </Button>
             {indicators.map((indicator) => (
-                <div key={indicator.id}>
+                <Box key={indicator.id} display="flex" alignItems="center" gap={2} mt={2}>
                     <TextField
                         select
                         label="Indicator Type"
@@ -32,9 +24,9 @@ export function IndicatorForm({
                         onChange={(e) => updateIndicator(indicator.id, "indicator", e.target.value as Indicator)}
                         fullWidth
                     >
-                        {Object.values(Indicator).map((option) => (
-                            <MenuItem key={option} value={option}>
-                                {option}
+                        {indicatorOptions.map((option) => (
+                            <MenuItem key={option.value} value={option.value}>
+                                {option.label}
                             </MenuItem>
                         ))}
                     </TextField>
@@ -72,13 +64,10 @@ export function IndicatorForm({
                         />
                     )}
                     <IconButton onClick={() => removeIndicator(indicator.id)} color="error">
-                        <Delete/>
+                        <Delete />
                     </IconButton>
-                </div>
+                </Box>
             ))}
-            <Button onClick={addIndicator} variant="contained" color="primary">
-                Add Indicator
-            </Button>
-        </div>
+        </Box>
     );
 }

@@ -1,9 +1,9 @@
-import {IndicatorDetails, SimulationRequest} from "../../../model/request/SimulationRequest.ts";
+import {SimulationRequest} from "../../../model/request/SimulationRequest.ts";
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {LocalizationProvider} from "@mui/x-date-pickers/LocalizationProvider";
 import {AdapterDateFns} from "@mui/x-date-pickers/AdapterDateFns";
-import {Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from "@mui/material";
+import {Alert, Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle,} from "@mui/material";
 import {enGB} from "date-fns/locale";
 import {useStockData} from "../../../hooks/useStockData.ts";
 import {FieldController, FormField} from "./FormController.tsx";
@@ -12,40 +12,53 @@ import {useEffect, useState} from "react";
 import {ErrorOverlay} from "./ErrorOverlay.tsx";
 import {simulationRequestSchema} from "./SimulationRequestSchema.ts";
 import {CloseButton} from "../../util/CloseButton.tsx";
+import {useBrokers} from "../../../hooks/useBrokers.ts";
+import {Loader} from "../../util/Loader.tsx";
+import {Broker} from "../../../model/Broker.ts";
 import {IndicatorForm} from "./IndicatorForm.tsx";
 import {Indicator} from "../../../model/request/Indicator.ts";
 
 interface BuyAndHoldSimulationProps {
-    isOpen: boolean;
-    onSubmit: (data: SimulationRequest) => void;
-    onClose: () => void;
-    isServerError: boolean;
-    serverError: Error | null;
-}
-
-interface LocalIndicatorDetails extends IndicatorDetails {
-    id: string;
+    isOpen: boolean
+    onSubmit: (data: SimulationRequest) => void
+    onClose: () => void
+    isServerError: boolean
+    serverError: Error | null
 }
 
 export function SimulationDialog({
                                      isOpen,
                                      onSubmit,
                                      onClose,
+                                     isServerError,
                                      serverError
                                  }: Readonly<BuyAndHoldSimulationProps>) {
     const {stockData} = useStockData();
+    const {isLoading: isLoadingBrokers, isError: isErrorLoadingBrokers, brokers} = useBrokers();
     const [error, setError] = useState<Error | null>(serverError ?? null);
     const [showErrorOverlay, setShowErrorOverlay] = useState<boolean>(!!serverError);
-    const [indicators, setIndicators] = useState<LocalIndicatorDetails[]>([]);
+    const [indicators, setIndicators] = useState<{
+        id: string;
+        indicator: Indicator;
+        movingAverageShortDays?: number;
+        movingAverageLongDays?: number;
+        breakoutDays?: number
+    }[]>([]);
 
     useEffect(() => {
         setError(serverError ?? null);
         setShowErrorOverlay(!!serverError);
     }, [serverError]);
 
-    const { control, handleSubmit, formState: { errors }} = useForm<SimulationRequest>({
+    const [movingAverage, setMovingAverage] = useState<boolean>(true);
+    useEffect(() => {
+        setShowErrorOverlay(isServerError);
+    }, [isServerError]);
+
+    const {control, handleSubmit, formState: {errors}} = useForm<SimulationRequest>({
         resolver: zodResolver(simulationRequestSchema),
         defaultValues: {
+            brokerName: '',
             stockName: '',
             startDate: new Date(),
             endDate: new Date(),
@@ -54,66 +67,28 @@ export function SimulationDialog({
             riskTolerance: 20,
             indicators: []
         }
-    });
+    })
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const addIndicator = () => {
-        setIndicators([
-            ...indicators,
-            {
-                id: Date.now().toString(),
-                indicator: Indicator.NONE,
-                movingAverageShortDays: 0,
-                movingAverageLongDays: 0,
-                breakoutDays: 0,
-            },
-        ]);
-    };
-
-    const removeIndicator = (id: string) => {
-        setIndicators(indicators.filter((indicator) => indicator.id !== id));
-    };
-
-    const updateIndicator = (id: string, field: string, value: Indicator | number | undefined) => {
-        setIndicators(
-            indicators.map((indicator) =>
-                indicator.id === id ? { ...indicator, [field]: value } : indicator
-            )
+    if (isLoadingBrokers) {
+        return <Loader/>
+    }
+    if (isErrorLoadingBrokers) {
+        return (
+            <Alert severity="error" sx={{mt: 2, width: "100%"}}>
+                Error loading brokers
+            </Alert>
         );
-    };
-
-    const onSubmitHandler = (data: SimulationRequest) => {
-        if (!stockData || stockData.length === 0) {
-            setError(Error("Stock data is not available."));
-            setShowErrorOverlay(true);
-            return;
-        }
-
-        const officialStockName = stockData.find(
-            stockDetails => stockDetails.companyName === data.stockName
-        )?.officialName;
-
-        if (!officialStockName) {
-            setError(Error(`Could not find a matching stock for "${data.stockName}".`));
-            setShowErrorOverlay(true);
-            return;
-        }
-
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const sanitizedIndicators = indicators.map(({ id, ...rest }) => ({ ...rest }));
-
-        const result = {
-            ...data,
-            stockName: officialStockName,
-            indicators: sanitizedIndicators,
-        };
-
-        onSubmit(result);
-    };
+    }
 
     const fields: FormField[] = [
         {
+            name: "brokerName", type: "autocomplete", placeholder: "Broker", required: true,
+            options: brokers?.map((b: Broker) => `${b.name} (Fee: ${b.transactionFee.toFixed(2)}€)`)
+        },
+        {
             name: "stockName",
-            type: "select",
+            type: "autocomplete",
             placeholder: "Stock Name",
             required: true,
             options: stockData?.map((details) => details.companyName)
@@ -128,8 +103,86 @@ export function SimulationDialog({
             placeholder: "Simulation Type",
             required: true,
             options: simulationTypeOptions
-        }
+        },
+        {
+            name: "useMovingAverageCrossover",
+            type: "checkbox",
+            placeholder: "Use moving average crossover",
+            required: false,
+            checkBoxToggle: setMovingAverage
+        },
+        {
+            name: "movingAverageShortDays",
+            type: "number",
+            placeholder: "Moving average (Short)",
+            required: false,
+            shouldRender: movingAverage
+        },
+        {
+            name: "movingAverageLongDays",
+            type: "number",
+            placeholder: "Moving average (Long)",
+            required: false,
+            shouldRender: movingAverage
+        },
+
     ];
+
+    const addIndicator = () => {
+        setIndicators([
+            ...indicators,
+            {
+                id: Date.now().toString(),
+                indicator: Indicator.NONE,
+                movingAverageShortDays: 0,
+                movingAverageLongDays: 0,
+                breakoutDays: 0
+            }
+        ]);
+    };
+
+    const removeIndicator = (id: string) => {
+        setIndicators(indicators.filter((indicator) => indicator.id !== id));
+    };
+
+    const updateIndicator = (id: string, field: string, value: Indicator | number | undefined) => {
+        setIndicators(indicators.map((indicator) =>
+            indicator.id === id ? {...indicator, [field]: value} : indicator
+        ));
+    };
+
+    const showSubmitError = (error: string) => {
+        setError(Error(error))
+        setShowErrorOverlay(true)
+        console.error(error)
+        setIsSubmitting(false);
+    }
+
+    const onSubmitHandler = (data: SimulationRequest) => {
+        setIsSubmitting(true);
+        if (!stockData || stockData.length === 0) {
+            showSubmitError("Stock data is not available.")
+            return;
+        }
+
+        const officialStockName = stockData.find(
+            stockDetails => stockDetails.companyName === data.stockName
+        )?.officialName;
+
+        if (!officialStockName) {
+            showSubmitError(`Could not find a matching stock for "${data.stockName}".`)
+            return;
+        }
+
+        const result = {
+            ...data,
+            stockName: officialStockName,
+            indicators,
+        };
+
+        onSubmit(result);
+        setIsSubmitting(false);
+    };
 
     return (
         <Dialog open={isOpen} onClose={onClose}>
@@ -143,7 +196,7 @@ export function SimulationDialog({
 
                 <DialogTitle>Strategy Tester</DialogTitle>
 
-                <DialogContent>
+                <DialogContent sx={{position: 'relative'}}>
                     <DialogContentText>
                         Fill in the form to test your strategy
                     </DialogContentText>
@@ -170,8 +223,8 @@ export function SimulationDialog({
                 </DialogContent>
 
                 <DialogActions>
-                    <Button type="submit" variant="contained" color="primary">
-                        Simulate
+                    <Button type="submit" variant="contained" color="primary" disabled={isSubmitting}>
+                        {isSubmitting ? "Simulating..." : "Simulate"}
                     </Button>
                 </DialogActions>
             </form>
