@@ -1,5 +1,5 @@
 import {SimulationRequest} from "../../../model/request/SimulationRequest.ts";
-import {useForm, useWatch} from "react-hook-form";
+import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {LocalizationProvider} from "@mui/x-date-pickers/LocalizationProvider";
 import {AdapterDateFns} from "@mui/x-date-pickers/AdapterDateFns";
@@ -7,17 +7,13 @@ import {Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, Di
 import {enGB} from "date-fns/locale";
 import {useStockData} from "../../../hooks/useStockData.ts";
 import {FieldController, FormField} from "./FormController.tsx";
-import {simulationTypeOptions, SimulationTypes} from "../../../model/request/SimulationTypes.ts";
+import {simulationTypeOptions} from "../../../model/request/SimulationTypes.ts";
 import {useEffect, useState} from "react";
 import {ErrorOverlay} from "./ErrorOverlay.tsx";
 import {simulationRequestSchema} from "./SimulationRequestSchema.ts";
 import {CloseButton} from "../../util/CloseButton.tsx";
-import {useBrokers} from "../../../hooks/useBrokers.ts";
-import {Loader} from "../../util/Loader.tsx";
-import {ErrorAlert} from "../../util/Alerts.tsx";
-
-import TradingIndicatorsSection from "./TradingIndicatorsSection";
-import {Broker} from "../../../model/Broker.ts";
+import {IndicatorForm} from "./IndicatorForm.tsx";
+import {Indicator} from "../../../model/request/Indicator.ts";
 
 interface BuyAndHoldSimulationProps {
     isOpen: boolean;
@@ -34,11 +30,15 @@ export function SimulationDialog({
                                      serverError
                                  }: Readonly<BuyAndHoldSimulationProps>) {
     const {stockData} = useStockData();
-    const {isLoading: isLoadingBrokers, isError: isErrorLoadingBrokers, brokers} = useBrokers();
-
     const [error, setError] = useState<Error | null>(serverError ?? null);
     const [showErrorOverlay, setShowErrorOverlay] = useState<boolean>(!!serverError);
-    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [indicators, setIndicators] = useState<{
+        id: string;
+        indicator: Indicator;
+        movingAverageShortDays?: number;
+        movingAverageLongDays?: number;
+        breakoutDays?: number
+    }[]>([]);
 
     useEffect(() => {
         setError(serverError ?? null);
@@ -48,7 +48,6 @@ export function SimulationDialog({
     const {control, handleSubmit, formState: {errors}} = useForm<SimulationRequest>({
         resolver: zodResolver(simulationRequestSchema),
         defaultValues: {
-            brokerName: '',
             stockName: '',
             startDate: new Date(),
             endDate: new Date(),
@@ -58,66 +57,97 @@ export function SimulationDialog({
             indicators: []
         }
     });
-    const simType = useWatch({control, name: "simulationType"}) as SimulationTypes | undefined;
 
-    if (isLoadingBrokers) return <Loader/>;
-    if (isErrorLoadingBrokers) return <ErrorAlert message="Error loading brokers"/>;
+    const addIndicator = () => {
+        setIndicators([
+            ...indicators,
+            {
+                id: Date.now().toString(),
+                indicator: Indicator.NONE,
+                movingAverageShortDays: 0,
+                movingAverageLongDays: 0,
+                breakoutDays: 0
+            }
+        ]);
+    };
 
-    const fieldConfigs: FormField[] = [
+    const removeIndicator = (id: string) => {
+        setIndicators(indicators.filter((indicator) => indicator.id !== id));
+    };
+
+    const updateIndicator = (id: string, field: string, value: Indicator | number | undefined) => {
+        setIndicators(indicators.map((indicator) =>
+            indicator.id === id ? {...indicator, [field]: value} : indicator
+        ));
+    };
+
+    const onSubmitHandler = (data: SimulationRequest) => {
+        if (!stockData || stockData.length === 0) {
+            setError(Error("Stock data is not available."));
+            setShowErrorOverlay(true);
+            return;
+        }
+
+        const officialStockName = stockData.find(
+            stockDetails => stockDetails.companyName === data.stockName
+        )?.officialName;
+
+        if (!officialStockName) {
+            setError(Error(`Could not find a matching stock for "${data.stockName}".`));
+            setShowErrorOverlay(true);
+            return;
+        }
+
+        const result = {
+            ...data,
+            stockName: officialStockName,
+            indicators,
+        };
+
+        onSubmit(result);
+    };
+
+    const fields: FormField[] = [
         {
-            name: "brokerName", type: "autocomplete", placeholder: "Broker", required: true,
-            options: brokers?.map((b: Broker) => `${b.name} (Fee: ${b.transactionFee.toFixed(2)}€)`)
-        },
-        {
-            name: "stockName", type: "autocomplete", placeholder: "Stock Name", required: true,
+            name: "stockName",
+            type: "select",
+            placeholder: "Stock Name",
+            required: true,
             options: stockData?.map((details) => details.companyName)
         },
         {name: "startDate", type: "date", placeholder: "Start Date", required: true},
         {name: "endDate", type: "date", placeholder: "End Date", required: true},
         {name: "startCapital", type: "number", placeholder: "Start Capital", required: true},
+        {name: "riskTolerance", type: "number", placeholder: "Risk Tolerance (%)", required: false},
         {
-            name: "simulationType", type: "select", placeholder: "Simulation Type", required: true,
+            name: "simulationType",
+            type: "select",
+            placeholder: "Simulation Type",
+            required: true,
             options: simulationTypeOptions
-        },
-        {
-            name: "riskTolerance", type: "number", placeholder: "Risk Tolerance (%)", required: false,
-            shouldRender: simType === SimulationTypes.RISK_BASED
-        },
+        }
     ];
 
-    const showSubmitError = (message: string) => {
-        setError(new Error(message));
-        setShowErrorOverlay(true);
-        console.error(message);
-        setIsSubmitting(false);
-    };
-
-    const onSubmitHandler = (data: SimulationRequest) => {
-        setIsSubmitting(true);
-        if (!stockData?.length) return showSubmitError("Stock data is not available.");
-
-        const officialStockName = stockData.find(stock => stock.companyName === data.stockName)?.officialName;
-        if (!officialStockName) return showSubmitError(`Could not find a matching stock for "${data.stockName}".`);
-
-        onSubmit({...data, stockName: officialStockName});
-        setIsSubmitting(false);
-    };
-
     return (
-        <Dialog open={isOpen} onClose={onClose} maxWidth="md" fullWidth>
+        <Dialog open={isOpen} onClose={onClose}>
             <CloseButton onClose={onClose}/>
             <form onSubmit={handleSubmit(onSubmitHandler)}>
-                <ErrorOverlay isOpen={showErrorOverlay} setIsOpen={setShowErrorOverlay} error={error}/>
+                <ErrorOverlay
+                    isOpen={showErrorOverlay}
+                    setIsOpen={setShowErrorOverlay}
+                    error={error}
+                />
+
                 <DialogTitle>Strategy Tester</DialogTitle>
 
-                <DialogContent sx={{position: 'relative'}}>
+                <DialogContent>
                     <DialogContentText>
                         Fill in the form to test your strategy
                     </DialogContentText>
 
                     <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={enGB}>
                         <Box display="flex" flexDirection="column" gap={2} mt={2}>
-                            {fieldConfigs.map(field => (
+                            {fields.map((field) => (
                                 <FieldController
                                     key={field.name}
                                     control={control}
@@ -127,13 +157,18 @@ export function SimulationDialog({
                             ))}
                         </Box>
                     </LocalizationProvider>
-                    <TradingIndicatorsSection errors={errors} control={control}/>
+
+                    <IndicatorForm
+                        indicators={indicators}
+                        addIndicator={addIndicator}
+                        removeIndicator={removeIndicator}
+                        updateIndicator={updateIndicator}
+                    />
                 </DialogContent>
 
                 <DialogActions>
-                    <Button onClick={onClose} color="inherit">Cancel</Button>
-                    <Button type="submit" variant="contained" color="primary" disabled={isSubmitting}>
-                        {isSubmitting ? "Simulating..." : "Simulate"}
+                    <Button type="submit" variant="contained" color="primary">
+                        Simulate
                     </Button>
                 </DialogActions>
             </form>
