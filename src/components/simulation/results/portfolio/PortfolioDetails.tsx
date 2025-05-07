@@ -13,6 +13,7 @@ export function PortfolioDetails({portfolio}: Readonly<PortfolioDetailsProps>) {
     const totalPositions = Object.values(portfolio.shareHoldings).filter(sh => sh.totalSharesOwned > 0).length;
     const totalBought = Object.values(portfolio.sharesBought).filter(st => st.totalSharesBought > 0).reduce((sum, st) => sum + st.totalSharesBought, 0);
     const totalSold = Object.values(portfolio.sharesBought).filter(st => st.totalSharesBought < 0).reduce((sum, st) => sum + Math.abs(st.totalSharesBought), 0);
+    const totalTransactionFees = Object.values(portfolio.sharesBought).reduce((sum, st) => sum + st.transactionFee, 0);
     const hasActivity = Object.values(portfolio.sharesBought).some(st => st.totalSharesBought !== 0);
 
     return (
@@ -34,7 +35,11 @@ export function PortfolioDetails({portfolio}: Readonly<PortfolioDetailsProps>) {
                 <Grid size={{xs: 12, md: 6}}>
                     <TradingActivityTable portfolio={portfolio} hasActivity={hasActivity}/>
                     {hasActivity && (
-                        <CashFlowSummary totalBought={totalBought} totalSold={totalSold}/>
+                        <CashFlowSummary
+                            totalBought={totalBought}
+                            totalSold={totalSold}
+                            totalTransactionFees={totalTransactionFees}
+                        />
                     )}
                 </Grid>
             </Grid>

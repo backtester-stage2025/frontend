@@ -4,6 +4,7 @@ import {SimulationTypes} from "../../../model/request/SimulationTypes.ts";
 const maxMovingAverage = 1000
 
 export const simulationRequestSchema = z.object({
+    brokerName: z.string().nonempty("Broker is required"),
     stockName: z.string().nonempty("Stock name is required"),
     startDate: z.coerce.date({required_error: "Start Date is required"}),
     endDate: z.coerce.date({required_error: "End Date is required"}),

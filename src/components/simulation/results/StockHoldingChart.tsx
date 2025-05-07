@@ -1,10 +1,10 @@
-import {UserPortfolio} from "../../../../model/simulation/UserPortfolio.ts";
+import {UserPortfolio} from "../../../model/simulation/UserPortfolio.ts";
 import React, {useMemo, useState} from "react";
 import Select, {SelectChangeEvent} from '@mui/material/Select';
 import {Box, FormControl, MenuItem, Paper, ToggleButton, ToggleButtonGroup, Typography} from "@mui/material";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import TimelineIcon from "@mui/icons-material/Timeline";
-import {formatEuro, formatLargeNumber, getNiceStep} from "../../../../services/formatService.ts";
+import {formatEuro, formatLargeNumber, getNiceStep} from "../../../services/formatService.ts";
 import {Area, AreaChart, Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis} from "recharts";
 
 interface StockHoldingChartProps {

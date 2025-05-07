@@ -14,6 +14,7 @@ interface ToolbarProps {
     paginatedCount: number;
     totalCount: number;
 }
+
 export function TransactionHistoryToolbar({
                                               searchTerm,
                                               setSearchTerm,

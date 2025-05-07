@@ -8,10 +8,10 @@ import {useBuyAndSellRisk} from "../../hooks/useBuyAndSellRisk.ts";
 import {SimulationRequest} from "../../model/request/SimulationRequest.ts";
 
 import {SimulationDialog} from "./form/SimulationDialog.tsx";
-import {ProfitChart} from "./results/charts/ProfitChart.tsx";
 import {TransactionHistory} from "./results/transactions/TransactionHistory.tsx";
-import {StockHoldingChart} from "./results/charts/StockHoldingChart.tsx";
+import {StockHoldingChart} from "./results/StockHoldingChart.tsx";
 import {StockMetricsContent} from "./results/metrics/StockMetricsContent.tsx";
+import {InvestmentPerformanceView} from "./results/InvestmentPerformanceView/InvestmentPerformanceView.tsx";
 
 export function Simulation() {
     const [isDialogOpen, setIsDialogOpen] = useState(true);
@@ -106,7 +106,7 @@ export function Simulation() {
                             {isRunning ? (
                                 <Loader/>
                             ) : (
-                                result && <ProfitChart portfolioData={result}/>
+                                result && <InvestmentPerformanceView portfolioData={result}/>
                             )}
                         </Box>
                     )}
