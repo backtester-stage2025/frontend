@@ -4,6 +4,8 @@ import {SimulationRequest} from "../model/request/SimulationRequest.ts";
 import {formatDateToLocalDateString} from "./formatService.ts";
 import {UserPortfolio} from "../model/simulation/UserPortfolio.ts";
 import {StockDetails} from "../model/StockDetails.ts";
+import {StockReportRequest} from "../model/request/StockReportRequest.ts";
+import {SimulationReport} from "../model/simulation/SimulationReport.ts";
 
 export async function getStockDetails(): Promise<StockDetails[]> {
     return safeApiCall(async () => {
@@ -43,4 +45,15 @@ async function safeApiCall<T>(apiCall: () => Promise<T>): Promise<T> {
         const message = axiosError.response?.data ?? "An unknown error occurred.";
         throw new Error(message);
     }
+}
+
+export async function getSimulationReport(request: StockReportRequest): Promise<SimulationReport> {
+    const payload = {
+        ...request,
+        startDate: formatDateToLocalDateString(request.startDate),
+        endDate: formatDateToLocalDateString(request.endDate)
+    }
+    const {data: simulationReport} = await axios.post<SimulationReport>(`api/backtest/report`, payload);
+
+    return simulationReport;
 }

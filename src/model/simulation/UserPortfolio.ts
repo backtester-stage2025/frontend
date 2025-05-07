@@ -1,7 +1,10 @@
+import {ShareHolding} from "./ShareHolding.ts";
+import {ShareTransaction} from "./ShareTranscation.ts";
+
 export interface UserPortfolio {
     date: string;
     cashBalance: number;
     totalPortfolioValue: number;
-    shareHoldings: Record<string, number>;
-    sharesBought: Record<string, number>;
+    shareHoldings: ShareHolding[];
+    sharesBought: ShareTransaction [];
 }
