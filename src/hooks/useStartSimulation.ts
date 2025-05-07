@@ -1,8 +1,8 @@
 import {useMutation} from "@tanstack/react-query";
-import {simulateBuyAndSellRisk} from "../services/stockDataService.ts";
 import {SimulationRequest} from "../model/request/SimulationRequest.ts";
+import {simulateBuyAndSellRisk} from "../services/backtestService.ts";
 
-export function useBuyAndSellRisk() {
+export function useStartSimulation() {
     const {mutate: sendRequest, isPending: isRunning, isError, error} = useMutation({
         mutationFn: (request: SimulationRequest) => simulateBuyAndSellRisk(request)
     });

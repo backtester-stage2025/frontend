@@ -1,7 +1,6 @@
 import {z} from "zod";
 import {SimulationTypes} from "../../../model/request/SimulationTypes.ts";
-
-const maxMovingAverage = 1000
+import {Indicator} from "../../../model/request/Indicator.ts";
 
 export const simulationRequestSchema = z.object({
     brokerName: z.string().nonempty("Broker is required"),
@@ -16,13 +15,28 @@ export const simulationRequestSchema = z.object({
         required_error: "Simulation Type is required",
         invalid_type_error: "Invalid Simulation Type",
     }),
-    useMovingAverageCrossover: z.boolean().optional(),
-    movingAverageShortDays: z.coerce.number()
-        .max(maxMovingAverage, `Short moving average days must be between 0 and ${maxMovingAverage}`)
-        .positive("Short MA must be positive").optional(),
-    movingAverageLongDays: z.coerce.number()
-        .max(maxMovingAverage, `Long moving average days must be between 0 and ${maxMovingAverage}`)
-        .positive("Long MA must be positive").optional(),
+    indicators: z.array(z.object({
+        indicator: z.nativeEnum(Indicator, {required_error: "Indicator is required"}),
+        movingAverageShortDays: z.number().optional(),
+        movingAverageLongDays: z.number().optional(),
+        breakoutDays: z.number().optional(),
+    })).refine((indicators) =>
+        indicators.every((ind) => {
+            if (ind.indicator === Indicator.MOVING_AVERAGE_CROSSOVER) {
+                return (
+                    ind.movingAverageShortDays !== undefined &&
+                    ind.movingAverageLongDays !== undefined &&
+                    ind.movingAverageShortDays < ind.movingAverageLongDays
+                );
+            }
+            if (ind.indicator === Indicator.BREAKOUT) {
+                return ind.breakoutDays !== undefined;
+            }
+            return true;
+        }), {
+        message: "Invalid indicator configuration or Long MA must be greater than Short MA",
+        path: ["indicators"],
+    }),
     riskTolerance: z.coerce.number()
         .min(0, "Risk Tolerance must be between 0 and 100")
         .max(100, "Risk Tolerance must be between 0 and 100")
@@ -31,25 +45,4 @@ export const simulationRequestSchema = z.object({
     .refine((data) => data.endDate > data.startDate, {
         path: ["endDate"],
         message: "End Date must be after Start Date",
-    }).refine((data) => {
-        if (data.useMovingAverageCrossover) {
-            return data.movingAverageShortDays !== undefined && data.movingAverageLongDays !== undefined;
-        }
-        return true;
-    }, {
-        path: ["movingAverageShortDays"],
-        message: "Moving Average Short and Long days are required when Moving Average Crossover is enabled",
-    }).refine((data) => {
-        if (
-            data.useMovingAverageCrossover &&
-            data.movingAverageShortDays !== undefined &&
-            data.movingAverageLongDays !== undefined
-        ) {
-            return data.movingAverageShortDays < data.movingAverageLongDays;
-        }
-        return true;
-    }, {
-        path: ["movingAverageLongDays"],
-        message: "Long MA must be greater than Short MA when Moving Average Crossover is enabled",
     });
-
