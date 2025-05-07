@@ -19,8 +19,18 @@ export const simulationRequestSchema = z.object({
         movingAverageShortDays: z.number().optional(),
         movingAverageLongDays: z.number().optional(),
         breakoutDays: z.number().optional(),
-    })).refine((indicators) =>
-        indicators.every((ind) => {
+    })),
+    riskTolerance: z.coerce.number()
+        .min(0, "Risk Tolerance must be between 0 and 100")
+        .max(100, "Risk Tolerance must be between 0 and 100")
+        .optional(),
+}).strict()
+    .refine((data) => data.endDate > data.startDate, {
+        path: ["endDate"],
+        message: "End Date must be after Start Date",
+    })
+    .refine((data) =>
+        data.indicators.every((ind) => {
             if (ind.indicator === Indicator.MOVING_AVERAGE_CROSSOVER) {
                 return (
                     ind.movingAverageShortDays !== undefined &&
@@ -35,13 +45,4 @@ export const simulationRequestSchema = z.object({
         }), {
         message: "Invalid indicator configuration or Long MA must be greater than Short MA",
         path: ["indicators"],
-    }),
-    riskTolerance: z.coerce.number()
-        .min(0, "Risk Tolerance must be between 0 and 100")
-        .max(100, "Risk Tolerance must be between 0 and 100")
-        .optional(),
-}).strict()
-    .refine((data) => data.endDate > data.startDate, {
-        path: ["endDate"],
-        message: "End Date must be after Start Date",
     });
