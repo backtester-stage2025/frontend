@@ -6,7 +6,7 @@ export interface StockDetails {
     officialName: string;
 }
 
-export enum CurrencyType{
+export enum CurrencyType {
     EUROS = "EUROS",
     USD = "USD"
 }

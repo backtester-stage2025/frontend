@@ -1,9 +1,22 @@
 import {IndicatorDetails, SimulationRequest} from "../../../model/request/SimulationRequest.ts";
-import {useForm} from "react-hook-form";
+import {useFieldArray, useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {LocalizationProvider} from "@mui/x-date-pickers/LocalizationProvider";
 import {AdapterDateFns} from "@mui/x-date-pickers/AdapterDateFns";
-import {Alert, Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle,} from "@mui/material";
+import {
+    Alert,
+    Box,
+    Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+    Divider,
+    Paper,
+    Stack,
+    Typography
+} from "@mui/material";
 import {enGB} from "date-fns/locale";
 import {useStockData} from "../../../hooks/useStockData.ts";
 import {FieldController, FormField} from "./FormController.tsx";
@@ -15,8 +28,8 @@ import {CloseButton} from "../../util/CloseButton.tsx";
 import {useBrokers} from "../../../hooks/useBrokers.ts";
 import {Loader} from "../../util/Loader.tsx";
 import {Broker} from "../../../model/Broker.ts";
-import {IndicatorForm} from "./IndicatorForm.tsx";
 import {Indicator} from "../../../model/request/Indicator.ts";
+import {IndicatorForm} from "./IndicatorForm.tsx";
 
 interface BuyAndHoldSimulationProps {
     isOpen: boolean
@@ -24,10 +37,6 @@ interface BuyAndHoldSimulationProps {
     onClose: () => void
     isServerError: boolean
     serverError: Error | null
-}
-
-interface LocalIndicatorDetails extends IndicatorDetails {
-    id: string;
 }
 
 export function SimulationDialog({
@@ -40,7 +49,6 @@ export function SimulationDialog({
     const {isLoading: isLoadingBrokers, isError: isErrorLoadingBrokers, brokers} = useBrokers();
     const [error, setError] = useState<Error | null>(serverError ?? null);
     const [showErrorOverlay, setShowErrorOverlay] = useState<boolean>(!!serverError);
-    const [indicators, setIndicators] = useState<LocalIndicatorDetails[]>([]);
 
     useEffect(() => {
         setError(serverError ?? null);
@@ -59,7 +67,13 @@ export function SimulationDialog({
             riskTolerance: 20,
             indicators: []
         }
-    })
+    });
+
+    const {fields: indicatorFields, append, remove, update} = useFieldArray({
+        control,
+        name: "indicators"
+    });
+
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     if (isLoadingBrokers) {
@@ -99,41 +113,34 @@ export function SimulationDialog({
     ];
 
     const addIndicator = () => {
-        setIndicators([
-            ...indicators,
-            {
-                id: Date.now().toString(),
-                indicator: Indicator.NONE,
-                movingAverageShortDays: 0,
-                movingAverageLongDays: 0,
-                breakoutDays: 0
-            },
-        ]);
+        append({
+            indicator: Indicator.NONE,
+            movingAverageShortDays: undefined,
+            movingAverageLongDays: undefined,
+            breakoutDays: undefined
+        });
     };
 
-    const removeIndicator = (id: string) => {
-        setIndicators(indicators.filter((indicator) => indicator.id !== id));
+    const removeIndicator = (index: number) => {
+        remove(index);
     };
 
-    const updateIndicator = (id: string, field: string, value: Indicator | number | undefined) => {
-        setIndicators(
-            indicators.map((indicator) =>
-                indicator.id === id ? {...indicator, [field]: value} : indicator
-            )
-        );
+    const updateIndicator = (index: number, field: keyof IndicatorDetails, value: Indicator | number | undefined) => {
+        const indicator = {...indicatorFields[index], [field]: value};
+        update(index, indicator);
     };
 
     const showSubmitError = (error: string) => {
-        setError(Error(error))
-        setShowErrorOverlay(true)
-        console.error(error)
+        setError(Error(error));
+        setShowErrorOverlay(true);
+        console.error(error);
         setIsSubmitting(false);
-    }
+    };
 
     const onSubmitHandler = (data: SimulationRequest) => {
         setIsSubmitting(true);
         if (!stockData || stockData.length === 0) {
-            showSubmitError("Stock data is not available.")
+            showSubmitError("Stock data is not available.");
             return;
         }
 
@@ -142,17 +149,13 @@ export function SimulationDialog({
         )?.officialName;
 
         if (!officialStockName) {
-            showSubmitError(`Could not find a matching stock for "${data.stockName}".`)
+            showSubmitError(`Could not find a matching stock for "${data.stockName}".`);
             return;
         }
 
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const sanitizedIndicators = indicators.map(({id, ...rest}) => ({...rest}));
-
         const result = {
             ...data,
-            stockName: officialStockName,
-            indicators: sanitizedIndicators,
+            stockName: officialStockName
         };
 
         onSubmit(result);
@@ -160,7 +163,7 @@ export function SimulationDialog({
     };
 
     return (
-        <Dialog open={isOpen} onClose={onClose}>
+        <Dialog open={isOpen} onClose={onClose} maxWidth="md" fullWidth>
             <CloseButton onClose={onClose}/>
             <form onSubmit={handleSubmit(onSubmitHandler)}>
                 <ErrorOverlay
@@ -189,15 +192,58 @@ export function SimulationDialog({
                         </Box>
                     </LocalizationProvider>
 
-                    <IndicatorForm
-                        indicators={indicators}
-                        addIndicator={addIndicator}
-                        removeIndicator={removeIndicator}
-                        updateIndicator={updateIndicator}
-                    />
+                    <Box mt={3}>
+                        <Typography variant="h6" gutterBottom>
+                            Trading Indicators
+                        </Typography>
+                        <Divider sx={{mb: 2}}/>
+
+                        {indicatorFields.length > 0 ? (
+                            <Stack spacing={2}>
+                                {indicatorFields.map((field, index) => (
+                                    <Paper key={field.id} elevation={2} sx={{p: 2}}>
+                                        <Box component="div" sx={{position: 'relative'}}>
+                                            <IndicatorForm
+                                                indicators={[{
+                                                    id: field.id,
+                                                    indicator: field.indicator,
+                                                    movingAverageShortDays: field.movingAverageShortDays,
+                                                    movingAverageLongDays: field.movingAverageLongDays,
+                                                    breakoutDays: field.breakoutDays
+                                                }]}
+                                                addIndicator={() => {
+                                                }}
+                                                removeIndicator={() => removeIndicator(index)}
+                                                updateIndicator={(_, fieldKey, value) =>
+                                                    updateIndicator(index, fieldKey as keyof IndicatorDetails, value)
+                                                }
+                                                errors={errors.indicators?.[index] ? {0: errors.indicators[index]} : undefined}
+                                            />
+                                        </Box>
+                                    </Paper>
+                                ))}
+                            </Stack>
+                        ) : (
+                            <Alert severity="info" sx={{mb: 2}}>
+                                No indicators added yet. Add an indicator to enhance your strategy.
+                            </Alert>
+                        )}
+
+                        <Button
+                            onClick={addIndicator}
+                            variant="outlined"
+                            color="primary"
+                            sx={{mt: 2}}
+                        >
+                            Add Indicator
+                        </Button>
+                    </Box>
                 </DialogContent>
 
                 <DialogActions>
+                    <Button onClick={onClose} color="inherit">
+                        Cancel
+                    </Button>
                     <Button type="submit" variant="contained" color="primary" disabled={isSubmitting}>
                         {isSubmitting ? "Simulating..." : "Simulate"}
                     </Button>

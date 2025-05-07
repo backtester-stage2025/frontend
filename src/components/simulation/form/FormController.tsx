@@ -73,10 +73,10 @@ export function FieldController({control, errors, field}: Readonly<FieldControll
                                 Array.isArray(field.options) && typeof field.options[0] === "object" && "label" in field.options[0]
                                     ? (field.options as { label: string; value: unknown }[]).map(opt => opt.label)
                                     : (field.options as string[] || [])
-                            }                            value={controllerField.value !== null && controllerField.value !== undefined
-                                ? String(controllerField.value)
-                                : null
-                            }
+                            } value={controllerField.value !== null && controllerField.value !== undefined
+                            ? String(controllerField.value)
+                            : null
+                        }
                             onChange={(_, newValue) => {
                                 // Extract the broker name before the fee information if present
                                 const value = newValue?.includes('(')

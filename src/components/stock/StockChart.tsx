@@ -15,7 +15,12 @@ interface StockChartProps {
 }
 
 export function StockChart({stockName}: Readonly<StockChartProps>) {
-    const {isLoading: isLoadingStockQuotes, isError: isErrorStockQuotes, stockQuotes, error} = useStockQuotes(stockName);
+    const {
+        isLoading: isLoadingStockQuotes,
+        isError: isErrorStockQuotes,
+        stockQuotes,
+        error
+    } = useStockQuotes(stockName);
 
     const [dateRange, setDateRange] = useState({
         startDate: "",

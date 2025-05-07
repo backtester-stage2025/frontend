@@ -5,7 +5,7 @@ export enum Indicator {
 }
 
 export const indicatorOptions = [
-    { label: "None", value: Indicator.NONE },
-    { label: "Moving Average Crossover", value: Indicator.MOVING_AVERAGE_CROSSOVER },
-    { label: "Breakout", value: Indicator.BREAKOUT },
+    {label: "None", value: Indicator.NONE},
+    {label: "Moving Average Crossover", value: Indicator.MOVING_AVERAGE_CROSSOVER},
+    {label: "Breakout", value: Indicator.BREAKOUT},
 ];
