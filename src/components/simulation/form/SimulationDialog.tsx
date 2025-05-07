@@ -7,7 +7,7 @@ import {Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, Di
 import {enGB} from "date-fns/locale";
 import {useStockData} from "../../../hooks/useStockData.ts";
 import {FieldController, FormField} from "./FormController.tsx";
-import {SimulationTypes, simulationTypeOptions} from "../../../model/request/SimulationTypes.ts";
+import {simulationTypeOptions} from "../../../model/request/SimulationTypes.ts";
 import {useEffect, useState} from "react";
 import {ErrorOverlay} from "./ErrorOverlay.tsx";
 import {simulationRequestSchema} from "./SimulationRequestSchema.ts";
@@ -48,7 +48,7 @@ export function SimulationDialog({
             type: "select",
             placeholder: "Stock Name",
             required: true,
-            options: stockData?.map((details)=> details.companyName)
+            options: stockData?.map((details) => details.companyName)
         },
         {name: "startDate", type: "date", placeholder: "Start Date", required: true},
         {name: "endDate", type: "date", placeholder: "End Date", required: true},
@@ -59,7 +59,7 @@ export function SimulationDialog({
             type: "select",
             placeholder: "Simulation Type",
             required: true,
-            options: simulationTypeOptions.map(option => option.label)
+            options: simulationTypeOptions
         },
         {
             name: "useMovingAverageCrossover",
@@ -92,7 +92,7 @@ export function SimulationDialog({
             startDate: new Date(),
             endDate: new Date(),
             startCapital: 10000,
-            simulationType: SimulationTypes.RISK_BASED,
+            simulationType: simulationTypeOptions[0].value,
             riskTolerance: 20,
             useMovingAverageCrossover: true,
             movingAverageShortDays: 10,
@@ -101,7 +101,7 @@ export function SimulationDialog({
     })
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const showSubmitError = (error: string)=>  {
+    const showSubmitError = (error: string) => {
         setError(Error(error))
         setShowErrorOverlay(true)
         console.error(error)

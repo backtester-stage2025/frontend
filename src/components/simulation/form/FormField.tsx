@@ -49,18 +49,23 @@ export function FormDropdown(
             helperText={helperText}
         >
             {optionsReady ? (
-                field.options!.map((opt) => (
-                    <MenuItem key={opt} value={opt}>
-                        {opt}
-                    </MenuItem>
-                ))
+                field.options!.map((opt) =>
+                    typeof opt === "string" ? (
+                        <MenuItem key={opt} value={opt}>
+                            {opt}
+                        </MenuItem>
+                    ) : (
+                        <MenuItem key={opt.value} value={opt.value}>
+                            {opt.label}
+                        </MenuItem>
+                    )
+                )
             ) : (
                 <MenuItem disabled>Loading options...</MenuItem>
             )}
         </TextField>
     );
 }
-
 export function FormCheckbox(
     {field, controllerField}: Readonly<FormFieldRenderProps>
 ) {
