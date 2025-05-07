@@ -3,8 +3,6 @@ import {StockQuote} from "../model/StockQuote";
 import {SimulationRequest} from "../model/request/SimulationRequest.ts";
 import {formatDateToLocalDateString} from "./formatService.ts";
 import {UserPortfolio} from "../model/simulation/UserPortfolio.ts";
-import {StockReportRequest} from "../model/request/StockReportRequest.ts";
-import {SimulationReport} from "../model/simulation/SimulationReport.ts";
 import {StockDetails} from "../model/StockDetails.ts";
 import {StockReportRequest} from "../model/request/StockReportRequest.ts";
 import {SimulationReport} from "../model/simulation/SimulationReport.ts";
