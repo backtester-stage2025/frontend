@@ -60,14 +60,6 @@ export function InvestmentPerformanceView({portfolioData}: Readonly<InvestmentPe
 
     return (
         <Paper elevation={2} sx={{p: 3, borderRadius: 2, height: '100%'}}>
-
-            <Box sx={{display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3}}>
-                <Typography variant="h6" gutterBottom sx={{display: 'flex', alignItems: 'center', gap: 1}}>
-                    <TrendingUpIcon color="primary"/>
-                    Profit Evolution
-                </Typography>
-            </Box>
-
             {summaryData &&
                 <Box sx={{mb: 4}}>
                     <Typography variant="h6" gutterBottom sx={{display: 'flex', alignItems: 'center', gap: 1, mb: 2}}>
