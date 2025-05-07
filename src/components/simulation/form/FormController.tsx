@@ -1,8 +1,6 @@
 import {Control, Controller, FieldErrors} from "react-hook-form";
 import {SimulationRequest} from "../../../model/request/SimulationRequest.ts";
 import {Autocomplete, TextField} from "@mui/material";
-import {FormCheckbox, FormDatePicker, FormDropdown} from "./FormField.tsx";
-import {TextField} from "@mui/material";
 import {FormCheckbox, FormDatePicker, FormDropdown, FormTextFieldWithAdornment} from "./FormField.tsx";
 import {SimulationTypes} from "../../../model/request/SimulationTypes.ts";
 
@@ -71,8 +69,11 @@ export function FieldController({control, errors, field}: Readonly<FieldControll
                 if (field.type === "autocomplete") {
                     return (
                         <Autocomplete
-                            options={field.options || []}
-                            value={controllerField.value !== null && controllerField.value !== undefined
+                            options={
+                                Array.isArray(field.options) && typeof field.options[0] === "object" && "label" in field.options[0]
+                                    ? (field.options as { label: string; value: unknown }[]).map(opt => opt.label)
+                                    : (field.options as string[] || [])
+                            }                            value={controllerField.value !== null && controllerField.value !== undefined
                                 ? String(controllerField.value)
                                 : null
                             }

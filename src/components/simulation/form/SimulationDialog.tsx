@@ -33,7 +33,6 @@ export function SimulationDialog({
                                  }: Readonly<BuyAndHoldSimulationProps>) {
     const {stockData} = useStockData();
     const {isLoading: isLoadingBrokers, isError: isErrorLoadingBrokers, brokers} = useBrokers();
-    const [showErrorOverlay, setShowErrorOverlay] = useState(isServerError);
     const [error, setError] = useState<Error | null>(serverError ?? null);
     const [showErrorOverlay, setShowErrorOverlay] = useState<boolean>(!!serverError);
 
@@ -46,6 +45,22 @@ export function SimulationDialog({
     useEffect(() => {
         setShowErrorOverlay(isServerError);
     }, [isServerError]);
+
+    const {control, handleSubmit, formState: {errors}} = useForm<SimulationRequest>({
+        resolver: zodResolver(simulationRequestSchema),
+        defaultValues: {
+            stockName: '',
+            startDate: new Date(),
+            endDate: new Date(),
+            startCapital: 10000,
+            simulationType: simulationTypeOptions[0].value,
+            riskTolerance: 20,
+            useMovingAverageCrossover: true,
+            movingAverageShortDays: 10,
+            movingAverageLongDays: 20
+        }
+    })
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     if (isLoadingBrokers) {
         return <Loader/>
@@ -104,22 +119,6 @@ export function SimulationDialog({
         },
 
     ];
-
-    const {control, handleSubmit, formState: {errors}} = useForm<SimulationRequest>({
-        resolver: zodResolver(simulationRequestSchema),
-        defaultValues: {
-            stockName: '',
-            startDate: new Date(),
-            endDate: new Date(),
-            startCapital: 10000,
-            simulationType: simulationTypeOptions[0].value,
-            riskTolerance: 20,
-            useMovingAverageCrossover: true,
-            movingAverageShortDays: 10,
-            movingAverageLongDays: 20
-        }
-    })
-    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const showSubmitError = (error: string) => {
         setError(Error(error))
