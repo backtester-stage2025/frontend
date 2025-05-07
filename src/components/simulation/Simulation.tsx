@@ -6,10 +6,6 @@ import {Loader} from "../util/Loader.tsx";
 import {UserPortfolio} from "../../model/simulation/UserPortfolio.ts";
 import {useBuyAndSellRisk} from "../../hooks/useBuyAndSellRisk.ts";
 import {SimulationRequest} from "../../model/request/SimulationRequest.ts";
-import {Box, Button} from "@mui/material";
-import {SimulationResults} from "./results/SimulationResults.tsx";
-import {UserPortfolio} from "../../model/simulation/UserPortfolio.ts";
-import {Loader} from "../util/Loader.tsx";
 
 import {SimulationDialog} from "./form/SimulationDialog.tsx";
 import {ProfitChart} from "./results/charts/ProfitChart.tsx";
