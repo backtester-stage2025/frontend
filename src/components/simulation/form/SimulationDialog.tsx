@@ -7,7 +7,7 @@ import {Alert, Box, Button, Dialog, DialogActions, DialogContent, DialogContentT
 import {enGB} from "date-fns/locale";
 import {useStockData} from "../../../hooks/useStockData.ts";
 import {FieldController, FormField} from "./FormController.tsx";
-import {SimulationTypes} from "../../../model/request/SimulationTypes.ts";
+import {simulationTypeOptions} from "../../../model/request/SimulationTypes.ts";
 import {useEffect, useState} from "react";
 import {ErrorOverlay} from "./ErrorOverlay.tsx";
 import {simulationRequestSchema} from "./SimulationRequestSchema.ts";
@@ -34,26 +34,18 @@ export function SimulationDialog({
     const {stockData} = useStockData();
     const {isLoading: isLoadingBrokers, isError: isErrorLoadingBrokers, brokers} = useBrokers();
     const [showErrorOverlay, setShowErrorOverlay] = useState(isServerError);
+    const [error, setError] = useState<Error | null>(serverError ?? null);
+    const [showErrorOverlay, setShowErrorOverlay] = useState<boolean>(!!serverError);
+
+    useEffect(() => {
+        setError(serverError ?? null);
+        setShowErrorOverlay(!!serverError);
+    }, [serverError]);
+
     const [movingAverage, setMovingAverage] = useState<boolean>(true);
     useEffect(() => {
         setShowErrorOverlay(isServerError);
     }, [isServerError]);
-
-    const {control, handleSubmit, formState: {errors}} = useForm<SimulationRequest>({
-        resolver: zodResolver(simulationRequestSchema),
-        defaultValues: {
-            brokerName: '',
-            stockName: '',
-            startDate: new Date(),
-            endDate: new Date(),
-            startCapital: 10000,
-            simulationType: SimulationTypes.RISK_BASED,
-            riskTolerance: 20,
-            useMovingAverageCrossover: true,
-            movingAverageShortDays: 10,
-            movingAverageLongDays: 20
-        }
-    })
 
     if (isLoadingBrokers) {
         return <Loader/>
@@ -71,7 +63,13 @@ export function SimulationDialog({
             name: "brokerName", type: "autocomplete", placeholder: "Broker", required: true,
             options: brokers?.map((b: Broker) => `${b.name} (Fee: ${b.transactionFee.toFixed(2)}€)`)
         },
-        {name: "stockName", type: "autocomplete", placeholder: "Stock Name", required: true, options: stockData},
+        {
+            name: "stockName",
+            type: "autocomplete",
+            placeholder: "Stock Name",
+            required: true,
+            options: stockData?.map((details) => details.companyName)
+        },
         {name: "startDate", type: "date", placeholder: "Start Date", required: true},
         {name: "endDate", type: "date", placeholder: "End Date", required: true},
         {name: "startCapital", type: "number", placeholder: "Start Capital", required: true},
@@ -81,7 +79,7 @@ export function SimulationDialog({
             type: "select",
             placeholder: "Simulation Type",
             required: true,
-            options: Object.values(SimulationTypes)
+            options: simulationTypeOptions
         },
         {
             name: "useMovingAverageCrossover",
@@ -107,14 +105,62 @@ export function SimulationDialog({
 
     ];
 
+    const {control, handleSubmit, formState: {errors}} = useForm<SimulationRequest>({
+        resolver: zodResolver(simulationRequestSchema),
+        defaultValues: {
+            stockName: '',
+            startDate: new Date(),
+            endDate: new Date(),
+            startCapital: 10000,
+            simulationType: simulationTypeOptions[0].value,
+            riskTolerance: 20,
+            useMovingAverageCrossover: true,
+            movingAverageShortDays: 10,
+            movingAverageLongDays: 20
+        }
+    })
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
+    const showSubmitError = (error: string) => {
+        setError(Error(error))
+        setShowErrorOverlay(true)
+        console.error(error)
+        setIsSubmitting(false);
+    }
+
+    const onSubmitHandler = (data: SimulationRequest) => {
+        setIsSubmitting(true);
+        if (!stockData || stockData.length === 0) {
+            showSubmitError("Stock data is not available.")
+            return;
+        }
+
+        const officialStockName = stockData.find(
+            stockDetails => stockDetails.companyName === data.stockName
+        )?.officialName;
+
+        if (!officialStockName) {
+            showSubmitError(`Could not find a matching stock for "${data.stockName}".`)
+            return;
+        }
+
+        const result = {
+            ...data,
+            stockName: officialStockName,
+        };
+
+        onSubmit(result);
+        setIsSubmitting(false);
+    };
+
     return (
         <Dialog open={isOpen} onClose={onClose}>
             <CloseButton onClose={onClose}/>
-            <form onSubmit={handleSubmit(onSubmit)}>
+            <form onSubmit={handleSubmit(onSubmitHandler)}>
                 <ErrorOverlay
                     isOpen={showErrorOverlay}
                     setIsOpen={setShowErrorOverlay}
-                    error={serverError}
+                    error={error}
                 />
 
                 <DialogTitle>Strategy Tester</DialogTitle>
@@ -139,8 +185,8 @@ export function SimulationDialog({
                 </DialogContent>
 
                 <DialogActions>
-                    <Button type="submit" variant="contained" color="primary">
-                        Simulate
+                    <Button type="submit" variant="contained" color="primary" disabled={isSubmitting}>
+                        {isSubmitting ? "Simulating..." : "Simulate"}
                     </Button>
                 </DialogActions>
             </form>

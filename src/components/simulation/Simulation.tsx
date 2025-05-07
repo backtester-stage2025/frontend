@@ -6,6 +6,7 @@ import {Loader} from "../util/Loader.tsx";
 import {UserPortfolio} from "../../model/simulation/UserPortfolio.ts";
 import {useBuyAndSellRisk} from "../../hooks/useBuyAndSellRisk.ts";
 import {SimulationRequest} from "../../model/request/SimulationRequest.ts";
+
 import {SimulationDialog} from "./form/SimulationDialog.tsx";
 import {TransactionHistory} from "./results/transactions/TransactionHistory.tsx";
 import {StockHoldingChart} from "./results/StockHoldingChart.tsx";
@@ -62,6 +63,10 @@ export function Simulation() {
     const handleToggleFilter = (event: ChangeEvent<HTMLInputElement>) => {
         setShowOnlyTradesDays(event.target.checked);
     };
+
+    if (isRunning) {
+        return <Loader message="Running simulation..."/>;
+    }
 
     return (
         <Box sx={{width: "100%", maxWidth: 1200, mx: "auto", p: 3}}>

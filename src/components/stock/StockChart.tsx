@@ -15,7 +15,7 @@ interface StockChartProps {
 }
 
 export function StockChart({stockName}: Readonly<StockChartProps>) {
-    const {isLoading: isLoadingStockQuotes, isError: isErrorStockQuotes, stockQuotes} = useStockQuotes(stockName);
+    const {isLoading: isLoadingStockQuotes, isError: isErrorStockQuotes, stockQuotes, error} = useStockQuotes(stockName);
 
     const [dateRange, setDateRange] = useState({
         startDate: "",
@@ -61,7 +61,7 @@ export function StockChart({stockName}: Readonly<StockChartProps>) {
                 endDate: lastDate.toISOString().split('T')[0],
             });
         }
-    }, [stockQuotes]);
+    }, [stockQuotes, periods.longPeriod, periods.shortPeriod]);
 
     if (isLoadingStockQuotes || isLoadingMovingAverageShort || isLoadingMovingAverageLong) {
         return <Loader message={`Loading stock quotes for ${stockName}`}/>;
@@ -70,7 +70,7 @@ export function StockChart({stockName}: Readonly<StockChartProps>) {
     if (isErrorStockQuotes || isErrorMovingAverageShort || isErrorMovingAverageLong) {
         return (
             <Alert severity="error" sx={{mt: 2, width: "100%"}}>
-                Error loading stock quotes for {stockName}. Please try again later.
+                Error loading stock quotes for {stockName}: {error?.message}
             </Alert>
         );
     }
