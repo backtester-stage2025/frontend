@@ -1,5 +1,5 @@
 import {z} from "zod";
-import {simulationTypeOptions, SimulationTypes} from "../../../model/request/SimulationTypes.ts";
+import {SimulationTypes} from "../../../model/request/SimulationTypes.ts";
 
 const maxMovingAverage = 1000
 
@@ -11,16 +11,10 @@ export const simulationRequestSchema = z.object({
         required_error: "Start Capital is required",
         invalid_type_error: "Start Capital must be a number",
     }).positive("Start Capital must be a positive number"),
-    simulationType: z.preprocess(
-        (value) => {
-            const label = value as string;
-            return simulationTypeOptions.find(option => option.label === label)?.value;
-        },
-        z.nativeEnum(SimulationTypes, {
-            required_error: "Simulation Type is required",
-            invalid_type_error: "Invalid Simulation Type",
-        })
-    ) as z.ZodType<SimulationTypes>,
+    simulationType: z.nativeEnum(SimulationTypes, {
+        required_error: "Simulation Type is required",
+        invalid_type_error: "Invalid Simulation Type",
+    }),
     useMovingAverageCrossover: z.boolean().optional(),
     movingAverageShortDays: z.coerce.number()
         .max(maxMovingAverage, `Short moving average days must be between 0 and ${maxMovingAverage}`)
