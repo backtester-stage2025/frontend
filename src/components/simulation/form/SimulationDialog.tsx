@@ -29,14 +29,27 @@ export function SimulationDialog({
                                      serverError
                                  }: Readonly<BuyAndHoldSimulationProps>) {
     const {stockData} = useStockData();
-    const [showErrorOverlay, setShowErrorOverlay] = useState(isServerError);
+    const [error, setError] = useState<Error | null>(serverError ?? null);
+    const [showErrorOverlay, setShowErrorOverlay] = useState<boolean>(!!serverError);
+
+    useEffect(() => {
+        setError(serverError ?? null);
+        setShowErrorOverlay(!!serverError);
+    }, [serverError]);
+
     const [movingAverage, setMovingAverage] = useState<boolean>(true);
     useEffect(() => {
         setShowErrorOverlay(isServerError);
     }, [isServerError]);
 
     const fields: FormField[] = [
-        {name: "csvFileName", type: "select", placeholder: "Stock Name", required: true, options: stockData},
+        {
+            name: "stockName",
+            type: "select",
+            placeholder: "Stock Name",
+            required: true,
+            options: stockData?.map((details)=> details.companyName)
+        },
         {name: "startDate", type: "date", placeholder: "Start Date", required: true},
         {name: "endDate", type: "date", placeholder: "End Date", required: true},
         {name: "startCapital", type: "number", placeholder: "Start Capital", required: true},
@@ -75,7 +88,7 @@ export function SimulationDialog({
     const {control, handleSubmit, formState: {errors}} = useForm<SimulationRequest>({
         resolver: zodResolver(simulationRequestSchema),
         defaultValues: {
-            csvFileName: '',
+            stockName: '',
             startDate: new Date(),
             endDate: new Date(),
             startCapital: 10000,
@@ -86,16 +99,39 @@ export function SimulationDialog({
             movingAverageLongDays: 20
         }
     })
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
+    const showSubmitError = (error: string)=>  {
+        setError(Error(error))
+        setShowErrorOverlay(true)
+        console.error(error)
+        setIsSubmitting(false);
+    }
 
     const onSubmitHandler = (data: SimulationRequest) => {
-        const request = {
+        setIsSubmitting(true);
+        if (!stockData || stockData.length === 0) {
+            showSubmitError("Stock data is not available.")
+            return;
+        }
+
+        const officialStockName = stockData.find(
+            stockDetails => stockDetails.companyName === data.stockName
+        )?.officialName;
+
+        if (!officialStockName) {
+            showSubmitError(`Could not find a matching stock for "${data.stockName}".`)
+            return;
+        }
+
+        const result = {
             ...data,
-            csvFileName: data.csvFileName + '.csv',
+            stockName: officialStockName,
         };
 
-        console.log(request)
-        onSubmit(request);
-    }
+        onSubmit(result);
+        setIsSubmitting(false);
+    };
 
     return (
         <Dialog open={isOpen} onClose={onClose}>
@@ -104,7 +140,7 @@ export function SimulationDialog({
                 <ErrorOverlay
                     isOpen={showErrorOverlay}
                     setIsOpen={setShowErrorOverlay}
-                    error={serverError}
+                    error={error}
                 />
 
                 <DialogTitle>Strategy Tester</DialogTitle>
@@ -129,8 +165,8 @@ export function SimulationDialog({
                 </DialogContent>
 
                 <DialogActions>
-                    <Button type="submit" variant="contained" color="primary">
-                        Simulate
+                    <Button type="submit" variant="contained" color="primary" disabled={isSubmitting}>
+                        {isSubmitting ? "Simulating..." : "Simulate"}
                     </Button>
                 </DialogActions>
             </form>
