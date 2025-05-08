@@ -1,6 +1,9 @@
 import {Box, Grid, IconButton, MenuItem, TextField, Typography} from "@mui/material";
 import {Delete} from "@mui/icons-material";
 import {Indicator} from "../../../model/request/Indicator.ts";
+import {useState} from "react";
+
+type IndicatorValue = string | number;
 
 interface IndicatorFormProps {
     indicators: {
@@ -13,7 +16,12 @@ interface IndicatorFormProps {
     addIndicator: () => void;
     removeIndicator: (id: string) => void;
     updateIndicator: (id: string, key: string, value: Indicator | number | undefined) => void;
-    errors?: Record<string, any>;
+    errors?: Record<string, {
+        movingAverageShortDays?: { message: string };
+        movingAverageLongDays?: { message: string };
+        breakoutDays?: { message: string };
+        indicator?: { message: string };
+    }>;
 }
 
 export function IndicatorForm({
@@ -22,6 +30,40 @@ export function IndicatorForm({
                                   updateIndicator,
                                   errors,
                               }: Readonly<IndicatorFormProps>) {
+    const [localValues, setLocalValues] = useState<Record<string, {
+        movingAverageShortDays: IndicatorValue;
+        movingAverageLongDays: IndicatorValue;
+        breakoutDays: IndicatorValue;
+    }>>(() =>
+        indicators.reduce((acc, indicator) => {
+            acc[indicator.id] = {
+                movingAverageShortDays: indicator.movingAverageShortDays ?? '',
+                movingAverageLongDays: indicator.movingAverageLongDays ?? '',
+                breakoutDays: indicator.breakoutDays ?? '',
+            };
+            return acc;
+        }, {} as Record<string, {
+            movingAverageShortDays: IndicatorValue;
+            movingAverageLongDays: IndicatorValue;
+            breakoutDays: IndicatorValue;
+        }>)
+    );
+
+    const handleLocalChange = (id: string, key: string, value: string) => {
+        setLocalValues((prev) => ({
+            ...prev,
+            [id]: {
+                ...prev[id],
+                [key]: value,
+            },
+        }));
+    };
+
+    const handleBlur = (id: string, key: string, value: string) => {
+        const parsedValue = value === '' ? undefined : parseInt(value, 10) || undefined;
+        updateIndicator(id, key, parsedValue);
+    };
+
     return (
         <Box>
             {indicators.map((indicator) => (
@@ -52,13 +94,13 @@ export function IndicatorForm({
                                 <TextField
                                     type="text"
                                     label="Short MA Days"
-                                    value={indicator.movingAverageShortDays ?? ''}
-                                    onChange={(e) => {
-                                        const valueAsNumber = e.target.value === '' ?
-                                            undefined :
-                                            parseInt(e.target.value, 10) || undefined;
-                                        updateIndicator(indicator.id, "movingAverageShortDays", valueAsNumber);
-                                    }}
+                                    value={localValues[indicator.id]?.movingAverageShortDays}
+                                    onChange={(e) =>
+                                        handleLocalChange(indicator.id, "movingAverageShortDays", e.target.value)
+                                    }
+                                    onBlur={(e) =>
+                                        handleBlur(indicator.id, "movingAverageShortDays", e.target.value)
+                                    }
                                     fullWidth
                                     variant="outlined"
                                     margin="normal"
@@ -74,13 +116,13 @@ export function IndicatorForm({
                                 <TextField
                                     type="text"
                                     label="Long MA Days"
-                                    value={indicator.movingAverageLongDays ?? ''}
-                                    onChange={(e) => {
-                                        const valueAsNumber = e.target.value === '' ?
-                                            undefined :
-                                            parseInt(e.target.value, 10) || undefined;
-                                        updateIndicator(indicator.id, "movingAverageLongDays", valueAsNumber);
-                                    }}
+                                    value={localValues[indicator.id]?.movingAverageLongDays}
+                                    onChange={(e) =>
+                                        handleLocalChange(indicator.id, "movingAverageLongDays", e.target.value)
+                                    }
+                                    onBlur={(e) =>
+                                        handleBlur(indicator.id, "movingAverageLongDays", e.target.value)
+                                    }
                                     fullWidth
                                     variant="outlined"
                                     margin="normal"
@@ -99,13 +141,13 @@ export function IndicatorForm({
                             <TextField
                                 type="text"
                                 label="Breakout Days"
-                                value={indicator.breakoutDays ?? ''}
-                                onChange={(e) => {
-                                    const valueAsNumber = e.target.value === '' ?
-                                        undefined :
-                                        parseInt(e.target.value, 10) || undefined;
-                                    updateIndicator(indicator.id, "breakoutDays", valueAsNumber);
-                                }}
+                                value={localValues[indicator.id]?.breakoutDays}
+                                onChange={(e) =>
+                                    handleLocalChange(indicator.id, "breakoutDays", e.target.value)
+                                }
+                                onBlur={(e) =>
+                                    handleBlur(indicator.id, "breakoutDays", e.target.value)
+                                }
                                 fullWidth
                                 variant="outlined"
                                 margin="normal"
