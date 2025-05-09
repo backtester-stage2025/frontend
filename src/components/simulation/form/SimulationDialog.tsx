@@ -102,14 +102,14 @@ export function SimulationDialog({
         {name: "startDate", type: "date", placeholder: "Start Date", required: true},
         {name: "endDate", type: "date", placeholder: "End Date", required: true},
         {name: "startCapital", type: "number", placeholder: "Start Capital", required: true},
-        {name: "riskTolerance", type: "number", placeholder: "Risk Tolerance (%)", required: false},
         {
             name: "simulationType",
             type: "select",
             placeholder: "Simulation Type",
             required: true,
             options: simulationTypeOptions
-        }
+        },
+        {name: "riskTolerance", type: "number", placeholder: "Risk Tolerance (%)", required: false}
     ];
 
     const addIndicator = () => {
