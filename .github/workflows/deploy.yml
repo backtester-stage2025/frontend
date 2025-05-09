@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - BT-30-deploy-to-S3-bucket
 
 jobs:
   deploy:
