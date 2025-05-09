@@ -1,21 +1,39 @@
 import {defineConfig} from 'vite'
 import react from '@vitejs/plugin-react'
+import commonjs from "vite-plugin-commonjs";
 
-// https://vite.dev/config/
 export default defineConfig({
-    plugins: [react()],
-    base: '/',
+    base: "/",
+    plugins: [
+        react(),
+        commonjs()
+    ],
+    build: {
+        outDir: "dist",
+        commonjsOptions: {
+            include: [
+                /node_modules/,
+                /@canvasjs/,
+                /@mui/,
+                /@emotion/,
+                /react-query/,
+                /axios/
+            ],
+            transformMixedEsModules: true,
+        }
+    },
     optimizeDeps: {
         include: [
-            'react',
-            'react-dom',
-            'recharts',
+            "react",
+            "react-dom",
+            "react-router-dom",
+            "@mui/material",
+            "@mui/icons-material",
+            "@emotion/react",
+            "@emotion/styled",
+            "axios",
+            "react-query",
+            "@canvasjs/",
         ]
-    },
-    build: {
-        outDir: 'dist',
-        commonjsOptions: {
-            include: [/node_modules/],
-        },
-    },
-})
+    }
+});

@@ -7,16 +7,18 @@ import {StockDetails} from "../model/StockDetails.ts";
 import {StockReportRequest} from "../model/request/StockReportRequest.ts";
 import {SimulationReport} from "../model/simulation/SimulationReport.ts";
 
+const BASE_URL = import.meta.env.VITE_BACKEND_URL;
+
 export async function getStockDetails(): Promise<StockDetails[]> {
     return safeApiCall(async () => {
-        const { data } = await axios.get(`/api/stock/details`);
+        const { data } = await axios.get(`${BASE_URL}/api/stock/details`);
         return data;
     });
 }
 
 export async function getStockQuotes(stockName: string): Promise<StockQuote[]> {
     return safeApiCall(async () => {
-        const { data } = await axios.get<StockQuote[]>(`/api/stock/data`, {
+        const { data } = await axios.get<StockQuote[]>(`${BASE_URL}/api/stock/data`, {
             params: { stockName }
         });
         return data;
@@ -31,7 +33,7 @@ export async function simulateBuyAndSellRisk(request: SimulationRequest): Promis
     };
 
     return safeApiCall(async () => {
-        const { data } = await axios.post(`/api/backtest/run-simulation`, payload);
+        const { data } = await axios.post(`${BASE_URL}/api/backtest/run-simulation`, payload);
         return data;
     });
 }
@@ -53,7 +55,7 @@ export async function getSimulationReport(request: StockReportRequest): Promise<
         startDate: formatDateToLocalDateString(request.startDate),
         endDate: formatDateToLocalDateString(request.endDate)
     }
-    const {data: simulationReport} = await axios.post<SimulationReport>(`api/backtest/report`, payload);
+    const {data: simulationReport} = await axios.post<SimulationReport>(`${BASE_URL}/api/backtest/report`, payload);
 
     return simulationReport;
 }

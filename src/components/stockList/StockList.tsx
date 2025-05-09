@@ -21,15 +21,15 @@ export function StockList() {
         )
     }
 
-    const filteredStocks = stockData?.filter((stock: StockDetails) => {
-        const term = searchTerm.toLowerCase();
-        const officialName = stock.officialName.toLowerCase();
-        const companyName = stock.companyName.toLowerCase();
-        const companyKey = companyName + ":" + officialName;
-        return companyKey.includes(term);
-    }
-
-    ) || [];
+    const filteredStocks = Array.isArray(stockData)
+        ? stockData.filter((stock: StockDetails) => {
+            const term = searchTerm.toLowerCase();
+            const officialName = stock.officialName.toLowerCase();
+            const companyName = stock.companyName.toLowerCase();
+            const companyKey = companyName + ":" + officialName;
+            return companyKey.includes(term);
+        })
+        : [];
 
     const visibleStocks = filteredStocks.slice(0, 5);
     const tooManyResults = filteredStocks.length > 5;
