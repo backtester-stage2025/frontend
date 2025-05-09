@@ -21,6 +21,43 @@ interface FieldControllerProps {
 }
 
 export function FieldController({control, errors, field}: Readonly<FieldControllerProps>) {
+    if (field.name === "riskTolerance") {
+        return (
+            <Controller
+                name="simulationType"
+                control={control}
+                render={({field: simTypeField}) => {
+                    if (simTypeField.value !== SimulationTypes.RISK_BASED) {
+                        return <></>;
+                    }
+
+                    return (
+                        <Controller
+                            name={field.name as keyof SimulationRequest}
+                            control={control}
+                            render={({field: controllerField}) => {
+                                const error = !!errors[field.name as keyof SimulationRequest];
+                                const helperText = errors[field.name as keyof SimulationRequest]?.message;
+
+                                return (
+                                    <TextField
+                                        {...controllerField}
+                                        type={field.type}
+                                        fullWidth
+                                        label={field.placeholder}
+                                        required={field.required}
+                                        error={error}
+                                        helperText={helperText}
+                                    />
+                                );
+                            }}
+                        />
+                    );
+                }}
+            />
+        );
+    }
+
     if (field.shouldRender === false) return null;
     return (
         <Controller

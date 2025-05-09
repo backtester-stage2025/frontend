@@ -22,8 +22,6 @@ export const simulationRequestSchema = z.object({
         breakoutDays: z.number().optional(),
     })),
     riskTolerance: z.coerce.number()
-        .min(0, "Risk Tolerance must be between 0 and 100")
-        .max(100, "Risk Tolerance must be between 0 and 100")
         .optional(),
 }).strict()
     .refine((data) => data.endDate > data.startDate, {
@@ -31,6 +29,22 @@ export const simulationRequestSchema = z.object({
         message: "End Date must be after Start Date",
     })
     .superRefine((data, ctx) => {
+        if (data.simulationType === SimulationTypes.RISK_BASED) {
+            if (data.riskTolerance === undefined) {
+                ctx.addIssue({
+                    path: ["riskTolerance"],
+                    message: "Risk Tolerance is required for Risk-Based simulation",
+                    code: z.ZodIssueCode.custom,
+                });
+            } else if (data.riskTolerance < 0 || data.riskTolerance > 100) {
+                ctx.addIssue({
+                    path: ["riskTolerance"],
+                    message: "Risk Tolerance must be between 0 and 100",
+                    code: z.ZodIssueCode.custom
+                })
+            }
+        }
+
         data.indicators.forEach((ind, idx) => {
             if (ind.indicator === Indicator.MOVING_AVERAGE_CROSSOVER) {
                 if (ind.movingAverageShortDays === undefined) {
