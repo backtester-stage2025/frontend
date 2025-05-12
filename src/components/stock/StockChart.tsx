@@ -4,9 +4,10 @@ import {StockQuote} from "../../model/StockQuote";
 import {Loader} from "../util/Loader.tsx";
 import {useMovingAverage} from "../../hooks/useMovingAverage.ts";
 import {useEffect, useState} from 'react';
-import {Alert, Paper, Typography} from '@mui/material';
+import {Paper, Typography} from '@mui/material';
 import {ShowChart} from '@mui/icons-material';
 import {MovingAverageControls} from './MovingAverageControls';
+import {ErrorAlert, WarningAlert} from "../util/Alerts.tsx";
 
 const CanvasJSStockChart = CanvasJSReact.CanvasJSStockChart;
 
@@ -68,25 +69,15 @@ export function StockChart({stockName}: Readonly<StockChartProps>) {
         }
     }, [stockQuotes, periods.longPeriod, periods.shortPeriod]);
 
-    if (isLoadingStockQuotes || isLoadingMovingAverageShort || isLoadingMovingAverageLong) {
+    if (isLoadingStockQuotes || isLoadingMovingAverageShort || isLoadingMovingAverageLong)
         return <Loader message={`Loading stock quotes for ${stockName}`}/>;
-    }
 
-    if (isErrorStockQuotes || isErrorMovingAverageShort || isErrorMovingAverageLong) {
-        return (
-            <Alert severity="error" sx={{mt: 2, width: "100%"}}>
-                Error loading stock quotes for {stockName}: {error?.message}
-            </Alert>
-        );
-    }
+    if (isErrorStockQuotes || isErrorMovingAverageShort || isErrorMovingAverageLong)
+        return <ErrorAlert message={`Error loading stock quotes for ${stockName}: ${error?.message}`}/>;
 
-    if (!stockQuotes || stockQuotes.length === 0) {
-        return (
-            <Alert severity="warning" sx={{mt: 2, width: "100%"}}>
-                No stock quotes available for {stockName}. Please try a different stock.
-            </Alert>
-        );
-    }
+    if (!stockQuotes || stockQuotes.length === 0)
+        return <WarningAlert message={`No stock quotes available for ${stockName}. Please try a different stock.`}/>
+
 
     const dataPoints = stockQuotes?.map((quote: StockQuote) => ({
         x: new Date(quote.dateTime),

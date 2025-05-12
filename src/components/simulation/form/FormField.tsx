@@ -1,9 +1,8 @@
 import {ControllerRenderProps} from "react-hook-form";
 import {SimulationRequest} from "../../../model/request/SimulationRequest.ts";
 import {DatePicker} from "@mui/x-date-pickers/DatePicker";
-import {Checkbox, FormControlLabel, InputAdornment, MenuItem, TextField} from "@mui/material";
+import {Autocomplete, Checkbox, FormControlLabel, MenuItem, TextField} from "@mui/material";
 import {FormField} from "./FormController.tsx";
-import {ChangeEvent} from "react";
 
 interface FormFieldRenderProps {
     field: FormField;
@@ -70,21 +69,12 @@ export function FormDropdown(
 export function FormCheckbox(
     {field, controllerField}: Readonly<FormFieldRenderProps>
 ) {
-    const onChangeHandler = (e: ChangeEvent<HTMLInputElement>): void => {
-        const isChecked = e.target.checked;
-        controllerField.onChange(isChecked);
-        if (field.checkBoxToggle != null) {
-            field.checkBoxToggle(isChecked);
-        }
-    }
-
     return (
         <FormControlLabel
             control={
                 <Checkbox
                     checked={!!controllerField.value}
                     id={field.name}
-                    onChange={onChangeHandler}
                     required={field.required}
                 />
             }
@@ -93,25 +83,38 @@ export function FormCheckbox(
     );
 }
 
-export function FormTextFieldWithAdornment(
+export function FormAutoComplete(
     {field, controllerField, error, helperText}: Readonly<FormFieldRenderProps>
-) {
+){
+    const options = Array.isArray(field.options) && typeof field.options[0] === "object" && "label" in field.options[0]
+        ? (field.options as { label: string; value: unknown }[]).map(opt => opt.label)
+        : (field.options as string[] || [])
+
+    const value = controllerField.value !== null && controllerField.value !== undefined
+        ? controllerField.value.toString()
+        : null
+
     return (
-        <TextField
-            {...controllerField}
-            type={field.type}
-            fullWidth
-            label={field.placeholder}
-            required={field.required}
-            error={error}
-            helperText={helperText}
-            slotProps={{
-                input: {
-                    endAdornment: (
-                        <InputAdornment position="end">days</InputAdornment>
-                    ),
-                },
+        <Autocomplete
+            options={options}
+            value={value}
+            onChange={(_, newValue) => {
+                // Extract the broker name before the fee information if present
+                const value = newValue?.includes('(')
+                    ? newValue.substring(0, newValue.indexOf('(')).trim()
+                    : newValue;
+                controllerField.onChange(value);
             }}
+            renderInput={(params) => (
+                <TextField
+                    {...params}
+                    label={field.placeholder}
+                    required={field.required}
+                    error={error}
+                    helperText={helperText}
+                    fullWidth
+                />
+            )}
         />
     );
 }
