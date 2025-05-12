@@ -17,7 +17,9 @@
     "@mui/material": "^7.0.2",
     "@mui/x-charts": "^8.2.0",
     "@mui/x-date-pickers": "^8.1.0",
-    "@tanstack/react-query": "^5.71.5",
+    "@originjs/vite-plugin-commonjs": "^1.0.3",
+    "@rollup/plugin-commonjs": "^28.0.3",
+    "@tanstack/react-query": "^5.75.5",
     "axios": "^1.8.4",
     "date-fns": "^4.1.0",
     "react": "^19.0.0",
@@ -25,6 +27,7 @@
     "react-hook-form": "^7.56.1",
     "react-router-dom": "^7.4.1",
     "recharts": "^2.15.3",
+    "vite-plugin-commonjs": "^0.10.4",
     "zod": "^3.24.3"
   },
   "devDependencies": {
