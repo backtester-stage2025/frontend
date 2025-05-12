@@ -7,6 +7,6 @@ export interface StockDetails {
 }
 
 export enum CurrencyType {
-    EUROS = "EUROS",
+    EUR = "EUR",
     USD = "USD"
 }
