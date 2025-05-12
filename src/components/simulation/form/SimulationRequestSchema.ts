@@ -4,6 +4,7 @@ import {Indicator} from "../../../model/request/Indicator.ts";
 
 export const simulationRequestSchema = z.object({
     stockName: z.string().nonempty("Stock name is required"),
+    brokerName: z.string().nonempty("Stock name is required"),
     startDate: z.coerce.date({required_error: "Start Date is required"}),
     endDate: z.coerce.date({required_error: "End Date is required"}),
     startCapital: z.coerce.number({
