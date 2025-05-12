@@ -86,24 +86,21 @@ export function FormCheckbox(
 export function FormAutoComplete(
     {field, controllerField, error, helperText}: Readonly<FormFieldRenderProps>
 ){
-    const options = Array.isArray(field.options) && typeof field.options[0] === "object" && "label" in field.options[0]
+
+    const optionLabels = Array.isArray(field.options) && typeof field.options[0] === "object" && "label" in field.options[0]
         ? (field.options as { label: string; value: unknown }[]).map(opt => opt.label)
         : (field.options as string[] || [])
 
-    const value = controllerField.value !== null && controllerField.value !== undefined
+    const optionValues = controllerField.value !== null && controllerField.value !== undefined
         ? controllerField.value.toString()
         : null
 
     return (
         <Autocomplete
-            options={options}
-            value={value}
+            options={optionLabels}
+            value={optionValues}
             onChange={(_, newValue) => {
-                // Extract the broker name before the fee information if present
-                const value = newValue?.includes('(')
-                    ? newValue.substring(0, newValue.indexOf('(')).trim()
-                    : newValue;
-                controllerField.onChange(value);
+                controllerField.onChange(newValue);
             }}
             renderInput={(params) => (
                 <TextField

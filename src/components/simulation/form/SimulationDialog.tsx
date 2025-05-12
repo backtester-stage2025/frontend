@@ -92,14 +92,22 @@ export function SimulationDialog({
         setIsSubmitting(false);
     };
 
+    const trimBrokerName = (nameWithPriceInBrackets: string)=>{
+        return nameWithPriceInBrackets?.includes('(')
+            ? nameWithPriceInBrackets.substring(0, nameWithPriceInBrackets.indexOf('(')).trim()
+            : nameWithPriceInBrackets;
+    }
+
     const onSubmitHandler = (data: SimulationRequest) => {
         setIsSubmitting(true);
-        if (!stockData?.length) return showSubmitError("Stock data is not available.");
 
+        // check the stock data to map the stock name
+        if (!stockData?.length) return showSubmitError("Stock data is not available.");
         const officialStockName = stockData.find(stock => stock.companyName === data.stockName)?.officialName;
         if (!officialStockName) return showSubmitError(`Could not find a matching stock for "${data.stockName}".`);
 
-        onSubmit({...data, stockName: officialStockName});
+        const trimmedBrokerName = trimBrokerName(data.brokerName)
+        onSubmit({...data, stockName: officialStockName, brokerName: trimmedBrokerName});
         setIsSubmitting(false);
     };
 
