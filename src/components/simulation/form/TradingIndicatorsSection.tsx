@@ -1,7 +1,7 @@
 import { Box, Button, Divider, Paper, Stack, Typography} from "@mui/material";
 import {IndicatorDetails, SimulationRequest} from "../../../model/request/SimulationRequest.ts";
 import {IndicatorForm} from "./IndicatorForm.tsx";
-import {Indicator} from "../../../model/request/Indicator.ts";
+import {IndicatorType} from "../../../model/request/IndicatorType.ts";
 import {Control, FieldErrors, useFieldArray} from "react-hook-form";
 import {InfoAlert} from "../../util/Alerts.tsx";
 
@@ -10,7 +10,7 @@ interface TradingIndicatorSectionProps {
     errors: FieldErrors<SimulationRequest>
 }
 
-export default function TradingIndicatorsSection({ control, errors } : Readonly<TradingIndicatorSectionProps>) {
+export default function TradingIndicatorsSection({ control, errors: simulationRequestFieldErrors } : Readonly<TradingIndicatorSectionProps>) {
     const {
         fields: indicatorFields,
         append,
@@ -20,15 +20,15 @@ export default function TradingIndicatorsSection({ control, errors } : Readonly<
 
     const addIndicator = () => {
         append({
-            indicator: Indicator.NONE,
+            indicator: IndicatorType.NONE,
             movingAverageShortDays: undefined,
             movingAverageLongDays: undefined,
             breakoutDays: undefined
         });
     };
 
-    const updateIndicator = (index: number, field: keyof IndicatorDetails, value: number | Indicator | undefined) => {
-        const updated = { ...indicatorFields[index], [field]: value };
+    const updateIndicator = (index: number, changes: Partial<IndicatorDetails>) => {
+        const updated = { ...indicatorFields[index], ...changes };
         update(index, updated);
     };
 
@@ -45,10 +45,9 @@ export default function TradingIndicatorsSection({ control, errors } : Readonly<
                                 indicators={[field]}
                                 addIndicator={() => {}}
                                 removeIndicator={() => remove(index)}
-                                updateIndicator={(_, fieldKey, value) =>
-                                    updateIndicator(index, fieldKey as keyof IndicatorDetails, value)
-                                }
-                                errors={errors.indicators?.[index] ? { 0: errors.indicators[index] } : undefined}
+                                updateIndicator={(partialIndicator) =>
+                                    updateIndicator(index, partialIndicator)}
+                                errors={simulationRequestFieldErrors.indicators?.[index]}
                             />
                         </Paper>
                     ))}

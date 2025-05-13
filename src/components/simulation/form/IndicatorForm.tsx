@@ -1,27 +1,18 @@
 import {Box, Grid, IconButton, MenuItem, TextField, Typography} from "@mui/material";
 import {Delete} from "@mui/icons-material";
-import {Indicator} from "../../../model/request/Indicator.ts";
+import {IndicatorType} from "../../../model/request/IndicatorType.ts";
 import {useState} from "react";
+import {Indicator, IndicatorDetails} from "../../../model/request/SimulationRequest.ts";
+import {FieldErrors} from "react-hook-form";
 
 type IndicatorValue = string | number;
 
 interface IndicatorFormProps {
-    indicators: {
-        id: string;
-        indicator: Indicator;
-        movingAverageShortDays?: number;
-        movingAverageLongDays?: number;
-        breakoutDays?: number;
-    }[];
+    indicators: Indicator[];
     addIndicator: () => void;
     removeIndicator: (id: string) => void;
-    updateIndicator: (id: string, key: string, value: Indicator | number | undefined) => void;
-    errors?: Record<string, {
-        movingAverageShortDays?: { message: string };
-        movingAverageLongDays?: { message: string };
-        breakoutDays?: { message: string };
-        indicator?: { message: string };
-    }>;
+    updateIndicator: (changes: Partial<IndicatorDetails>) => void;
+    errors?: FieldErrors<IndicatorDetails>;
 }
 
 export function IndicatorForm({
@@ -59,9 +50,9 @@ export function IndicatorForm({
         }));
     };
 
-    const handleBlur = (id: string, key: string, value: string) => {
+    const handleBlur = (key: string, value: string) => {
         const parsedValue = value === '' ? undefined : parseInt(value, 10) || undefined;
-        updateIndicator(id, key, parsedValue);
+        updateIndicator({[key]: parsedValue});
     };
 
     return (
@@ -73,14 +64,14 @@ export function IndicatorForm({
                             select
                             label="Indicator Type"
                             value={indicator.indicator}
-                            onChange={(e) => updateIndicator(indicator.id, "indicator", e.target.value as Indicator)}
+                            onChange={(e) => updateIndicator({["indicator"]: e.target.value as IndicatorType})}
                             fullWidth
                             variant="outlined"
                             margin="normal"
-                            error={!!errors?.[0]?.indicator}
-                            helperText={errors?.[0]?.indicator?.message}
+                            error={!!errors?.indicator}
+                            helperText={errors?.indicator?.message}
                         >
-                            {Object.values(Indicator).map((option) => (
+                            {Object.values(IndicatorType).map((option) => (
                                 <MenuItem key={option} value={option}>
                                     {option.replace(/_/g, ' ')}
                                 </MenuItem>
@@ -89,7 +80,7 @@ export function IndicatorForm({
                     </Grid>
 
                     <Grid size={{xs: 12, sm: 5}}>
-                        {indicator.indicator === Indicator.MOVING_AVERAGE_CROSSOVER && (
+                        {indicator.indicator === IndicatorType.MOVING_AVERAGE_CROSSOVER && (
                             <Box sx={{display: 'flex', gap: 2}}>
                                 <TextField
                                     type="text"
@@ -99,13 +90,13 @@ export function IndicatorForm({
                                         handleLocalChange(indicator.id, "movingAverageShortDays", e.target.value)
                                     }
                                     onBlur={(e) =>
-                                        handleBlur(indicator.id, "movingAverageShortDays", e.target.value)
+                                        handleBlur("movingAverageShortDays", e.target.value)
                                     }
                                     fullWidth
                                     variant="outlined"
                                     margin="normal"
-                                    error={!!errors?.[0]?.movingAverageShortDays}
-                                    helperText={errors?.[0]?.movingAverageShortDays?.message}
+                                    error={!!errors?.movingAverageShortDays}
+                                    helperText={errors?.movingAverageShortDays?.message}
                                     slotProps={{
                                         input: {
                                             inputProps: {
@@ -121,13 +112,13 @@ export function IndicatorForm({
                                         handleLocalChange(indicator.id, "movingAverageLongDays", e.target.value)
                                     }
                                     onBlur={(e) =>
-                                        handleBlur(indicator.id, "movingAverageLongDays", e.target.value)
+                                        handleBlur("movingAverageLongDays", e.target.value)
                                     }
                                     fullWidth
                                     variant="outlined"
                                     margin="normal"
-                                    error={!!errors?.[0]?.movingAverageLongDays}
-                                    helperText={errors?.[0]?.movingAverageLongDays?.message}
+                                    error={!!errors?.movingAverageLongDays}
+                                    helperText={errors?.movingAverageLongDays?.message}
                                     slotProps={{
                                         input: {
                                             inputProps: {
@@ -137,7 +128,7 @@ export function IndicatorForm({
                                     }}/>
                             </Box>
                         )}
-                        {indicator.indicator === Indicator.BREAKOUT && (
+                        {indicator.indicator === IndicatorType.BREAKOUT && (
                             <TextField
                                 type="text"
                                 label="Breakout Days"
@@ -146,13 +137,13 @@ export function IndicatorForm({
                                     handleLocalChange(indicator.id, "breakoutDays", e.target.value)
                                 }
                                 onBlur={(e) =>
-                                    handleBlur(indicator.id, "breakoutDays", e.target.value)
+                                    handleBlur("breakoutDays", e.target.value)
                                 }
                                 fullWidth
                                 variant="outlined"
                                 margin="normal"
-                                error={!!errors?.[0]?.breakoutDays}
-                                helperText={errors?.[0]?.breakoutDays?.message}
+                                error={!!errors?.breakoutDays}
+                                helperText={errors?.breakoutDays?.message}
                                 slotProps={{
                                     input: {
                                         inputProps: {
@@ -161,7 +152,7 @@ export function IndicatorForm({
                                     }
                                 }}/>
                         )}
-                        {indicator.indicator === Indicator.NONE && (
+                        {indicator.indicator === IndicatorType.NONE && (
                             <Typography variant="body2" color="textSecondary" sx={{mt: 2}}>
                                 No additional configuration needed
                             </Typography>

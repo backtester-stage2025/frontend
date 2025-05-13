@@ -1,6 +1,6 @@
 import {z} from "zod";
 import {SimulationTypes} from "../../../model/request/SimulationTypes.ts";
-import {Indicator} from "../../../model/request/Indicator.ts";
+import {IndicatorType} from "../../../model/request/IndicatorType.ts";
 
 export const simulationRequestSchema = z.object({
     stockName: z.string().nonempty("Stock name is required"),
@@ -16,7 +16,7 @@ export const simulationRequestSchema = z.object({
         invalid_type_error: "Invalid Simulation Type",
     }),
     indicators: z.array(z.object({
-        indicator: z.nativeEnum(Indicator, {required_error: "Indicator is required"}),
+        indicator: z.nativeEnum(IndicatorType, {required_error: "Indicator is required"}),
         movingAverageShortDays: z.number().optional(),
         movingAverageLongDays: z.number().optional(),
         breakoutDays: z.number().optional(),
@@ -46,7 +46,7 @@ export const simulationRequestSchema = z.object({
         }
 
         data.indicators.forEach((ind, idx) => {
-            if (ind.indicator === Indicator.MOVING_AVERAGE_CROSSOVER) {
+            if (ind.indicator === IndicatorType.MOVING_AVERAGE_CROSSOVER) {
                 if (ind.movingAverageShortDays === undefined) {
                     ctx.addIssue({
                         path: ["indicators", idx, "movingAverageShortDays"],
@@ -73,7 +73,7 @@ export const simulationRequestSchema = z.object({
                     });
                 }
             }
-            if (ind.indicator === Indicator.BREAKOUT && ind.breakoutDays === undefined) {
+            if (ind.indicator === IndicatorType.BREAKOUT && ind.breakoutDays === undefined) {
                 ctx.addIssue({
                     path: ["indicators", idx, "breakoutDays"],
                     message: "Breakout days required for breakout indicator",

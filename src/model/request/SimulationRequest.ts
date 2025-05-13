@@ -1,5 +1,5 @@
 import {SimulationTypes} from "./SimulationTypes.ts";
-import {Indicator} from "./Indicator.ts";
+import {IndicatorType} from "./IndicatorType.ts";
 
 export interface SimulationRequest {
     brokerName: string;
@@ -13,8 +13,12 @@ export interface SimulationRequest {
 }
 
 export interface IndicatorDetails {
-    indicator: Indicator;
+    indicator: IndicatorType;
     movingAverageShortDays?: number;
     movingAverageLongDays?: number;
     breakoutDays?: number;
+}
+
+export interface Indicator extends IndicatorDetails {
+    id: string;
 }
