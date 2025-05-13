@@ -1,40 +1,62 @@
-import {ControllerRenderProps} from "react-hook-form";
-import {SimulationRequest} from "../../../model/request/SimulationRequest.ts";
+import {ControllerRenderProps, FieldPath, FieldValues} from "react-hook-form";
 import {DatePicker} from "@mui/x-date-pickers/DatePicker";
 import {Autocomplete, Checkbox, FormControlLabel, MenuItem, TextField} from "@mui/material";
-import {FormField} from "./FormController.tsx";
 
-interface FormFieldRenderProps {
-    field: FormField;
-    controllerField: ControllerRenderProps<SimulationRequest, keyof SimulationRequest>
-    error: boolean;
-    helperText: string | undefined;
+export interface EnumOption<E extends string | number> {
+    label: string;
+    value: E;
 }
 
-export function FormDatePicker(
-    {field, controllerField, error, helperText}: Readonly<FormFieldRenderProps>
+export interface FormField<
+    TFormValues extends FieldValues,
+    TValue extends string | number = string
+> {
+    name: FieldPath<TFormValues>;
+    type: "text" | "date" | "select" | "checkbox" | "autocomplete" | "number";
+    placeholder?: string;
+    required?: boolean;
+    options?: Array<string> | Array<EnumOption<TValue>>;
+    shouldRender?: boolean;
+}
+
+export interface FormFieldRenderProps<T extends FieldValues> {
+    field: FormField<T>;
+    controllerField: ControllerRenderProps<T, FieldPath<T>>;
+    error: boolean;
+    helperText?: string;
+}
+
+function toDate(value: unknown) {
+    if (value instanceof Date) {
+        return value;
+    }
+    return null;
+}
+
+export function FormDatePicker<TFieldValues extends FieldValues>(
+    { field, controllerField, error, helperText }: Readonly<FormFieldRenderProps<TFieldValues>>
 ) {
     return (
         <DatePicker
             label={field.placeholder}
-            value={controllerField.value instanceof Date ? controllerField.value : null}
+            value={toDate(controllerField.value)}
             onChange={(date) => controllerField.onChange(date)}
             slotProps={{
                 textField: {
                     fullWidth: true,
                     required: field.required,
                     error,
-                    helperText
+                    helperText,
                 }
             }}
         />
     );
 }
 
-export function FormDropdown(
-    {field, controllerField, error, helperText}: Readonly<FormFieldRenderProps>
+export function FormDropdown<T extends FieldValues>(
+    { field, controllerField, error, helperText }: Readonly<FormFieldRenderProps<T>>
 ) {
-    const optionsReady = field.options && field.options.length > 0;
+    const opts = field.options ?? [];
 
     return (
         <TextField
@@ -47,14 +69,14 @@ export function FormDropdown(
             error={error}
             helperText={helperText}
         >
-            {optionsReady ? (
-                field.options!.map((opt) =>
+            {opts.length > 0 ? (
+                opts.map((opt) =>
                     typeof opt === "string" ? (
                         <MenuItem key={opt} value={opt}>
                             {opt}
                         </MenuItem>
                     ) : (
-                        <MenuItem key={opt.value} value={opt.value}>
+                        <MenuItem key={String(opt.label)} value={opt.value}>
                             {opt.label}
                         </MenuItem>
                     )
@@ -66,13 +88,14 @@ export function FormDropdown(
     );
 }
 
-export function FormCheckbox(
-    {field, controllerField}: Readonly<FormFieldRenderProps>
+export function FormCheckbox<T extends FieldValues>(
+    { field, controllerField }: Readonly<FormFieldRenderProps<T>>
 ) {
     return (
         <FormControlLabel
             control={
                 <Checkbox
+                    {...controllerField}
                     checked={!!controllerField.value}
                     id={field.name}
                     required={field.required}
@@ -83,25 +106,17 @@ export function FormCheckbox(
     );
 }
 
-export function FormAutoComplete(
-    {field, controllerField, error, helperText}: Readonly<FormFieldRenderProps>
-){
-
-    const optionLabels = Array.isArray(field.options) && typeof field.options[0] === "object" && "label" in field.options[0]
-        ? (field.options as { label: string; value: unknown }[]).map(opt => opt.label)
-        : (field.options as string[] || [])
-
-    const optionValues = controllerField.value !== null && controllerField.value !== undefined
-        ? controllerField.value.toString()
-        : null
+export function FormAutoComplete<T extends FieldValues>(
+    { field, controllerField, error, helperText }: Readonly<FormFieldRenderProps<T>>
+) {
+    const rawOpts = field.options ?? [];
+    const labels = rawOpts.map(opt => typeof opt === "string" ? opt : opt.label);
 
     return (
         <Autocomplete
-            options={optionLabels}
-            value={optionValues}
-            onChange={(_, newValue) => {
-                controllerField.onChange(newValue);
-            }}
+            options={labels}
+            value={controllerField.value != null ? String(controllerField.value) : ""}
+            onChange={(_, newValue) => controllerField.onChange(newValue)}
             renderInput={(params) => (
                 <TextField
                     {...params}

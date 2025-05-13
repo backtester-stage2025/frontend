@@ -6,7 +6,7 @@ import {AdapterDateFns} from "@mui/x-date-pickers/AdapterDateFns";
 import {Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from "@mui/material";
 import {enGB} from "date-fns/locale";
 import {useStockData} from "../../../hooks/useStockData.ts";
-import {FieldController, FormField} from "./FormController.tsx";
+import {FieldController} from "./FormController.tsx";
 import {simulationTypeOptions, SimulationTypes} from "../../../model/request/SimulationTypes.ts";
 import {useEffect, useState} from "react";
 import {ErrorOverlay} from "./ErrorOverlay.tsx";
@@ -16,8 +16,9 @@ import {useBrokers} from "../../../hooks/useBrokers.ts";
 import {Loader} from "../../util/Loader.tsx";
 import {ErrorAlert} from "../../util/Alerts.tsx";
 
-import TradingIndicatorsSection from "./TradingIndicatorsSection";
 import {Broker} from "../../../model/Broker.ts";
+import {FormField} from "./FormField.tsx";
+import {TradingIndicatorsSection} from "./TradingIndicatorsSection.tsx";
 
 interface BuyAndHoldSimulationProps {
     isOpen: boolean;
@@ -63,7 +64,7 @@ export function SimulationDialog({
     if (isLoadingBrokers) return <Loader/>;
     if (isErrorLoadingBrokers) return <ErrorAlert message="Error loading brokers"/>;
 
-    const fieldConfigs: FormField[] = [
+    const fieldConfigs: FormField<SimulationRequest>[] = [
         {
             name: "brokerName", type: "autocomplete", placeholder: "Broker", required: true,
             options: brokers?.map((b: Broker) => `${b.name} (Fee: ${b.transactionFee.toFixed(2)}€)`)

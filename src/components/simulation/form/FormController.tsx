@@ -1,38 +1,27 @@
-import {Control, Controller, FieldErrors} from "react-hook-form";
-import {SimulationRequest} from "../../../model/request/SimulationRequest.ts";
+import {Control, Controller, FieldErrors, FieldValues} from "react-hook-form";
 import {TextField} from "@mui/material";
 import {
     FormAutoComplete,
     FormCheckbox,
     FormDatePicker,
-    FormDropdown
+    FormDropdown, FormField
 } from "./FormField.tsx";
-import {SimulationTypes} from "../../../model/request/SimulationTypes.ts";
 
-export interface FormField {
-    name: string;
-    type: "text" | "number" | "date" | "select" | "checkbox" | "autocomplete";
-    placeholder: string;
-    required: boolean;
-    options?: string[] | { label: string; value: SimulationTypes }[];
-    shouldRender?: boolean;
+interface FieldControllerProps<T extends FieldValues> {
+    errors: FieldErrors<T> | undefined;
+    control: Control<T>
+    field: FormField<T>
 }
 
-interface FieldControllerProps {
-    errors: FieldErrors<SimulationRequest>
-    control: Control<SimulationRequest>
-    field: FormField
-}
-
-export function FieldController({control, errors, field}: Readonly<FieldControllerProps>) {
+export function FieldController<T extends FieldValues>({control, errors, field}: Readonly<FieldControllerProps<T>>) {
     if (field.shouldRender === false) return null;
     return (
         <Controller
-            name={field.name as keyof SimulationRequest}
+            name={field.name}
             control={control}
             render={({field: controllerField}) => {
-                const error = !!errors[field.name as keyof SimulationRequest];
-                const helperText = errors[field.name as keyof SimulationRequest]?.message;
+                const error = !!errors?.[field.name];
+                const helperText = errors?.[field.name]?.message as string | undefined;
 
                 if (field.type === "date")
                     return <FormDatePicker field={field} controllerField={controllerField} error={error} helperText={helperText}/>

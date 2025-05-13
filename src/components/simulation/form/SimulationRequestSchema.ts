@@ -17,9 +17,9 @@ export const simulationRequestSchema = z.object({
     }),
     indicators: z.array(z.object({
         indicator: z.nativeEnum(IndicatorType, {required_error: "Indicator is required"}),
-        movingAverageShortDays: z.number().optional(),
-        movingAverageLongDays: z.number().optional(),
-        breakoutDays: z.number().optional(),
+        movingAverageShortDays: z.coerce.number().optional(),
+        movingAverageLongDays: z.coerce.number().optional(),
+        breakoutDays: z.coerce.number().optional(),
     })),
     riskTolerance: z.coerce.number()
         .optional(),
@@ -44,6 +44,8 @@ export const simulationRequestSchema = z.object({
                 })
             }
         }
+
+        console.log(data.indicators)
 
         data.indicators.forEach((ind, idx) => {
             if (ind.indicator === IndicatorType.MOVING_AVERAGE_CROSSOVER) {
