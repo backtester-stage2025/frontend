@@ -11,6 +11,7 @@ import {createTheme, ThemeProvider} from "@mui/material";
 import {StockOverview} from "./components/stock/StockOverview.tsx";
 import {NotFound} from "./components/NotFound.tsx";
 import {AuthProvider} from "./context/AuthContext.tsx";
+import {Account} from "./components/account/Account.tsx";
 
 function App() {
     axios.defaults.baseURL = import.meta.env.VITE_BACKEND_URL;
@@ -54,6 +55,7 @@ function App() {
                             <Route path="/stock-overview" element={<StockOverview/>}/>
                             <Route path="/strategy-tester" element={<Simulation/>}/>
                             <Route path="*" element={<NotFound/>}/>
+                            <Route path="/account" element={<Account/>}/>
                         </Routes>
                     </BrowserRouter>
                 </QueryClientProvider>
