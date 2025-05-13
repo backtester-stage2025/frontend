@@ -1,14 +1,14 @@
-import { useAuth } from "../../context/AuthContext";
-import { Typography, Box } from "@mui/material";
-import { Login } from "../Login";
+import {useAuth} from "../../context/AuthContext";
+import {Box, Typography} from "@mui/material";
+import {Login} from "../Login";
 
 export function Account() {
-    const { isAuthenticated, username, email } = useAuth();
+    const {isAuthenticated, username, email} = useAuth();
 
     if (!isAuthenticated) {
         return (
             <Box display="flex" justifyContent="center" alignItems="center" height="80vh">
-                <Login />
+                <Login/>
             </Box>
         );
     }

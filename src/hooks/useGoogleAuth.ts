@@ -1,9 +1,9 @@
-import { useGoogleLogin } from "@react-oauth/google";
-import { useAuth } from "../context/AuthContext";
-import { authenticateUser } from "../services/authService";
+import {useGoogleLogin} from "@react-oauth/google";
+import {useAuth} from "../context/AuthContext";
+import {authenticateUser} from "../services/authService";
 
 export const useGoogleAuth = () => {
-    const { setAuthState } = useAuth();
+    const {setAuthState} = useAuth();
 
     const login = useGoogleLogin({
         onSuccess: (credentialResponse) => {
@@ -22,5 +22,5 @@ export const useGoogleAuth = () => {
         }
     });
 
-    return { login };
+    return {login};
 };

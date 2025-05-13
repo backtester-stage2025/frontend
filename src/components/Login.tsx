@@ -2,12 +2,11 @@ import {useGoogleAuth} from "../hooks/useGoogleAuth.ts";
 import {useAuth} from "../context/AuthContext.tsx";
 
 export function Login() {
-    const { login } = useGoogleAuth();
-    const { isAuthenticated, clearAuthState } = useAuth();
+    const {login} = useGoogleAuth();
+    const {isAuthenticated, clearAuthState} = useAuth();
 
     const handleLogout = () => {
         clearAuthState();
-        console.log("User logged out");
     };
 
     return (
