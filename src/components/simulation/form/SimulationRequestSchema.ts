@@ -2,16 +2,14 @@ import {EnumLike, z} from "zod";
 import {SimulationTypes} from "../../../model/request/SimulationTypes.ts";
 import {IndicatorType} from "../../../model/request/IndicatorType.ts";
 
-const coerceNumber = (description: string, positive: boolean = false) => {
-    let numberSchema = z.coerce.number({
+const coerceNumber = (description: string) => {
+    return z.coerce.number({
         required_error: `${description} is required`,
         invalid_type_error: `${description} is invalid`,
     });
-    if (positive) {
-        numberSchema = numberSchema.positive(`${description} must be positive.`);
-    }
-    return numberSchema;
 };
+
+const coercePositiveNumber = (description: string) => coerceNumber(description).positive(`${description} must be positive.`);
 
 const coerceEnum = <T extends EnumLike> (values: T, description: string)=> {
     return z.nativeEnum(values, {
@@ -22,9 +20,9 @@ const coerceEnum = <T extends EnumLike> (values: T, description: string)=> {
 
 const indicatorSchema = z.object({
     indicator: coerceEnum(IndicatorType, "Indicator Type"),
-    movingAverageShortDays: coerceNumber("Short moving average day count", true).optional(),
-    movingAverageLongDays: coerceNumber("Long moving average day count", true).optional(),
-    breakoutDays: coerceNumber("Breakout day count", true).optional(),
+    movingAverageShortDays: coerceNumber("Short moving average day count").optional(),
+    movingAverageLongDays: coerceNumber("Long moving average day count").optional(),
+    breakoutDays: coerceNumber("Breakout day count").optional(),
 });
 
 
@@ -33,7 +31,7 @@ export const simulationRequestSchema = z.object({
     brokerName: z.string().nonempty("Broker name is required"),
     startDate: z.coerce.date({required_error: "Start Date is required"}),
     endDate: z.coerce.date({required_error: "End Date is required"}),
-    startCapital: coerceNumber("Start Capital", true),
+    startCapital: coercePositiveNumber("Start Capital"),
     simulationType: coerceEnum(SimulationTypes, "Simulation Type"),
     indicators: z.array(indicatorSchema),
     riskTolerance: coerceNumber("Risk Tolerance").optional(),
@@ -67,14 +65,28 @@ export const simulationRequestSchema = z.object({
                         message: "Short MA days required for crossover",
                         code: z.ZodIssueCode.custom,
                     });
+                } else if (ind.movingAverageShortDays <= 0) {
+                    ctx.addIssue({
+                        path: ["indicators", idx, "movingAverageShortDays"],
+                        message: "Short MA must be positive",
+                        code: z.ZodIssueCode.custom,
+                    });
                 }
+
                 if (ind.movingAverageLongDays === undefined) {
                     ctx.addIssue({
                         path: ["indicators", idx, "movingAverageLongDays"],
                         message: "Long MA days required for crossover",
                         code: z.ZodIssueCode.custom,
                     });
+                } else if (ind.movingAverageLongDays <= 0) {
+                    ctx.addIssue({
+                        path: ["indicators", idx, "movingAverageLongDays"],
+                        message: "Long MA must be positive",
+                        code: z.ZodIssueCode.custom,
+                    });
                 }
+
                 if (
                     ind.movingAverageShortDays !== undefined &&
                     ind.movingAverageLongDays !== undefined &&
@@ -87,12 +99,21 @@ export const simulationRequestSchema = z.object({
                     });
                 }
             }
-            if (ind.indicator === IndicatorType.BREAKOUT && ind.breakoutDays === undefined) {
-                ctx.addIssue({
-                    path: ["indicators", idx, "breakoutDays"],
-                    message: "Breakout days required for breakout indicator",
-                    code: z.ZodIssueCode.custom,
-                });
+
+            if (ind.indicator === IndicatorType.BREAKOUT) {
+                if (ind.breakoutDays === undefined) {
+                    ctx.addIssue({
+                        path: ["indicators", idx, "breakoutDays"],
+                        message: "Breakout days required for breakout indicator",
+                        code: z.ZodIssueCode.custom,
+                    });
+                } else if (ind.breakoutDays <= 0) {
+                    ctx.addIssue({
+                        path: ["indicators", idx, "breakoutDays"],
+                        message: "Breakout days must be positive",
+                        code: z.ZodIssueCode.custom,
+                    });
+                }
             }
         });
     });
