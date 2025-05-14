@@ -19,6 +19,7 @@ import {ErrorAlert} from "../../util/Alerts.tsx";
 import {Broker} from "../../../model/Broker.ts";
 import {FormField} from "./FormField.tsx";
 import {TradingIndicatorsSection} from "./TradingIndicatorsSection.tsx";
+import {subYears} from "date-fns";
 
 interface BuyAndHoldSimulationProps {
     isOpen: boolean;
@@ -51,7 +52,7 @@ export function SimulationDialog({
         defaultValues: {
             brokerName: '',
             stockName: '',
-            startDate: new Date(),
+            startDate: subYears(new Date(), 1),
             endDate: new Date(),
             startCapital: 10000,
             simulationType: simulationTypeOptions[0].value,
@@ -59,6 +60,7 @@ export function SimulationDialog({
             indicators: []
         }
     });
+
     const simType = useWatch({control, name: "simulationType"}) as SimulationTypes | undefined;
 
     if (isLoadingBrokers) return <Loader/>;

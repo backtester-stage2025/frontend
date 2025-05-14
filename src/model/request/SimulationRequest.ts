@@ -18,7 +18,3 @@ export interface IndicatorDetails {
     movingAverageLongDays?: number;
     breakoutDays?: number;
 }
-
-export interface Indicator extends IndicatorDetails {
-    id: string;
-}

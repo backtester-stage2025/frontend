@@ -1,7 +1,6 @@
 export enum SimulationTypes {
     RISK_BASED = "RISK_BASED",
-    BUY_AND_HOLD = "BUY_AND_HOLD",
-    NONE = "NONE",
+    BUY_AND_HOLD = "BUY_AND_HOLD"
 }
 
 export const simulationTypeOptions = [

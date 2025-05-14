@@ -1,9 +1,9 @@
-import { Box, Button, Divider, Paper, Stack, Typography} from "@mui/material";
+import {Box, Button, Divider, Paper, Stack, Typography} from "@mui/material";
 import {SimulationRequest} from "../../../model/request/SimulationRequest.ts";
-import {IndicatorType} from "../../../model/request/IndicatorType.ts";
 import {Control, FieldErrors, useFieldArray} from "react-hook-form";
 import {InfoAlert} from "../../util/Alerts.tsx";
 import {IndicatorRow} from "./IndicatorRow.tsx";
+import {IndicatorType} from "../../../model/request/IndicatorType.ts";
 
 interface TradingIndicatorsSectionProps {
     control: Control<SimulationRequest>;
@@ -18,10 +18,10 @@ export function TradingIndicatorsSection({control, errors}: Readonly<TradingIndi
 
     const addIndicator = () =>
         append({
-            indicator: IndicatorType.NONE,
-            movingAverageShortDays: undefined,
-            movingAverageLongDays: undefined,
-            breakoutDays: undefined
+            indicator: IndicatorType.BREAKOUT,
+            movingAverageShortDays: 20,
+            movingAverageLongDays: 50,
+            breakoutDays: 30
         });
 
     return (

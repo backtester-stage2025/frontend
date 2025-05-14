@@ -1,28 +1,42 @@
-import {z} from "zod";
+import {EnumLike, z} from "zod";
 import {SimulationTypes} from "../../../model/request/SimulationTypes.ts";
 import {IndicatorType} from "../../../model/request/IndicatorType.ts";
 
+const coerceNumber = (description: string, positive: boolean = false) => {
+    let numberSchema = z.coerce.number({
+        required_error: `${description} is required`,
+        invalid_type_error: `${description} is invalid`,
+    });
+    if (positive) {
+        numberSchema = numberSchema.positive(`${description} must be positive.`);
+    }
+    return numberSchema;
+};
+
+const coerceEnum = <T extends EnumLike> (values: T, description: string)=> {
+    return z.nativeEnum(values, {
+        required_error: `${description} is required`,
+        invalid_type_error: `${description} is invalid`
+    });
+}
+
+const indicatorSchema = z.object({
+    indicator: coerceEnum(IndicatorType, "Indicator Type"),
+    movingAverageShortDays: coerceNumber("Short moving average day count", true).optional(),
+    movingAverageLongDays: coerceNumber("Long moving average day count", true).optional(),
+    breakoutDays: coerceNumber("Breakout day count", true).optional(),
+});
+
+
 export const simulationRequestSchema = z.object({
     stockName: z.string().nonempty("Stock name is required"),
-    brokerName: z.string().nonempty("Stock name is required"),
+    brokerName: z.string().nonempty("Broker name is required"),
     startDate: z.coerce.date({required_error: "Start Date is required"}),
     endDate: z.coerce.date({required_error: "End Date is required"}),
-    startCapital: z.coerce.number({
-        required_error: "Start Capital is required",
-        invalid_type_error: "Start Capital must be a number",
-    }).positive("Start Capital must be a positive number"),
-    simulationType: z.nativeEnum(SimulationTypes, {
-        required_error: "Simulation Type is required",
-        invalid_type_error: "Invalid Simulation Type",
-    }),
-    indicators: z.array(z.object({
-        indicator: z.nativeEnum(IndicatorType, {required_error: "Indicator is required"}),
-        movingAverageShortDays: z.coerce.number().optional(),
-        movingAverageLongDays: z.coerce.number().optional(),
-        breakoutDays: z.coerce.number().optional(),
-    })),
-    riskTolerance: z.coerce.number()
-        .optional(),
+    startCapital: coerceNumber("Start Capital", true),
+    simulationType: coerceEnum(SimulationTypes, "Simulation Type"),
+    indicators: z.array(indicatorSchema),
+    riskTolerance: coerceNumber("Risk Tolerance").optional(),
 }).strict()
     .refine((data) => data.endDate > data.startDate, {
         path: ["endDate"],
@@ -44,8 +58,6 @@ export const simulationRequestSchema = z.object({
                 })
             }
         }
-
-        console.log(data.indicators)
 
         data.indicators.forEach((ind, idx) => {
             if (ind.indicator === IndicatorType.MOVING_AVERAGE_CROSSOVER) {

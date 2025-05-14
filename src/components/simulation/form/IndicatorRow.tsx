@@ -4,7 +4,7 @@ import {FieldController} from "./FormController.tsx";
 import {SimulationRequest} from "../../../model/request/SimulationRequest.ts";
 import {Control, FieldErrors, useWatch} from "react-hook-form";
 import {IndicatorType, indicatorTypeOptions} from "../../../model/request/IndicatorType.ts";
-import {Grid, IconButton} from "@mui/material";
+import {Box, Grid, IconButton} from "@mui/material";
 
 interface IndicatorRowProps {
     index: number;
@@ -45,17 +45,22 @@ export function IndicatorRow({index, control, errors, onRemove}: Readonly<Indica
                     control={control}
                     errors={errors}
                     field={indicatorField}
+
                 />
             </Grid>
 
             <Grid size={{xs: 12, sm: 5}}>
                 {extraConfigs.map((cfg) => (
-                    <FieldController<SimulationRequest>
-                        key={cfg.name}
-                        control={control}
-                        errors={errors}
-                        field={cfg}
-                    />
+                    <Grid key={cfg.name} size={{xs: 12}}>
+                        <Box mb={2}>
+                            <FieldController<SimulationRequest>
+                                control={control}
+                                errors={errors}
+                                field={cfg}
+                            />
+                        </Box>
+                    </Grid>
+
                 ))}
             </Grid>
 

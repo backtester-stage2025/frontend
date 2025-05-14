@@ -1,5 +1,6 @@
-import {Control, Controller, FieldErrors, FieldValues} from "react-hook-form";
+import {Control, Controller, FieldError, FieldErrors, FieldValues} from "react-hook-form";
 import {TextField} from "@mui/material";
+import get from "lodash/get";
 import {
     FormAutoComplete,
     FormCheckbox,
@@ -15,13 +16,16 @@ interface FieldControllerProps<T extends FieldValues> {
 
 export function FieldController<T extends FieldValues>({control, errors, field}: Readonly<FieldControllerProps<T>>) {
     if (field.shouldRender === false) return null;
+
+    const errorObj = get(errors, field.name) as FieldError | undefined;
+    const error = Boolean(errorObj);
+    const helperText = errorObj?.message;
+
     return (
         <Controller
             name={field.name}
             control={control}
             render={({field: controllerField}) => {
-                const error = !!errors?.[field.name];
-                const helperText = errors?.[field.name]?.message as string | undefined;
 
                 if (field.type === "date")
                     return <FormDatePicker field={field} controllerField={controllerField} error={error} helperText={helperText}/>
