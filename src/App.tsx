@@ -10,6 +10,8 @@ import {Simulation} from "./components/simulation/Simulation.tsx";
 import {createTheme, ThemeProvider} from "@mui/material";
 import {StockOverview} from "./components/stock/StockOverview.tsx";
 import {NotFound} from "./components/NotFound.tsx";
+import {AuthProvider} from "./context/AuthContext.tsx";
+import {Account} from "./components/account/Account.tsx";
 
 function App() {
     axios.defaults.baseURL = import.meta.env.VITE_BACKEND_URL;
@@ -41,21 +43,24 @@ function App() {
 
 
     return (
-        <ThemeProvider theme={theme}>
-            <QueryClientProvider client={queryClient}>
-                <BrowserRouter>
-                    <Header onOpenDrawer={() => setDrawerOpen(!drawerOpen)}/>
-                    <Navigation isOpen={drawerOpen} onClose={() => setDrawerOpen(false)}/>
-                    <Routes>
-                        <Route path="/" element={<StockList/>}/>
-                        <Route path="/stock-list" element={<StockList/>}/>
-                        <Route path="/stock-overview" element={<StockOverview/>}/>
-                        <Route path="/strategy-tester" element={<Simulation/>}/>
-                        <Route path="*" element={<NotFound/>}/>
-                    </Routes>
-                </BrowserRouter>
-            </QueryClientProvider>
-        </ThemeProvider>
+        <AuthProvider>
+            <ThemeProvider theme={theme}>
+                <QueryClientProvider client={queryClient}>
+                    <BrowserRouter>
+                        <Header onOpenDrawer={() => setDrawerOpen(!drawerOpen)}/>
+                        <Navigation isOpen={drawerOpen} onClose={() => setDrawerOpen(false)}/>
+                        <Routes>
+                            <Route path="/" element={<StockList/>}/>
+                            <Route path="/stock-list" element={<StockList/>}/>
+                            <Route path="/stock-overview" element={<StockOverview/>}/>
+                            <Route path="/strategy-tester" element={<Simulation/>}/>
+                            <Route path="*" element={<NotFound/>}/>
+                            <Route path="/account" element={<Account/>}/>
+                        </Routes>
+                    </BrowserRouter>
+                </QueryClientProvider>
+            </ThemeProvider>
+        </AuthProvider>
     )
 }
 
