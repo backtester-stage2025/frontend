@@ -4,7 +4,7 @@ import {StockReportRequest} from "../../model/request/StockReportRequest.ts";
 import {Box, Button, Tab, Tabs, Typography} from "@mui/material";
 import {Loader} from "../util/Loader.tsx";
 import {UserPortfolio} from "../../model/simulation/UserPortfolio.ts";
-import {useBuyAndSellRisk} from "../../hooks/useBuyAndSellRisk.ts";
+import {useStartSimulation} from "../../hooks/useStartSimulation.ts";
 import {SimulationRequest} from "../../model/request/SimulationRequest.ts";
 
 import {SimulationDialog} from "./form/SimulationDialog.tsx";
@@ -19,7 +19,7 @@ export function Simulation() {
     const [tabValue, setTabValue] = useState(0);
     const [showOnlyTradesDays, setShowOnlyTradesDays] = useState(false);
     const [stockReportRequest, setStockReportRequest] = useState<StockReportRequest | null>(null);
-    const {sendRequest, isRunning, isError, error} = useBuyAndSellRisk();
+    const {sendRequest, isRunning, isError, error} = useStartSimulation();
     const {
         isLoading: isLoadingReport,
         simulationReport

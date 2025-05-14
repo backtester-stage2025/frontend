@@ -1,55 +1,119 @@
-import {z} from "zod";
+import {EnumLike, z} from "zod";
 import {SimulationTypes} from "../../../model/request/SimulationTypes.ts";
+import {IndicatorType} from "../../../model/request/IndicatorType.ts";
 
-const maxMovingAverage = 1000
+const coerceNumber = (description: string) => {
+    return z.coerce.number({
+        required_error: `${description} is required`,
+        invalid_type_error: `${description} is invalid`,
+    });
+};
+
+const coercePositiveNumber = (description: string) => coerceNumber(description).positive(`${description} must be positive.`);
+
+const coerceEnum = <T extends EnumLike> (values: T, description: string)=> {
+    return z.nativeEnum(values, {
+        required_error: `${description} is required`,
+        invalid_type_error: `${description} is invalid`
+    });
+}
+
+const indicatorSchema = z.object({
+    indicator: coerceEnum(IndicatorType, "Indicator Type"),
+    movingAverageShortDays: coerceNumber("Short moving average day count").optional(),
+    movingAverageLongDays: coerceNumber("Long moving average day count").optional(),
+    breakoutDays: coerceNumber("Breakout day count").optional(),
+});
+
 
 export const simulationRequestSchema = z.object({
-    brokerName: z.string().nonempty("Broker is required"),
     stockName: z.string().nonempty("Stock name is required"),
+    brokerName: z.string().nonempty("Broker name is required"),
     startDate: z.coerce.date({required_error: "Start Date is required"}),
     endDate: z.coerce.date({required_error: "End Date is required"}),
-    startCapital: z.coerce.number({
-        required_error: "Start Capital is required",
-        invalid_type_error: "Start Capital must be a number",
-    }).positive("Start Capital must be a positive number"),
-    simulationType: z.nativeEnum(SimulationTypes, {
-        required_error: "Simulation Type is required",
-        invalid_type_error: "Invalid Simulation Type",
-    }),
-    useMovingAverageCrossover: z.boolean().optional(),
-    movingAverageShortDays: z.coerce.number()
-        .max(maxMovingAverage, `Short moving average days must be between 0 and ${maxMovingAverage}`)
-        .positive("Short MA must be positive").optional(),
-    movingAverageLongDays: z.coerce.number()
-        .max(maxMovingAverage, `Long moving average days must be between 0 and ${maxMovingAverage}`)
-        .positive("Long MA must be positive").optional(),
-    riskTolerance: z.coerce.number()
-        .min(0, "Risk Tolerance must be between 0 and 100")
-        .max(100, "Risk Tolerance must be between 0 and 100")
-        .optional(),
+    startCapital: coercePositiveNumber("Start Capital"),
+    simulationType: coerceEnum(SimulationTypes, "Simulation Type"),
+    indicators: z.array(indicatorSchema),
+    riskTolerance: coerceNumber("Risk Tolerance").optional(),
 }).strict()
     .refine((data) => data.endDate > data.startDate, {
         path: ["endDate"],
         message: "End Date must be after Start Date",
-    }).refine((data) => {
-        if (data.useMovingAverageCrossover) {
-            return data.movingAverageShortDays !== undefined && data.movingAverageLongDays !== undefined;
+    })
+    .superRefine((data, ctx) => {
+        if (data.simulationType === SimulationTypes.RISK_BASED) {
+            if (data.riskTolerance === undefined) {
+                ctx.addIssue({
+                    path: ["riskTolerance"],
+                    message: "Risk Tolerance is required for Risk-Based simulation",
+                    code: z.ZodIssueCode.custom,
+                });
+            } else if (data.riskTolerance < 0 || data.riskTolerance > 100) {
+                ctx.addIssue({
+                    path: ["riskTolerance"],
+                    message: "Risk Tolerance must be between 0 and 100",
+                    code: z.ZodIssueCode.custom
+                })
+            }
         }
-        return true;
-    }, {
-        path: ["movingAverageShortDays"],
-        message: "Moving Average Short and Long days are required when Moving Average Crossover is enabled",
-    }).refine((data) => {
-        if (
-            data.useMovingAverageCrossover &&
-            data.movingAverageShortDays !== undefined &&
-            data.movingAverageLongDays !== undefined
-        ) {
-            return data.movingAverageShortDays < data.movingAverageLongDays;
-        }
-        return true;
-    }, {
-        path: ["movingAverageLongDays"],
-        message: "Long MA must be greater than Short MA when Moving Average Crossover is enabled",
-    });
 
+        data.indicators.forEach((ind, idx) => {
+            if (ind.indicator === IndicatorType.MOVING_AVERAGE_CROSSOVER) {
+                if (ind.movingAverageShortDays === undefined) {
+                    ctx.addIssue({
+                        path: ["indicators", idx, "movingAverageShortDays"],
+                        message: "Short MA days required for crossover",
+                        code: z.ZodIssueCode.custom,
+                    });
+                } else if (ind.movingAverageShortDays <= 0) {
+                    ctx.addIssue({
+                        path: ["indicators", idx, "movingAverageShortDays"],
+                        message: "Short MA must be positive",
+                        code: z.ZodIssueCode.custom,
+                    });
+                }
+
+                if (ind.movingAverageLongDays === undefined) {
+                    ctx.addIssue({
+                        path: ["indicators", idx, "movingAverageLongDays"],
+                        message: "Long MA days required for crossover",
+                        code: z.ZodIssueCode.custom,
+                    });
+                } else if (ind.movingAverageLongDays <= 0) {
+                    ctx.addIssue({
+                        path: ["indicators", idx, "movingAverageLongDays"],
+                        message: "Long MA must be positive",
+                        code: z.ZodIssueCode.custom,
+                    });
+                }
+
+                if (
+                    ind.movingAverageShortDays !== undefined &&
+                    ind.movingAverageLongDays !== undefined &&
+                    ind.movingAverageShortDays >= ind.movingAverageLongDays
+                ) {
+                    ctx.addIssue({
+                        path: ["indicators", idx, "movingAverageLongDays"],
+                        message: "Long MA must be greater than Short MA",
+                        code: z.ZodIssueCode.custom,
+                    });
+                }
+            }
+
+            if (ind.indicator === IndicatorType.BREAKOUT) {
+                if (ind.breakoutDays === undefined) {
+                    ctx.addIssue({
+                        path: ["indicators", idx, "breakoutDays"],
+                        message: "Breakout days required for breakout indicator",
+                        code: z.ZodIssueCode.custom,
+                    });
+                } else if (ind.breakoutDays <= 0) {
+                    ctx.addIssue({
+                        path: ["indicators", idx, "breakoutDays"],
+                        message: "Breakout days must be positive",
+                        code: z.ZodIssueCode.custom,
+                    });
+                }
+            }
+        });
+    });

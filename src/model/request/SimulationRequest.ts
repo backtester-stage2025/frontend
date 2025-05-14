@@ -1,4 +1,5 @@
 import {SimulationTypes} from "./SimulationTypes.ts";
+import {IndicatorType} from "./IndicatorType.ts";
 
 export interface SimulationRequest {
     brokerName: string;
@@ -7,8 +8,13 @@ export interface SimulationRequest {
     endDate: Date;
     startCapital: number;
     simulationType: SimulationTypes
-    useMovingAverageCrossover?: boolean;
+    indicators: IndicatorDetails[];
+    riskTolerance?: number;
+}
+
+export interface IndicatorDetails {
+    indicator: IndicatorType;
     movingAverageShortDays?: number;
     movingAverageLongDays?: number;
-    riskTolerance?: number;
+    breakoutDays?: number;
 }

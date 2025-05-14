@@ -1,6 +1,6 @@
 import {useQuery} from "@tanstack/react-query";
-import {getSimulationReport} from "../services/stockDataService";
 import {StockReportRequest} from "../model/request/StockReportRequest.ts";
+import {getSimulationReport} from "../services/backtestService.ts";
 
 export function useSimulationReport(request: StockReportRequest | null) {
     const {isLoading, isError, data: simulationReport} = useQuery({

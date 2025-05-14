@@ -1,41 +1,62 @@
-import {ControllerRenderProps} from "react-hook-form";
-import {SimulationRequest} from "../../../model/request/SimulationRequest.ts";
+import {ControllerRenderProps, FieldPath, FieldValues} from "react-hook-form";
 import {DatePicker} from "@mui/x-date-pickers/DatePicker";
-import {Checkbox, FormControlLabel, InputAdornment, MenuItem, TextField} from "@mui/material";
-import {FormField} from "./FormController.tsx";
-import {ChangeEvent} from "react";
+import {Autocomplete, Checkbox, FormControlLabel, MenuItem, TextField} from "@mui/material";
 
-interface FormFieldRenderProps {
-    field: FormField;
-    controllerField: ControllerRenderProps<SimulationRequest, keyof SimulationRequest>
-    error: boolean;
-    helperText: string | undefined;
+export interface EnumOption<E extends string | number> {
+    label: string;
+    value: E;
 }
 
-export function FormDatePicker(
-    {field, controllerField, error, helperText}: Readonly<FormFieldRenderProps>
+export interface FormField<
+    TFormValues extends FieldValues,
+    TValue extends string | number = string
+> {
+    name: FieldPath<TFormValues>;
+    type: "text" | "date" | "select" | "checkbox" | "autocomplete" | "number";
+    placeholder?: string;
+    required?: boolean;
+    options?: Array<string> | Array<EnumOption<TValue>>;
+    shouldRender?: boolean;
+}
+
+export interface FormFieldRenderProps<T extends FieldValues> {
+    field: FormField<T>;
+    controllerField: ControllerRenderProps<T, FieldPath<T>>;
+    error: boolean;
+    helperText?: string;
+}
+
+function toDate(value: unknown) {
+    if (value instanceof Date) {
+        return value;
+    }
+    return null;
+}
+
+export function FormDatePicker<TFieldValues extends FieldValues>(
+    { field, controllerField, error, helperText }: Readonly<FormFieldRenderProps<TFieldValues>>
 ) {
     return (
         <DatePicker
             label={field.placeholder}
-            value={controllerField.value instanceof Date ? controllerField.value : null}
+            value={toDate(controllerField.value)}
             onChange={(date) => controllerField.onChange(date)}
             slotProps={{
                 textField: {
                     fullWidth: true,
                     required: field.required,
                     error,
-                    helperText
+                    helperText,
                 }
             }}
         />
     );
 }
 
-export function FormDropdown(
-    {field, controllerField, error, helperText}: Readonly<FormFieldRenderProps>
+export function FormDropdown<T extends FieldValues>(
+    { field, controllerField, error, helperText }: Readonly<FormFieldRenderProps<T>>
 ) {
-    const optionsReady = field.options && field.options.length > 0;
+    const opts = field.options ?? [];
 
     return (
         <TextField
@@ -48,14 +69,14 @@ export function FormDropdown(
             error={error}
             helperText={helperText}
         >
-            {optionsReady ? (
-                field.options!.map((opt) =>
+            {opts.length > 0 ? (
+                opts.map((opt) =>
                     typeof opt === "string" ? (
                         <MenuItem key={opt} value={opt}>
                             {opt}
                         </MenuItem>
                     ) : (
-                        <MenuItem key={opt.value} value={opt.value}>
+                        <MenuItem key={String(opt.label)} value={opt.value}>
                             {opt.label}
                         </MenuItem>
                     )
@@ -66,24 +87,17 @@ export function FormDropdown(
         </TextField>
     );
 }
-export function FormCheckbox(
-    {field, controllerField}: Readonly<FormFieldRenderProps>
-) {
-    const onChangeHandler = (e: ChangeEvent<HTMLInputElement>): void => {
-        const isChecked = e.target.checked;
-        controllerField.onChange(isChecked);
-        if (field.checkBoxToggle != null) {
-            field.checkBoxToggle(isChecked);
-        }
-    }
 
+export function FormCheckbox<T extends FieldValues>(
+    { field, controllerField }: Readonly<FormFieldRenderProps<T>>
+) {
     return (
         <FormControlLabel
             control={
                 <Checkbox
+                    {...controllerField}
                     checked={!!controllerField.value}
                     id={field.name}
-                    onChange={onChangeHandler}
                     required={field.required}
                 />
             }
@@ -92,25 +106,27 @@ export function FormCheckbox(
     );
 }
 
-export function FormTextFieldWithAdornment(
-    {field, controllerField, error, helperText}: Readonly<FormFieldRenderProps>
+export function FormAutoComplete<T extends FieldValues>(
+    { field, controllerField, error, helperText }: Readonly<FormFieldRenderProps<T>>
 ) {
+    const rawOpts = field.options ?? [];
+    const labels = rawOpts.map(opt => typeof opt === "string" ? opt : opt.label);
+
     return (
-        <TextField
-            {...controllerField}
-            type={field.type}
-            fullWidth
-            label={field.placeholder}
-            required={field.required}
-            error={error}
-            helperText={helperText}
-            slotProps={{
-                input: {
-                    endAdornment: (
-                        <InputAdornment position="end">days</InputAdornment>
-                    ),
-                },
-            }}
+        <Autocomplete
+            options={labels}
+            value={controllerField.value != null ? String(controllerField.value) : ""}
+            onChange={(_, newValue) => controllerField.onChange(newValue)}
+            renderInput={(params) => (
+                <TextField
+                    {...params}
+                    label={field.placeholder}
+                    required={field.required}
+                    error={error}
+                    helperText={helperText}
+                    fullWidth
+                />
+            )}
         />
     );
 }
