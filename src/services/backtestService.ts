@@ -5,6 +5,7 @@ import {safeApiCall} from "./safeApiCall.ts";
 import axios from "axios";
 import {StockReportRequest} from "../model/request/StockReportRequest.ts";
 import {SimulationReport} from "../model/simulation/SimulationReport.ts";
+import {SimulationResult} from "../model/simulation/SimulationResult.ts";
 
 export async function simulateBuyAndSellRisk(request: SimulationRequest): Promise<UserPortfolio[]> {
     const payload = {
@@ -28,4 +29,11 @@ export async function getSimulationReport(request: StockReportRequest): Promise<
     const {data: simulationReport} = await axios.post<SimulationReport>(`api/backtest/report`, payload);
 
     return simulationReport;
+}
+
+export async function getSimulationHistory(userId: string): Promise<SimulationResult[]> {
+    return safeApiCall(async () => {
+        const {data} = await axios.get<SimulationResult[]>(`/api/backtest/history?userId=${userId}`);
+        return data;
+    });
 }
