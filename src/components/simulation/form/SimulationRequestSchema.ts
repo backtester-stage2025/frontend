@@ -28,7 +28,7 @@ const indicatorSchema = z.object({
 
 
 export const simulationRequestSchema = z.object({
-    stockName: z.string().nonempty("Stock name is required"),
+    stockNames: z.array(z.string().min(1, "Stock name is required")).min(1, "At least one stock name is required"),
     brokerName: z.string().nonempty("Broker name is required"),
     startDate: z.coerce.date({required_error: "Start Date is required"}),
     endDate: z.coerce.date({required_error: "End Date is required"}),

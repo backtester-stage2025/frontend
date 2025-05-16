@@ -1,5 +1,5 @@
 export interface StockReportRequest {
-    stockName: string,
+    stockNames: string[],
     startCapital: number,
     startDate: Date,
     endDate: Date

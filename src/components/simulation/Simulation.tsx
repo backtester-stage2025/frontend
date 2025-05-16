@@ -38,13 +38,13 @@ export function Simulation() {
                         portfolio => Object.keys(portfolio.sharesBought).length > 0
                     );
 
-                    const stockName = firstPortfolioWithShares
-                        ? Object.values(firstPortfolioWithShares.sharesBought)[0].stockName
+                    const stockNames = firstPortfolioWithShares
+                        ? Object.values(firstPortfolioWithShares.sharesBought).map(share => share.stockName)
                         : undefined;
 
-                    if (stockName) {
+                    if (stockNames && stockNames.length > 0) {
                         const reportRequest: StockReportRequest = {
-                            stockName,
+                            stockNames,
                             startCapital: data[0].totalPortfolioValue,
                             startDate: firstDate,
                             endDate: lastDate
@@ -140,9 +140,17 @@ export function Simulation() {
                     )}
 
                     {/* Stock Metrics Tab */}
-                    {tabValue === 3 &&
-                        <StockMetricsContent isLoadingReport={isLoadingReport} simulationReport={simulationReport}/>
-                    }
+                    {tabValue === 3 && simulationReport && (
+                        <Box>
+                            {simulationReport.map((report) => (
+                                <StockMetricsContent
+                                    key={JSON.stringify(report.stockMetrics)}
+                                    isLoadingReport={isLoadingReport}
+                                    simulationReport={report}
+                                />
+                            ))}
+                        </Box>
+                    )}
                 </>
             )}
         </Box>

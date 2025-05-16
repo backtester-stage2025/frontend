@@ -19,13 +19,15 @@ export async function simulateBuyAndSellRisk(request: SimulationRequest): Promis
     });
 }
 
-export async function getSimulationReport(request: StockReportRequest): Promise<SimulationReport> {
+export async function getSimulationReport(request: StockReportRequest): Promise<SimulationReport[]> {
     const payload = {
         ...request,
         startDate: formatDateToLocalDateString(request.startDate),
         endDate: formatDateToLocalDateString(request.endDate)
     }
-    const {data: simulationReport} = await axios.post<SimulationReport>(`api/backtest/report`, payload);
 
-    return simulationReport;
+    return safeApiCall(async () => {
+        const {data} = await axios.post(`api/backtest/report`, payload);
+        return data;
+    });
 }
