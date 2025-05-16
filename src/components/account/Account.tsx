@@ -1,9 +1,12 @@
 import {useAuth} from "../../context/AuthContext";
 import {Box, Typography} from "@mui/material";
 import {Login} from "../Login";
+import {useSimulationHistory} from "../../hooks/useSimulationHistory.ts";
 
 export function Account() {
-    const {isAuthenticated, username, email} = useAuth();
+    const {isAuthenticated, username, email, userId} = useAuth();
+
+    const {isLoading, isError, simulationHistory} = useSimulationHistory(userId ?? "");
 
     if (!isAuthenticated) {
         return (

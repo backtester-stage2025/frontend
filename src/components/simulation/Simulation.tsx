@@ -13,8 +13,8 @@ import {StockHoldingChart} from "./results/StockHoldingChart.tsx";
 import {StockMetricsContent} from "./results/metrics/StockMetricsContent.tsx";
 import {InvestmentPerformanceView} from "./results/InvestmentPerformanceView/InvestmentPerformanceView.tsx";
 
-export function Simulation() {
-    const [isDialogOpen, setIsDialogOpen] = useState(true);
+export function Simulation(isDialogInitialOpen: boolean = true) {
+    const [isDialogOpen, setIsDialogOpen] = useState(isDialogInitialOpen);
     const [result, setResult] = useState<UserPortfolio[]>([]);
     const [tabValue, setTabValue] = useState(0);
     const [showOnlyTradesDays, setShowOnlyTradesDays] = useState(false);
