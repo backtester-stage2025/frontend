@@ -1,6 +1,7 @@
 import {EnumLike, z} from "zod";
 import {SimulationTypes} from "../../../model/request/SimulationTypes.ts";
 import {IndicatorType} from "../../../model/request/IndicatorType.ts";
+import {Weekday} from "../../../model/Weekday.ts";
 
 const coerceNumber = (description: string) => {
     return z.coerce.number({
@@ -35,6 +36,10 @@ export const simulationRequestSchema = z.object({
     simulationType: coerceEnum(SimulationTypes, "Simulation Type"),
     indicators: z.array(indicatorSchema),
     riskTolerance: coerceNumber("Risk Tolerance").optional(),
+    tradingWeekdays: z.array(z.nativeEnum(Weekday))
+        .refine((arr) => arr.length > 0, {
+            message: "Select at least one week day",
+        })
 }).strict()
     .refine((data) => data.endDate > data.startDate, {
         path: ["endDate"],

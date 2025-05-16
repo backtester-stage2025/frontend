@@ -20,6 +20,8 @@ import {Broker} from "../../../model/Broker.ts";
 import {FormField} from "./FormField.tsx";
 import {TradingIndicatorsSection} from "./TradingIndicatorsSection.tsx";
 import {subYears} from "date-fns";
+import {WeekdaySelector} from "./controller/WeekdaySelector.tsx";
+import {Weekday} from "../../../model/Weekday.ts";
 
 interface BuyAndHoldSimulationProps {
     isOpen: boolean;
@@ -57,7 +59,8 @@ export function SimulationDialog({
             startCapital: 10000,
             simulationType: simulationTypeOptions[0].value,
             riskTolerance: 20,
-            indicators: []
+            indicators: [],
+            tradingWeekdays: Object.values(Weekday)
         }
     });
 
@@ -136,6 +139,7 @@ export function SimulationDialog({
                                     field={field}
                                 />
                             ))}
+                            <WeekdaySelector name={"tradingWeekdays"} control={control} />
                         </Box>
                     </LocalizationProvider>
                     <TradingIndicatorsSection errors={errors} control={control}/>

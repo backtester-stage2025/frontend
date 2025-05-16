@@ -1,5 +1,6 @@
 import {SimulationTypes} from "./SimulationTypes.ts";
 import {IndicatorType} from "./IndicatorType.ts";
+import {Weekday} from "../Weekday.ts";
 
 export interface SimulationRequest {
     brokerName: string;
@@ -10,6 +11,7 @@ export interface SimulationRequest {
     simulationType: SimulationTypes
     indicators: IndicatorDetails[];
     riskTolerance?: number;
+    tradingWeekdays: Weekday[];
 }
 
 export interface IndicatorDetails {
