@@ -8,6 +8,17 @@ export function UserProfile() {
     const {username, email, picture, userId} = useAuth();
     const {isLoading, simulationHistory} = useSimulationHistory(userId ?? "");
 
+    function displaySimulationHistoryCount() {
+        return (
+            simulationHistory && simulationHistory.length > 0 ? (
+                simulationHistory.length
+            ) : (
+                <Typography variant="body2" color="text.secondary">
+                    No simulations run yet.
+                </Typography>
+            ))
+    }
+
     return (
         <Grid size={{xs: 12, md: 4}}>
             <Card elevation={3}>
@@ -43,19 +54,12 @@ export function UserProfile() {
                             Simulations run:
                         </Typography>
                         <Typography variant="h6" fontWeight="medium">
-                            {isLoading ? (
+                            {isLoading ?
                                 <Box display="flex" justifyContent="center" p={4}>
                                     <CircularProgress/>
                                 </Box>
-                            ) : (
-                                simulationHistory && simulationHistory.length > 0 ? (
-                                    simulationHistory.length
-                                ) : (
-                                    <Typography variant="body2" color="text.secondary">
-                                        No simulations run yet.
-                                    </Typography>
-                                )
-                            )}
+                                : displaySimulationHistoryCount()
+                            }
                         </Typography>
                     </Box>
                 </CardContent>
