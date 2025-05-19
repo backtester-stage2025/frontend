@@ -27,7 +27,7 @@ export function LoginRequired() {
             </Typography>
 
             <Typography variant="body1" sx={{mb: 4, maxWidth: 500}}>
-                Please log in to access the stock strategy tester.
+                Please log in to access this page. You can use your Google account to log in.
             </Typography>
 
             <Stack direction="row" spacing={2}>

@@ -42,7 +42,6 @@ function App() {
         },
     });
 
-
     return (
         <AuthProvider>
             <ThemeProvider theme={theme}>
@@ -56,7 +55,7 @@ function App() {
                             <Route path="/stock-overview" element={<StockOverview/>}/>
                             <Route path="/strategy-tester" element={<ProtectedRoute element={<Simulation/>}/>}/>
                             <Route path="*" element={<NotFound/>}/>
-                            <Route path="/account" element={<Account/>}/>
+                            <Route path="/account" element={<ProtectedRoute element={<Account/>}/>}/>
                         </Routes>
                     </BrowserRouter>
                 </QueryClientProvider>

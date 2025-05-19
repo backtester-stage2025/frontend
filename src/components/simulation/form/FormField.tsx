@@ -34,7 +34,7 @@ function toDate(value: unknown) {
 }
 
 export function FormDatePicker<TFieldValues extends FieldValues>(
-    { field, controllerField, error, helperText }: Readonly<FormFieldRenderProps<TFieldValues>>
+    {field, controllerField, error, helperText}: Readonly<FormFieldRenderProps<TFieldValues>>
 ) {
     return (
         <DatePicker
@@ -54,7 +54,7 @@ export function FormDatePicker<TFieldValues extends FieldValues>(
 }
 
 export function FormDropdown<T extends FieldValues>(
-    { field, controllerField, error, helperText }: Readonly<FormFieldRenderProps<T>>
+    {field, controllerField, error, helperText}: Readonly<FormFieldRenderProps<T>>
 ) {
     const opts = field.options ?? [];
 
@@ -89,7 +89,7 @@ export function FormDropdown<T extends FieldValues>(
 }
 
 export function FormCheckbox<T extends FieldValues>(
-    { field, controllerField }: Readonly<FormFieldRenderProps<T>>
+    {field, controllerField}: Readonly<FormFieldRenderProps<T>>
 ) {
     return (
         <FormControlLabel
@@ -107,7 +107,7 @@ export function FormCheckbox<T extends FieldValues>(
 }
 
 export function FormAutoComplete<T extends FieldValues>(
-    { field, controllerField, error, helperText }: Readonly<FormFieldRenderProps<T>>
+    {field, controllerField, error, helperText}: Readonly<FormFieldRenderProps<T>>
 ) {
     const rawOpts = field.options ?? [];
     const labels = rawOpts.map(opt => typeof opt === "string" ? opt : opt.label);

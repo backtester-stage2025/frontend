@@ -14,6 +14,7 @@ interface SimulationCardProps {
     simulation: SimulationResult;
     viewSimulationDetails: (simulation: SimulationResult) => void;
 }
+
 export function SimulationCard({simulation, viewSimulationDetails}: Readonly<SimulationCardProps>) {
 
     const returnPercentage = calculateReturnPercentage(simulation);
