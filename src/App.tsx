@@ -12,6 +12,7 @@ import {StockOverview} from "./components/stock/StockOverview.tsx";
 import {NotFound} from "./components/NotFound.tsx";
 import {AuthProvider} from "./context/AuthContext.tsx";
 import {Account} from "./components/account/Account.tsx";
+import {ProtectedRoute} from "./components/ProtectedRoute.tsx";
 
 function App() {
     axios.defaults.baseURL = import.meta.env.VITE_BACKEND_URL;
@@ -53,7 +54,7 @@ function App() {
                             <Route path="/" element={<StockList/>}/>
                             <Route path="/stock-list" element={<StockList/>}/>
                             <Route path="/stock-overview" element={<StockOverview/>}/>
-                            <Route path="/strategy-tester" element={<Simulation/>}/>
+                            <Route path="/strategy-tester" element={<ProtectedRoute element={<Simulation/>}/>}/>
                             <Route path="*" element={<NotFound/>}/>
                             <Route path="/account" element={<Account/>}/>
                         </Routes>

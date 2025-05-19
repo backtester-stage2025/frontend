@@ -5,7 +5,8 @@ interface AuthContextType {
     username?: string;
     email?: string;
     userId?: string;
-    setAuthState: (isAuthenticated: boolean, username?: string, email?: string, userId?: string) => void;
+    picture?: string
+    setAuthState: (isAuthenticated: boolean, username?: string, email?: string, userId?: string, picture?: string) => void;
     clearAuthState: () => void;
 }
 
@@ -16,12 +17,14 @@ export const AuthProvider = ({children}: { children: ReactNode }) => {
     const [username, setUsername] = useState<string | undefined>(undefined);
     const [email, setEmail] = useState<string | undefined>(undefined);
     const [userId, setUserId] = useState<string | undefined>(undefined);
+    const [picture, setPicture] = useState<string | undefined>(undefined);
 
-    const setAuthState = (isAuthenticated: boolean, username?: string, email?: string, userId?: string) => {
+    const setAuthState = (isAuthenticated: boolean, username?: string, email?: string, userId?: string, picture?: string) => {
         setIsAuthenticated(isAuthenticated);
         setUsername(username);
         setEmail(email);
         setUserId(userId);
+        setPicture(picture);
     };
 
     const clearAuthState = () => {
@@ -29,6 +32,7 @@ export const AuthProvider = ({children}: { children: ReactNode }) => {
         setUsername(undefined);
         setEmail(undefined);
         setUserId(undefined);
+        setPicture(undefined);
     };
 
     const value = useMemo(() => ({
@@ -36,9 +40,10 @@ export const AuthProvider = ({children}: { children: ReactNode }) => {
         username,
         email,
         userId,
+        picture,
         setAuthState,
         clearAuthState,
-    }), [isAuthenticated, username, email, userId]);
+    }), [isAuthenticated, username, email, userId, picture]);
 
     return (
         <AuthContext.Provider value={value}>

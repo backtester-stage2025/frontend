@@ -12,7 +12,7 @@ export const useGoogleAuth = () => {
 
                 try {
                     const userInfo = await authenticateUser(token);
-                    setAuthState(true, userInfo.name, userInfo.email, userInfo.id);
+                    setAuthState(true, userInfo.name, userInfo.email, userInfo.id, userInfo.picture);
                 } catch (error) {
                     console.error("Authentication failed:", error);
                 }
