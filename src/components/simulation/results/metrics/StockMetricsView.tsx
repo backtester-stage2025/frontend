@@ -48,7 +48,7 @@ export function StockMetricsView({stockMetrics, stockName}: Readonly<{ stockMetr
     return (
         <Grid size={{xs: 12}} sx={{m: 1}}>
             <Box sx={{display: 'flex', alignItems: 'center', gap: 1, mb: 2, marginTop: 8}}>
-                <Typography variant="h6" fontWeight="500">${stockName}</Typography>
+                <Typography variant="h6" fontWeight="500">{stockName}</Typography>
             </Box>
             <Grid container spacing={2}>
                 {details.map(group =>
