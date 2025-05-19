@@ -98,7 +98,7 @@ export function SimulationDialog({
         setIsSubmitting(false);
     };
 
-    const trimBrokerName = (nameWithPriceInBrackets: string)=>{
+    const trimBrokerName = (nameWithPriceInBrackets: string) => {
         return nameWithPriceInBrackets?.includes('(')
             ? nameWithPriceInBrackets.substring(0, nameWithPriceInBrackets.indexOf('(')).trim()
             : nameWithPriceInBrackets;
