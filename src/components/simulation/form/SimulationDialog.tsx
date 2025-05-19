@@ -6,7 +6,7 @@ import {AdapterDateFns} from "@mui/x-date-pickers/AdapterDateFns";
 import {Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle} from "@mui/material";
 import {enGB} from "date-fns/locale";
 import {useStockData} from "../../../hooks/useStockData.ts";
-import {FieldController} from "./FormController.tsx";
+import {FieldController} from "./FieldController.tsx";
 import {simulationTypeOptions, SimulationTypes} from "../../../model/request/SimulationTypes.ts";
 import {useEffect, useState} from "react";
 import {ErrorOverlay} from "./ErrorOverlay.tsx";
@@ -53,7 +53,7 @@ export function SimulationDialog({
         resolver: zodResolver(simulationRequestSchema),
         defaultValues: {
             brokerName: '',
-            stockName: '',
+            stockNames: [],
             startDate: subYears(new Date(), 1),
             endDate: new Date(),
             startCapital: 10000,
@@ -75,8 +75,8 @@ export function SimulationDialog({
             options: brokers?.map((b: Broker) => `${b.name} (Fee: ${b.transactionFee.toFixed(2)}€)`)
         },
         {
-            name: "stockName", type: "autocomplete", placeholder: "Stock Name", required: true,
-            options: stockData?.map((details) => details.companyName)
+            name: "stockNames", type: "autocomplete", placeholder: "Stock Names", required: true,
+            options: stockData?.map((details) => details.companyName), multiple: true
         },
         {name: "startDate", type: "date", placeholder: "Start Date", required: true},
         {name: "endDate", type: "date", placeholder: "End Date", required: true},
@@ -109,11 +109,22 @@ export function SimulationDialog({
 
         // check the stock data to map the stock name
         if (!stockData?.length) return showSubmitError("Stock data is not available.");
-        const officialStockName = stockData.find(stock => stock.companyName === data.stockName)?.officialName;
-        if (!officialStockName) return showSubmitError(`Could not find a matching stock for "${data.stockName}".`);
 
+        const officialStockNames = data.stockNames.map((name) => {
+            const stock = stockData.find(stock => stock.companyName === name);
+            if (!stock) {
+                showSubmitError(`Could not find a matching stock for "${name}".`);
+                return null;
+            }
+            return stock.officialName;
+        }).filter((name): name is string => name !== null);
+
+        if (officialStockNames.length !== data.stockNames.length) {
+            setIsSubmitting(false);
+            return;
+        }
         const trimmedBrokerName = trimBrokerName(data.brokerName)
-        onSubmit({...data, stockName: officialStockName, brokerName: trimmedBrokerName});
+        onSubmit({ ...data, stockNames: officialStockNames, brokerName: trimmedBrokerName });
         setIsSubmitting(false);
     };
 

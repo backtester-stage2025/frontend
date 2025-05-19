@@ -17,6 +17,7 @@ export interface FormField<
     required?: boolean;
     options?: Array<string> | Array<EnumOption<TValue>>;
     shouldRender?: boolean;
+    multiple?: boolean;
 }
 
 export interface FormFieldRenderProps<T extends FieldValues> {
@@ -112,10 +113,18 @@ export function FormAutoComplete<T extends FieldValues>(
     const rawOpts = field.options ?? [];
     const labels = rawOpts.map(opt => typeof opt === "string" ? opt : opt.label);
 
+    let value;
+    if (field.multiple) {
+        value = Array.isArray(controllerField.value) ? controllerField.value : [];
+    } else {
+        value = controllerField.value || "";
+    }
+
     return (
         <Autocomplete
+            multiple={field.multiple}
             options={labels}
-            value={controllerField.value != null ? String(controllerField.value) : ""}
+            value={value}
             onChange={(_, newValue) => controllerField.onChange(newValue)}
             renderInput={(params) => (
                 <TextField
@@ -125,6 +134,12 @@ export function FormAutoComplete<T extends FieldValues>(
                     error={error}
                     helperText={helperText}
                     fullWidth
+                    slotProps={{
+                        htmlInput: {
+                            ...params.inputProps,
+                            required: value.length === 0
+                        }
+                    }}
                 />
             )}
         />

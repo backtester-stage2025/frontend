@@ -1,6 +1,6 @@
 import { Delete } from "@mui/icons-material";
 import {FormField} from "./FormField.tsx";
-import {FieldController} from "./FormController.tsx";
+import {FieldController} from "./FieldController.tsx";
 import {SimulationRequest} from "../../../model/request/SimulationRequest.ts";
 import {Control, FieldErrors, useWatch} from "react-hook-form";
 import {IndicatorType, indicatorTypeOptions} from "../../../model/request/IndicatorType.ts";

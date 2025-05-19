@@ -3,7 +3,7 @@ import {MetricGroup, MetricGroupProps} from "./MetricGroup.tsx";
 import {formatPercent} from "../../../../services/formatService.ts";
 import {Box, Grid, Typography} from "@mui/material";
 
-export function StockMetricsView({stockMetrics}: Readonly<{ stockMetrics: StockMetrics }>) {
+export function StockMetricsView({stockMetrics, stockName}: Readonly<{ stockMetrics: StockMetrics, stockName: string }>) {
     const details: MetricGroupProps[] = [
         {
             title: "Returns",
@@ -47,8 +47,8 @@ export function StockMetricsView({stockMetrics}: Readonly<{ stockMetrics: StockM
     ]
     return (
         <Grid size={{xs: 12}} sx={{m: 1}}>
-            <Box sx={{display: 'flex', alignItems: 'center', gap: 1, mb: 2}}>
-                <Typography variant="h6" fontWeight="500">Stock Metrics</Typography>
+            <Box sx={{display: 'flex', alignItems: 'center', gap: 1, mb: 2, marginTop: 8}}>
+                <Typography variant="h6" fontWeight="500">{stockName}</Typography>
             </Box>
             <Grid container spacing={2}>
                 {details.map(group =>

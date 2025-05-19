@@ -14,7 +14,7 @@ export function StockMetricsContent({isLoadingReport, simulationReport}: Readonl
         return <Loader/>
 
     if (simulationReport) {
-        return <StockMetricsView stockMetrics={simulationReport.stockMetrics}/>
+        return <StockMetricsView stockMetrics={simulationReport.stockMetrics} stockName={simulationReport.stockName}/>
     } else {
         return (
             <Box sx={{p: 3, textAlign: 'center'}}>

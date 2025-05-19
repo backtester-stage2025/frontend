@@ -4,7 +4,7 @@ import {Weekday} from "../Weekday.ts";
 
 export interface SimulationRequest {
     brokerName: string;
-    stockName: string;
+    stockNames: string[];
     startDate: Date;
     endDate: Date;
     startCapital: number;
