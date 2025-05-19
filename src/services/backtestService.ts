@@ -7,7 +7,7 @@ import {StockReportRequest} from "../model/request/StockReportRequest.ts";
 import {SimulationReport} from "../model/simulation/SimulationReport.ts";
 import {SimulationResult} from "../model/simulation/SimulationResult.ts";
 
-export async function simulateBuyAndSellRisk(request: SimulationRequest): Promise<UserPortfolio[]> {
+export async function simulateBuyAndSellRisk(request: SimulationRequest, userId: string): Promise<UserPortfolio[]> {
     const payload = {
         ...request,
         startDate: formatDateToLocalDateString(request.startDate),
@@ -15,7 +15,7 @@ export async function simulateBuyAndSellRisk(request: SimulationRequest): Promis
     };
 
     return safeApiCall(async () => {
-        const {data} = await axios.post(`/api/backtest/run-simulation`, payload);
+        const {data} = await axios.post(`/api/backtest/run-simulation?userId=${userId}`, payload);
         return data;
     });
 }
