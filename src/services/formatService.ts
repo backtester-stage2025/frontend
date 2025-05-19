@@ -1,3 +1,5 @@
+import {SimulationResult} from "../model/simulation/SimulationResult.ts";
+
 export function formatDateToLocalDateString(date: Date): string {
     return date.toISOString().split('T')[0];
 }
@@ -38,4 +40,13 @@ export function getNiceStep(r: number) {
     else if (fraction <= 5) niceFraction = 5;
     else niceFraction = 10;
     return niceFraction * Math.pow(10, exponent);
+}
+
+
+export function calculateReturnPercentage(simulation: SimulationResult) {
+    const startCapital = simulation.stockSimulationRequest.startCapital;
+    const finalPortfolio = simulation.userPortfolios[simulation.userPortfolios.length - 1];
+    const endValue = finalPortfolio?.totalPortfolioValue || 0;
+
+    return ((endValue - startCapital) / startCapital * 100).toFixed(2);
 }

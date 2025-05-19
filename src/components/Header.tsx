@@ -1,8 +1,9 @@
-import {AppBar, Box, IconButton, Toolbar, Typography} from "@mui/material";
+import {AppBar, Avatar, Box, IconButton, Toolbar, Typography} from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-import AccountCircle from "@mui/icons-material/AccountCircle";
 import {useNavigate} from "react-router-dom";
 import {Login} from "./Login";
+import {useAuth} from "../context/AuthContext.tsx";
+import PersonIcon from "@mui/icons-material/Person";
 
 type HeaderProps = {
     onOpenDrawer: () => void;
@@ -10,6 +11,7 @@ type HeaderProps = {
 
 export function Header({onOpenDrawer}: Readonly<HeaderProps>) {
     const navigate = useNavigate();
+    const {picture} = useAuth();
 
     const handleAccountClick = () => {
         navigate("/account");
@@ -26,8 +28,18 @@ export function Header({onOpenDrawer}: Readonly<HeaderProps>) {
                 </Box>
                 <Box sx={{display: "flex", alignItems: "center", gap: 2}}>
                     <Login/>
-                    <IconButton onClick={handleAccountClick} color="inherit">
-                        <AccountCircle/>
+                    <IconButton onClick={handleAccountClick} color="inherit" sx={{padding: '4px'}}>
+                        <Avatar
+                            src={picture}
+                            sx={{
+                                width: 32,
+                                height: 32,
+                                bgcolor: 'primary.main',
+                                boxShadow: 3
+                            }}
+                        >
+                            {!picture && <PersonIcon sx={{fontSize: 24}}/>}
+                        </Avatar>
                     </IconButton>
                 </Box>
             </Toolbar>
