@@ -124,7 +124,7 @@ export function SimulationDialog({
             return;
         }
         const trimmedBrokerName = trimBrokerName(data.brokerName)
-        onSubmit({ ...data, stockNames: officialStockNames, brokerName: trimmedBrokerName });
+        onSubmit({...data, stockNames: officialStockNames, brokerName: trimmedBrokerName});
         setIsSubmitting(false);
     };
 
@@ -150,7 +150,7 @@ export function SimulationDialog({
                                     field={field}
                                 />
                             ))}
-                            <WeekdaySelector name={"tradingWeekdays"} control={control} />
+                            <WeekdaySelector name={"tradingWeekdays"} control={control}/>
                         </Box>
                     </LocalizationProvider>
                     <TradingIndicatorsSection errors={errors} control={control}/>
