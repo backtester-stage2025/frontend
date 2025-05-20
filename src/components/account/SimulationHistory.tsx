@@ -18,7 +18,7 @@ export function SimulationHistory() {
                 isDialogInitialOpen: false,
                 results: simulationResult.userPortfolios,
                 request: {
-                    stockName: simulationResult.stockSimulationRequest.stockName,
+                    stockNames: simulationResult.stockSimulationRequest.stockNames,
                     startCapital: simulationResult.stockSimulationRequest.startCapital,
                     startDate: new Date(simulationResult.stockSimulationRequest.startDate),
                     endDate: new Date(simulationResult.stockSimulationRequest.endDate)
