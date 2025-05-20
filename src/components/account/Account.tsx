@@ -1,9 +1,12 @@
 import {useAuth} from "../../context/AuthContext";
-import {Box, Typography} from "@mui/material";
+import {Box, Grid, Typography} from "@mui/material";
 import {Login} from "../Login";
+import {UserProfile} from "./UserProfile.tsx";
+import {SimulationHistory} from "./SimulationHistory.tsx";
+
 
 export function Account() {
-    const {isAuthenticated, username, email} = useAuth();
+    const {isAuthenticated} = useAuth();
 
     if (!isAuthenticated) {
         return (
@@ -14,16 +17,16 @@ export function Account() {
     }
 
     return (
-        <Box p={3}>
-            <Typography variant="h4" gutterBottom>
-                Account
+        <Box sx={{maxWidth: 1200, mx: "auto", p: 3}}>
+            <Typography variant="h4" component="h1" fontWeight="500" gutterBottom mb={4}>
+                Account Overview
             </Typography>
-            <Typography variant="body1">
-                <strong>Name:</strong> {username ?? "N/A"}
-            </Typography>
-            <Typography variant="body1">
-                <strong>Email:</strong> {email ?? "N/A"}
-            </Typography>
+
+            <Grid container spacing={4}>
+                <UserProfile/>
+
+                <SimulationHistory/>
+            </Grid>
         </Box>
     );
 }

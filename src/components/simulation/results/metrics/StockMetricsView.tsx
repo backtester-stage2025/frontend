@@ -3,7 +3,10 @@ import {MetricGroup, MetricGroupProps} from "./MetricGroup.tsx";
 import {formatPercent} from "../../../../services/formatService.ts";
 import {Box, Grid, Typography} from "@mui/material";
 
-export function StockMetricsView({stockMetrics, stockName}: Readonly<{ stockMetrics: StockMetrics, stockName: string }>) {
+export function StockMetricsView({stockMetrics, stockName}: Readonly<{
+    stockMetrics: StockMetrics,
+    stockName: string
+}>) {
     const details: MetricGroupProps[] = [
         {
             title: "Returns",

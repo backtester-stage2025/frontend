@@ -12,7 +12,7 @@ const coerceNumber = (description: string) => {
 
 const coercePositiveNumber = (description: string) => coerceNumber(description).positive(`${description} must be positive.`);
 
-const coerceEnum = <T extends EnumLike> (values: T, description: string)=> {
+const coerceEnum = <T extends EnumLike>(values: T, description: string) => {
     return z.nativeEnum(values, {
         required_error: `${description} is required`,
         invalid_type_error: `${description} is invalid`

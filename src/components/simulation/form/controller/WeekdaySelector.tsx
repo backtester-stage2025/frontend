@@ -21,7 +21,7 @@ export const WeekdaySelector = <T extends FieldValues>({name, control}: WeekdayS
         <Controller
             name={name}
             control={control}
-            render={({ field }) => (
+            render={({field}) => (
                 <FormControl component="fieldset" variant="standard">
                     <FormLabel component="legend">{"Trading week days"}</FormLabel>
                     <FormGroup>

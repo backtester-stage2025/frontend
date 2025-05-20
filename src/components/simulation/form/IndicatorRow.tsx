@@ -1,4 +1,4 @@
-import { Delete } from "@mui/icons-material";
+import {Delete} from "@mui/icons-material";
 import {FormField} from "./FormField.tsx";
 import {FieldController} from "./FieldController.tsx";
 import {SimulationRequest} from "../../../model/request/SimulationRequest.ts";
@@ -31,11 +31,26 @@ export function IndicatorRow({index, control, errors, onRemove}: Readonly<Indica
 
     if (selected === IndicatorType.MOVING_AVERAGE_CROSSOVER) {
         extraConfigs.push(
-            { name: `indicators.${index}.movingAverageShortDays`, type: "number", placeholder: "Short MA Days", required: true},
-            { name: `indicators.${index}.movingAverageLongDays`, type: "number", placeholder: "Long MA Days", required: true}
+            {
+                name: `indicators.${index}.movingAverageShortDays`,
+                type: "number",
+                placeholder: "Short MA Days",
+                required: true
+            },
+            {
+                name: `indicators.${index}.movingAverageLongDays`,
+                type: "number",
+                placeholder: "Long MA Days",
+                required: true
+            }
         );
     } else if (selected === IndicatorType.BREAKOUT) {
-        extraConfigs.push({name: `indicators.${index}.breakoutDays`, type: "number", placeholder: "Breakout Days", required: true});
+        extraConfigs.push({
+            name: `indicators.${index}.breakoutDays`,
+            type: "number",
+            placeholder: "Breakout Days",
+            required: true
+        });
     }
 
     return (
@@ -64,9 +79,9 @@ export function IndicatorRow({index, control, errors, onRemove}: Readonly<Indica
                 ))}
             </Grid>
 
-            <Grid size={{xs: 12, sm: 1}} sx={{ textAlign: "right" }}>
+            <Grid size={{xs: 12, sm: 1}} sx={{textAlign: "right"}}>
                 <IconButton onClick={onRemove} color="error">
-                    <Delete />
+                    <Delete/>
                 </IconButton>
             </Grid>
         </Grid>

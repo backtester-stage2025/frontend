@@ -11,7 +11,7 @@ interface TradingIndicatorsSectionProps {
 }
 
 export function TradingIndicatorsSection({control, errors}: Readonly<TradingIndicatorsSectionProps>) {
-    const { fields, append, remove } = useFieldArray({
+    const {fields, append, remove} = useFieldArray({
         control,
         name: "indicators"
     });
@@ -27,15 +27,15 @@ export function TradingIndicatorsSection({control, errors}: Readonly<TradingIndi
     return (
         <Box mt={3}>
             <Typography variant="h6">Trading Indicators</Typography>
-            <Divider sx={{ mb: 2 }} />
+            <Divider sx={{mb: 2}}/>
 
             {fields.length === 0 && (
-                <InfoAlert message="No indicators added yet. Add one to get started." />
+                <InfoAlert message="No indicators added yet. Add one to get started."/>
             )}
 
             <Stack spacing={2}>
                 {fields.map((fieldItem, index) => (
-                    <Paper key={fieldItem.id} sx={{ p: 2 }}>
+                    <Paper key={fieldItem.id} sx={{p: 2}}>
                         <IndicatorRow
                             index={index}
                             control={control}

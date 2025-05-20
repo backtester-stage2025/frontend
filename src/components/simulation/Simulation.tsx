@@ -12,14 +12,21 @@ import {TransactionHistory} from "./results/transactions/TransactionHistory.tsx"
 import {StockHoldingChart} from "./results/StockHoldingChart.tsx";
 import {StockMetricsContent} from "./results/metrics/StockMetricsContent.tsx";
 import {InvestmentPerformanceView} from "./results/InvestmentPerformanceView/InvestmentPerformanceView.tsx";
+import {useAuth} from "../../context/AuthContext.tsx";
+import {useLocation} from "react-router-dom";
 
 export function Simulation() {
-    const [isDialogOpen, setIsDialogOpen] = useState(true);
-    const [result, setResult] = useState<UserPortfolio[]>([]);
+    const location = useLocation();
+    const {isDialogInitialOpen = true, results = [], request = null} = location.state ?? {};
+
+    const [isDialogOpen, setIsDialogOpen] = useState(isDialogInitialOpen);
+    const [result, setResult] = useState<UserPortfolio[]>(results);
     const [tabValue, setTabValue] = useState(0);
     const [showOnlyTradesDays, setShowOnlyTradesDays] = useState(false);
-    const [stockReportRequest, setStockReportRequest] = useState<StockReportRequest | null>(null);
-    const {sendRequest, isRunning, isError, error} = useStartSimulation();
+    const [stockReportRequest, setStockReportRequest] = useState<StockReportRequest | null>(request);
+
+    const {userId} = useAuth();
+    const {sendRequest, isRunning, isError, error} = useStartSimulation(userId);
     const {
         isLoading: isLoadingReport,
         simulationReport
