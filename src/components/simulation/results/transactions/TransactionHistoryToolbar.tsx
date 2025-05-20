@@ -51,7 +51,7 @@ export function TransactionHistoryToolbar({
                     <FilterListIcon sx={{mr: 1, color: 'text.secondary'}}/>
                     <Select
                         value={sortBy}
-                        onChange={(e) => setSortBy(e.target.value as 'date' | 'value')}
+                        onChange={(e) => setSortBy(e.target.value)}
                         size="small"
                         sx={{minWidth: 120, mr: 1}}
                     >
@@ -60,7 +60,7 @@ export function TransactionHistoryToolbar({
                     </Select>
                     <Select
                         value={sortOrder}
-                        onChange={(e) => setSortOrder(e.target.value as 'asc' | 'desc')}
+                        onChange={(e) => setSortOrder(e.target.value)}
                         size="small"
                         sx={{minWidth: 120}}
                     >
