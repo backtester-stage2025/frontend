@@ -20,7 +20,7 @@ export function Simulation() {
     const [isDialogOpen, setIsDialogOpen] = useState(isDialogInitialOpen);
     const [result, setResult] = useState<UserPortfolio[]>(results);
     const [tabValue, setTabValue] = useState(0);
-    const [showOnlyTradesDays, setShowOnlyTradesDays] = useState(false);
+    const [showOnlyTradesDays, setShowOnlyTradesDays] = useState(true);
     const [stockReportRequest, setStockReportRequest] = useState<StockReportRequest | null>(request);
 
     const {sendRequest, isRunning, isError, error} = useStartSimulation();
