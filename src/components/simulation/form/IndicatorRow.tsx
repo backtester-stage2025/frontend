@@ -54,36 +54,46 @@ export function IndicatorRow({index, control, errors, onRemove}: Readonly<Indica
     }
 
     return (
-        <Grid container spacing={2} alignItems="center">
-            <Grid size={{xs: 12, sm: 6}}>
-                <FieldController<SimulationRequest>
-                    control={control}
-                    errors={errors}
-                    field={indicatorField}
+        <Box sx={{position: 'relative'}}>
+            <Grid container spacing={2} alignItems="flex-start">
+                <Grid size={{xs:12, md:6}}>
+                    <FieldController<SimulationRequest>
+                        control={control}
+                        errors={errors}
+                        field={indicatorField}
+                    />
+                </Grid>
 
-                />
-            </Grid>
-
-            <Grid size={{xs: 12, sm: 5}}>
-                {extraConfigs.map((cfg) => (
-                    <Grid key={cfg.name} size={{xs: 12}}>
-                        <Box mb={2}>
-                            <FieldController<SimulationRequest>
-                                control={control}
-                                errors={errors}
-                                field={cfg}
-                            />
-                        </Box>
+                <Grid size={{xs:12, md:5}}>
+                    <Grid container spacing={2}>
+                        {extraConfigs.map((cfg) => (
+                            <Grid size={{xs:12}} key={cfg.name}>
+                                <FieldController<SimulationRequest>
+                                    control={control}
+                                    errors={errors}
+                                    field={cfg}
+                                />
+                            </Grid>
+                        ))}
                     </Grid>
+                </Grid>
 
-                ))}
+                <Grid size={{xs:12, md:1}} sx={{
+                    display: 'flex',
+                    justifyContent: {xs: 'flex-start', md: 'center'},
+                    alignItems: 'center',
+                    height: '100%'
+                }}>
+                    <IconButton
+                        onClick={onRemove}
+                        color="error"
+                        size="small"
+                        sx={{mt: {xs: 0, md: 1}}}
+                    >
+                        <Delete/>
+                    </IconButton>
+                </Grid>
             </Grid>
-
-            <Grid size={{xs: 12, sm: 1}} sx={{textAlign: "right"}}>
-                <IconButton onClick={onRemove} color="error">
-                    <Delete/>
-                </IconButton>
-            </Grid>
-        </Grid>
+        </Box>
     );
 }

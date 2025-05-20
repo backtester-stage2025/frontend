@@ -26,16 +26,32 @@ export function TradingIndicatorsSection({control, errors}: Readonly<TradingIndi
 
     return (
         <Box mt={3}>
-            <Typography variant="h6">Trading Indicators</Typography>
+            <Box sx={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                mb: 1
+            }}>
+                <Typography variant="h6">Trading Indicators</Typography>
+            </Box>
             <Divider sx={{mb: 2}}/>
 
             {fields.length === 0 && (
                 <InfoAlert message="No indicators added yet. Add one to get started."/>
             )}
 
-            <Stack spacing={2}>
+            <Stack spacing={3} sx={{mb: 3}}>
                 {fields.map((fieldItem, index) => (
-                    <Paper key={fieldItem.id} sx={{p: 2}}>
+                    <Paper
+                        key={fieldItem.id}
+                        elevation={2}
+                        sx={{
+                            p: 3,
+                            border: '1px solid',
+                            borderColor: 'divider',
+                            borderRadius: 1
+                        }}
+                    >
                         <IndicatorRow
                             index={index}
                             control={control}
@@ -46,7 +62,15 @@ export function TradingIndicatorsSection({control, errors}: Readonly<TradingIndi
                 ))}
             </Stack>
 
-            <Button onClick={addIndicator} variant="outlined">
+            <Button
+                onClick={addIndicator}
+                variant="outlined"
+                startIcon={<span>+</span>}
+                sx={{
+                    mt: 1,
+                    fontWeight: 'medium',
+                }}
+            >
                 Add Indicator
             </Button>
         </Box>
