@@ -39,9 +39,18 @@ export function SimulationCard({simulation, viewSimulationDetails}: Readonly<Sim
         >
             <CardContent sx={{p: 2.5, "&:last-child": {pb: 0.5}}}>
                 <Box display="flex" justifyContent="space-between" alignItems="center" mb={1.5}>
-                    <Typography variant="subtitle1" fontWeight="bold">
-                        {simulation.stockSimulationRequest.stockName}
-                    </Typography>
+                    <Box>
+                        <Typography variant="subtitle1" fontWeight="bold" mb={0.5}>
+                            Stocks:
+                        </Typography>
+                        <Stack spacing={0.5}>
+                            {simulation.stockSimulationRequest.stockNames.map((stock, index) => (
+                                <Typography key={index} variant="body2" sx={{display: 'flex', alignItems: 'center'}}>
+                                    • {stock}
+                                </Typography>
+                            ))}
+                        </Stack>
+                    </Box>
                     <Chip
                         size="small"
                         icon={<CalendarTodayIcon/>}
