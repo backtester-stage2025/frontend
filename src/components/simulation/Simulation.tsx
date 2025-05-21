@@ -6,13 +6,11 @@ import {Loader} from "../util/Loader.tsx";
 import {UserPortfolio} from "../../model/simulation/UserPortfolio.ts";
 import {useStartSimulation} from "../../hooks/useStartSimulation.ts";
 import {SimulationRequest} from "../../model/request/SimulationRequest.ts";
-
 import {SimulationDialog} from "./form/SimulationDialog.tsx";
 import {TransactionHistory} from "./results/transactions/TransactionHistory.tsx";
 import {StockHoldingChart} from "./results/StockHoldingChart.tsx";
 import {StockMetricsContent} from "./results/metrics/StockMetricsContent.tsx";
 import {InvestmentPerformanceView} from "./results/InvestmentPerformanceView/InvestmentPerformanceView.tsx";
-import {useAuth} from "../../context/AuthContext.tsx";
 import {useLocation} from "react-router-dom";
 
 export function Simulation() {
@@ -25,8 +23,7 @@ export function Simulation() {
     const [showOnlyTradesDays, setShowOnlyTradesDays] = useState(false);
     const [stockReportRequest, setStockReportRequest] = useState<StockReportRequest | null>(request);
 
-    const {userId} = useAuth();
-    const {sendRequest, isRunning, isError, error} = useStartSimulation(userId);
+    const {sendRequest, isRunning, isError, error} = useStartSimulation();
     const {
         isLoading: isLoadingReport,
         simulationReport
