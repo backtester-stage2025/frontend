@@ -1,26 +1,29 @@
 import {useGoogleLogin} from "@react-oauth/google";
 import {useAuth} from "../context/AuthContext";
-import {authenticateUser} from "../services/authService";
+import {addAccessTokenToAuthHeader, authenticateUser, removeAccessTokenFromAuthHeader} from "../services/authService";
 
 export const useGoogleAuth = () => {
-    const {setAuthState} = useAuth();
+    const {setAuthState, clearAuthState} = useAuth();
 
     const login = useGoogleLogin({
-        onSuccess: (credentialResponse) => {
-            const handleLogin = async () => {
-                const token = credentialResponse.access_token;
-
-                try {
-                    const userInfo = await authenticateUser(token);
-                    setAuthState(true, userInfo.name, userInfo.email, userInfo.id, userInfo.picture);
-                } catch (error) {
-                    console.error("Authentication failed:", error);
-                }
-            };
-
-            handleLogin();
-        }
+        flow: "auth-code",
+        onSuccess: async (codeResponse) => {
+            try {
+                const userInfo = await authenticateUser(codeResponse.code);
+                addAccessTokenToAuthHeader(userInfo.token);
+                setAuthState(true, userInfo.name, userInfo.email, userInfo.id, userInfo.picture);
+            } catch (error) {
+                removeAccessTokenFromAuthHeader();
+                console.error("Authentication failed:", error);
+            }
+        },
+        scope: "openid email profile",
     });
 
-    return {login};
+    const logout = () => {
+        removeAccessTokenFromAuthHeader();
+        clearAuthState();
+    };
+
+    return {login, logout};
 };
