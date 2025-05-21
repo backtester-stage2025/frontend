@@ -1,7 +1,7 @@
 import {ChangeEvent, SyntheticEvent, useState} from "react";
 import {useSimulationReport} from "../../hooks/useSimulationReport.ts";
 import {StockReportRequest} from "../../model/request/StockReportRequest.ts";
-import {Box, Button, Tab, Tabs, Typography} from "@mui/material";
+import {Alert, Box, Button, Snackbar, Tab, Tabs, Typography} from "@mui/material";
 import {Loader} from "../util/Loader.tsx";
 import {UserPortfolio} from "../../model/simulation/UserPortfolio.ts";
 import {useStartSimulation} from "../../hooks/useStartSimulation.ts";
@@ -22,6 +22,11 @@ export function Simulation() {
     const [tabValue, setTabValue] = useState(0);
     const [showOnlyTradesDays, setShowOnlyTradesDays] = useState(true);
     const [stockReportRequest, setStockReportRequest] = useState<StockReportRequest | null>(request);
+    const [lastSimulationRequest, setLastSimulationRequest] = useState<SimulationRequest | null>(request);
+
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState("");
+    const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">("success");
 
     const {sendRequest, isRunning, isError, error} = useStartSimulation();
     const {
@@ -30,15 +35,26 @@ export function Simulation() {
     } = useSimulationReport(stockReportRequest || null);
 
     const sendAndProcessRequest = (request: SimulationRequest) => {
+        setLastSimulationRequest(request);
         sendRequest(request, {
             onSuccess: (data) => {
-                setResult(data);
+                const portfolios = data.userPortfolios;
+                const saveSuccessful = data.saveSuccessful;
+
+                setSnackbarMessage(saveSuccessful
+                    ? "Simulation successfully saved!"
+                    : "Simulation completed but could not be saved to your history.");
+                setSnackbarSeverity(saveSuccessful ? "success" : "error");
+                setSnackbarOpen(true);
+
+
+                setResult(portfolios);
                 setIsDialogOpen(false);
 
-                if (data?.length) {
-                    const firstDate = new Date(data[0].date);
-                    const lastDate = new Date(data[data.length - 1].date);
-                    const firstPortfolioWithShares = data.find(
+                if (portfolios?.length) {
+                    const firstDate = new Date(portfolios[0].date);
+                    const lastDate = new Date(portfolios[portfolios.length - 1].date);
+                    const firstPortfolioWithShares = portfolios.find(
                         portfolio => Object.keys(portfolio.sharesBought).length > 0
                     );
 
@@ -49,7 +65,7 @@ export function Simulation() {
                     if (stockNames && stockNames.length > 0) {
                         const reportRequest: StockReportRequest = {
                             stockNames,
-                            startCapital: data[0].totalPortfolioValue,
+                            startCapital: portfolios[0].totalPortfolioValue,
                             startDate: firstDate,
                             endDate: lastDate
                         };
@@ -91,6 +107,7 @@ export function Simulation() {
                 onSubmit={sendAndProcessRequest}
                 isServerError={isError}
                 serverError={error}
+                initialValues={lastSimulationRequest}
             />
 
             {(result || isRunning || isLoadingReport) && (
@@ -157,6 +174,20 @@ export function Simulation() {
                     )}
                 </>
             )}
+            <Snackbar
+                open={snackbarOpen}
+                autoHideDuration={5000}
+                onClose={() => setSnackbarOpen(false)}
+                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+            >
+                <Alert
+                    onClose={() => setSnackbarOpen(false)}
+                    severity={snackbarSeverity}
+                    sx={{ width: '100%', mt: 6 }}
+                >
+                    {snackbarMessage}
+                </Alert>
+            </Snackbar>
         </Box>
     );
 }
