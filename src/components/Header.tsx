@@ -4,6 +4,7 @@ import {useNavigate} from "react-router-dom";
 import {Login} from "./Login";
 import {useAuth} from "../context/AuthContext.tsx";
 import PersonIcon from "@mui/icons-material/Person";
+import {useGoogleAuth} from "../hooks/useGoogleAuth.ts";
 
 type HeaderProps = {
     onOpenDrawer: () => void;
@@ -11,7 +12,8 @@ type HeaderProps = {
 
 export function Header({onOpenDrawer}: Readonly<HeaderProps>) {
     const navigate = useNavigate();
-    const {picture} = useAuth();
+    const {picture, isAuthenticated} = useAuth();
+    const {login} = useGoogleAuth()
 
     const handleAccountClick = () => {
         navigate("/account");
@@ -28,7 +30,7 @@ export function Header({onOpenDrawer}: Readonly<HeaderProps>) {
                 </Box>
                 <Box sx={{display: "flex", alignItems: "center", gap: 2}}>
                     <Login/>
-                    <IconButton onClick={handleAccountClick} color="inherit" sx={{padding: '4px'}}>
+                    <IconButton onClick={isAuthenticated ? () => handleAccountClick() : () => login()} color="inherit" sx={{padding: '4px'}}>
                         <Avatar
                             src={picture}
                             sx={{
