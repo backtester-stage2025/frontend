@@ -33,9 +33,9 @@ export async function getSimulationReport(request: StockReportRequest): Promise<
     });
 }
 
-export async function getSimulationHistory(userId: string): Promise<SimulationResult[]> {
+export async function getSimulationHistory(): Promise<SimulationResult[]> {
     return safeApiCall(async () => {
-        const {data} = await axios.get<SimulationResult[]>(`/api/backtest/history?userId=${userId}`);
+        const {data} = await axios.get<SimulationResult[]>(`/api/backtest/history`);
         return data;
     });
 }
