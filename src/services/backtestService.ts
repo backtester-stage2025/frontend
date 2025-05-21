@@ -1,13 +1,13 @@
 import {SimulationRequest} from "../model/request/SimulationRequest.ts";
-import {UserPortfolio} from "../model/simulation/UserPortfolio.ts";
 import {formatDateToLocalDateString} from "./formatService.ts";
 import {safeApiCall} from "./safeApiCall.ts";
 import axios from "axios";
 import {StockReportRequest} from "../model/request/StockReportRequest.ts";
 import {SimulationReport} from "../model/simulation/SimulationReport.ts";
 import {SimulationResult} from "../model/simulation/SimulationResult.ts";
+import {SimulationRunResponse} from "../model/simulation/SimulationRunResponse.ts";
 
-export async function runSimulation(request: SimulationRequest): Promise<UserPortfolio[]> {
+export async function runSimulation(request: SimulationRequest): Promise<SimulationRunResponse> {
     const payload = {
         ...request,
         startDate: formatDateToLocalDateString(request.startDate),

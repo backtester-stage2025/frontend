@@ -29,15 +29,17 @@ interface BuyAndHoldSimulationProps {
     onClose: () => void;
     isServerError: boolean;
     serverError: Error | null;
+    initialValues: SimulationRequest | null;
 }
 
 export function SimulationDialog({
                                      isOpen,
                                      onSubmit,
                                      onClose,
-                                     serverError
+                                     serverError,
+                                     initialValues
                                  }: Readonly<BuyAndHoldSimulationProps>) {
-    const {stockData} = useStockData();
+    const {isLoading: isLoadingStockDate, isError: isErrorLoadingStockData, stockData} = useStockData();
     const {isLoading: isLoadingBrokers, isError: isErrorLoadingBrokers, brokers} = useBrokers();
 
     const [error, setError] = useState<Error | null>(serverError ?? null);
@@ -51,7 +53,13 @@ export function SimulationDialog({
 
     const {control, handleSubmit, formState: {errors}} = useForm<SimulationRequest>({
         resolver: zodResolver(simulationRequestSchema),
-        defaultValues: {
+        defaultValues: initialValues ? {
+            ...initialValues,
+            stockNames: initialValues.stockNames.map(officialName => {
+                const stock = stockData?.find(s => s.officialName === officialName);
+                return stock?.companyName ?? officialName;
+            })
+        } : {
             brokerName: '',
             stockNames: [],
             startDate: subYears(new Date(), 1),
@@ -66,8 +74,9 @@ export function SimulationDialog({
 
     const simType = useWatch({control, name: "simulationType"}) as SimulationTypes | undefined;
 
-    if (isLoadingBrokers) return <Loader/>;
+    if (isLoadingBrokers ||isLoadingStockDate) return <Loader/>;
     if (isErrorLoadingBrokers) return <ErrorAlert message="Error loading brokers"/>;
+    if (isErrorLoadingStockData) return <ErrorAlert message="Error loading stock data"/>;
 
     const fieldConfigs: FormField<SimulationRequest>[] = [
         {

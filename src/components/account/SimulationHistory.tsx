@@ -18,8 +18,7 @@ export function SimulationHistory() {
                 isDialogInitialOpen: false,
                 results: simulationResult.userPortfolios,
                 request: {
-                    stockNames: simulationResult.stockSimulationRequest.stockNames,
-                    startCapital: simulationResult.stockSimulationRequest.startCapital,
+                    ...simulationResult.stockSimulationRequest,
                     startDate: new Date(simulationResult.stockSimulationRequest.startDate),
                     endDate: new Date(simulationResult.stockSimulationRequest.endDate)
                 }
@@ -52,7 +51,9 @@ export function SimulationHistory() {
                     </Alert>
                 )}
 
-                {!isLoading && !isError && simulationHistory?.map((simulation, index) =>
+                {!isLoading && !isError && simulationHistory?.sort((a, b) =>
+                    new Date(b.simulationDate).getTime() - new Date(a.simulationDate).getTime()
+                ).map((simulation, index) =>
                     <SimulationCard key={index} simulation={simulation} viewSimulationDetails={viewSimulationDetails}/>
                 )}
             </Paper>
