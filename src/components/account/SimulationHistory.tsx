@@ -13,7 +13,6 @@ export function SimulationHistory() {
     const navigate = useNavigate();
 
     const viewSimulationDetails = (simulationResult: SimulationResult) => {
-        console.log("Simulation result", simulationResult);
         navigate("/strategy-tester", {
             state: {
                 isDialogInitialOpen: false,
