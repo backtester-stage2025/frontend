@@ -83,7 +83,11 @@ export function SimulationDialog({
     const fieldConfigs: FormField<SimulationRequest>[] = [
         {
             name: "brokerName", type: "autocomplete", placeholder: "Broker", required: true,
-            options: brokers?.map((b: Broker) => `${b.name} (Fee: ${b.transactionFee.toFixed(2)}€)`)
+            options: brokers?.map((b: Broker) => `${b.name} (Fee: ${b.transactionFee.toFixed(2)}€)`),
+            tooltip: {
+                title: TOOLTIP_MESSAGES.simulation.brokerTitle,
+                description: TOOLTIP_MESSAGES.simulation.brokerInfo
+            }
         },
         {
             name: "stockNames", type: "autocomplete", placeholder: "Stock Names", required: true,

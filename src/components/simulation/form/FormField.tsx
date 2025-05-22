@@ -1,6 +1,6 @@
 import {ControllerRenderProps, FieldPath, FieldValues} from "react-hook-form";
 import {DatePicker} from "@mui/x-date-pickers/DatePicker";
-import {Autocomplete, Checkbox, FormControlLabel, MenuItem, TextField} from "@mui/material";
+import {Autocomplete, Checkbox, FormControlLabel, MenuItem, TextField, Tooltip} from "@mui/material";
 
 export interface EnumOption<E extends string | number> {
     label: string;
@@ -128,27 +128,33 @@ export function FormAutoComplete<T extends FieldValues>(
     }
 
     return (
-        <Autocomplete
-            multiple={field.multiple}
-            options={labels}
-            value={value}
-            onChange={(_, newValue) => controllerField.onChange(newValue)}
-            renderInput={(params) => (
-                <TextField
-                    {...params}
-                    label={field.placeholder}
-                    required={field.required}
-                    error={error}
-                    helperText={helperText}
-                    fullWidth
-                    slotProps={{
-                        htmlInput: {
-                            ...params.inputProps,
-                            required: value.length === 0
-                        }
-                    }}
-                />
-            )}
-        />
+        <Tooltip
+            title={
+                field.tooltip ? (
+                    <>
+                        <strong>{field.tooltip.title}</strong>
+                        <p>{field.tooltip.description}</p>
+                        {field.tooltip.link && <a href={field.tooltip.link}>Learn more</a>}
+                    </>
+                ) : ""
+            }
+        >
+            <Autocomplete
+                multiple={field.multiple}
+                options={labels}
+                value={value}
+                onChange={(_, newValue) => controllerField.onChange(newValue)}
+                renderInput={(params) => (
+                    <TextField
+                        {...params}
+                        label={field.placeholder}
+                        required={field.required}
+                        error={error}
+                        helperText={helperText}
+                        fullWidth
+                    />
+                )}
+            />
+        </Tooltip>
     );
 }
