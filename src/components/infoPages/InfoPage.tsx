@@ -1,25 +1,45 @@
 import {
     Box,
     CssBaseline,
-    Divider,
     List,
     ListItem,
     ListItemButton,
     ListItemIcon,
     ListItemText,
     Paper,
-    Toolbar,
-    Typography
+    Toolbar
 } from "@mui/material";
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import MailIcon from '@mui/icons-material/Mail';
+import ExpandLess from '@mui/icons-material/ExpandLess';
+import ExpandMore from '@mui/icons-material/ExpandMore';
+import QueryStatsIcon from "@mui/icons-material/QueryStats";
+import CircleIcon from '@mui/icons-material/Circle';
+import {JSX, useState} from "react";
+import {DefaultInfo} from "./DefaultInfo.tsx";
+import {MovingAverageCrossoverInfo} from "./MovingAverageCrossoverInfo.tsx";
+import {BreakoutInfo} from "./BreakoutInfo.tsx";
 
 const panelWidth = 240;
 
 export function InfoPage() {
+    const [openIndicators, setOpenIndicators] = useState(false);
+    const [selectedIndicator, setSelectedIndicator] = useState<string | null>(null);
+
+    const handleToggleIndicators = () => {
+        setOpenIndicators(!openIndicators);
+    };
+
+    const handleSelectIndicator = (indicator: string) => {
+        setSelectedIndicator(indicator);
+    };
+
+    const indicatorComponents: Record<string, JSX.Element> = {
+        "Moving Average Crossover": <MovingAverageCrossoverInfo/>,
+        "Breakout": <BreakoutInfo/>,
+    };
+
     return (
-        <Box sx={{ display: 'flex' }}>
-            <CssBaseline />
+        <Box sx={{display: 'flex'}}>
+            <CssBaseline/>
             <Paper
                 elevation={3}
                 sx={{
@@ -31,35 +51,68 @@ export function InfoPage() {
                     display: 'flex',
                     flexDirection: 'column',
                     boxSizing: 'border-box',
-                    borderRadius: 2
+                    borderRadius: 2,
                 }}
             >
-                <Toolbar />
-                <Box sx={{ overflow: 'auto', flexGrow: 1 }}>
+                <Box sx={{overflow: 'auto', flexGrow: 1}}>
                     <List>
-                        {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-                            <ListItem key={text} disablePadding>
-                                <ListItemButton>
-                                    <ListItemIcon>
-                                        {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                                    </ListItemIcon>
-                                    <ListItemText primary={text} />
-                                </ListItemButton>
-                            </ListItem>
-                        ))}
-                    </List>
-                    <Divider />
-                    <List>
-                        {['All mail', 'Trash', 'Spam'].map((text, index) => (
-                            <ListItem key={text} disablePadding>
-                                <ListItemButton>
-                                    <ListItemIcon>
-                                        {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                                    </ListItemIcon>
-                                    <ListItemText primary={text} />
-                                </ListItemButton>
-                            </ListItem>
-                        ))}
+                        <ListItem disablePadding>
+                            <ListItemButton onClick={handleToggleIndicators}>
+                                <ListItemIcon>
+                                    <QueryStatsIcon/>
+                                </ListItemIcon>
+                                <ListItemText
+                                    primary="Indicators"
+                                    slotProps={{
+                                        primary: {
+                                            fontSize: '1.2rem',
+                                            fontWeight: '550'
+                                        }
+                                    }}
+                                />
+                                {openIndicators ? <ExpandLess/> : <ExpandMore/>}
+                            </ListItemButton>
+                        </ListItem>
+                        {openIndicators && (
+                            <List component="div" disablePadding sx={{pl: 4}}>
+                                <ListItem disablePadding>
+                                    <ListItemButton
+                                        sx={{alignItems: 'center'}}
+                                        onClick={() => handleSelectIndicator("Moving Average Crossover")}
+                                    >
+                                        <ListItemIcon sx={{minWidth: '24px'}}>
+                                            <CircleIcon sx={{fontSize: '0.5rem'}}/>
+                                        </ListItemIcon>
+                                        <ListItemText
+                                            primary="Moving Average Crossover"
+                                            slotProps={{
+                                                primary: {
+                                                    fontSize: '1rem',
+                                                }
+                                            }}
+                                        />
+                                    </ListItemButton>
+                                </ListItem>
+                                <ListItem disablePadding>
+                                    <ListItemButton
+                                        sx={{alignItems: 'center'}}
+                                        onClick={() => handleSelectIndicator("Breakout")}
+                                    >
+                                        <ListItemIcon sx={{minWidth: '24px'}}>
+                                            <CircleIcon sx={{fontSize: '0.5rem'}}/>
+                                        </ListItemIcon>
+                                        <ListItemText
+                                            primary="Breakout"
+                                            slotProps={{
+                                                primary: {
+                                                    fontSize: '1rem',
+                                                }
+                                            }}
+                                        />
+                                    </ListItemButton>
+                                </ListItem>
+                            </List>
+                        )}
                     </List>
                 </Box>
             </Paper>
@@ -71,11 +124,8 @@ export function InfoPage() {
                     marginLeft: `${panelWidth + 20}px`
                 }}
             >
-                <Toolbar />
-                <Typography sx={{ marginBottom: 2 }}>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-                    tempor incididunt ut labore et dolore magna aliqua...
-                </Typography>
+                <Toolbar/>
+                {selectedIndicator ? indicatorComponents[selectedIndicator] : <DefaultInfo/>}
             </Box>
         </Box>
     );
