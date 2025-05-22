@@ -15,6 +15,7 @@ export function Navigation({isOpen, onClose}: Readonly<NavigationProps>) {
     const menuItems = [
         {label: 'Stock List', link: '/stock-list', icon: <ListIcon/>, requiresAuth: false},
         {label: 'Strategy Tester', link: '/strategy-tester', icon: <ShowChartIcon/>, requiresAuth: true},
+        {label: 'Info Pages', link: '/infopages', icon: <ListIcon/>, requiresAuth: false},
     ]
 
     const filteredMenuItems = menuItems
