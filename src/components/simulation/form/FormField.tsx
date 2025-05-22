@@ -152,6 +152,12 @@ export function FormAutoComplete<T extends FieldValues>(
                         error={error}
                         helperText={helperText}
                         fullWidth
+                        slotProps={{
+                            htmlInput: {
+                                ...params.inputProps,
+                                required: value.length === 0
+                            }
+                        }}
                     />
                 )}
             />
