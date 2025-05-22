@@ -68,7 +68,8 @@ export function SimulationDialog({
             simulationType: simulationTypeOptions[0].value,
             riskTolerance: 20,
             indicators: [],
-            tradingWeekdays: Object.values(Weekday)
+            tradingWeekdays: Object.values(Weekday),
+            transactionBufferPercentage: 0
         }
     });
 
@@ -98,6 +99,9 @@ export function SimulationDialog({
             name: "riskTolerance", type: "number", placeholder: "Risk Tolerance (%)", required: false,
             shouldRender: simType === SimulationTypes.RISK_BASED
         },
+        {
+            name: "transactionBufferPercentage", type: "number", placeholder: "Transaction Buffer (%)", required: true
+        }
     ];
 
     const showSubmitError = (message: string) => {
