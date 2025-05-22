@@ -76,7 +76,7 @@ export function SimulationDialog({
 
     const simType = useWatch({control, name: "simulationType"}) as SimulationTypes | undefined;
 
-    if (isLoadingBrokers ||isLoadingStockDate) return <Loader/>;
+    if (isLoadingBrokers || isLoadingStockDate) return <Loader/>;
     if (isErrorLoadingBrokers) return <ErrorAlert message="Error loading brokers"/>;
     if (isErrorLoadingStockData) return <ErrorAlert message="Error loading stock data"/>;
 
