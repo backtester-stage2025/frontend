@@ -176,7 +176,7 @@ export function Simulation() {
             )}
             <Snackbar
                 open={snackbarOpen}
-                autoHideDuration={5000}
+                autoHideDuration={6000}
                 onClose={() => setSnackbarOpen(false)}
                 anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
             >

@@ -10,7 +10,7 @@ import {
     TextField
 } from "@mui/material";
 import {ChangeEvent, useState} from "react";
-import {useUploadCsv} from "../../hooks/useUploadCsv.ts";
+import {useUploadCsv} from "../../hooks/useCsvMutations.ts";
 import {CurrencyType} from "../../model/StockDetails.ts";
 import {SelectChangeEvent} from "@mui/material/Select";
 
@@ -85,6 +85,7 @@ export function CsvUploadDialog({open, onClose}: Readonly<CsvUploadDialogProps>)
                             value={form.exchange}
                             onChange={handleChange}
                             fullWidth
+                            disabled={isRunning}
                         />
                         <TextField
                             label="Ticker"
@@ -92,6 +93,7 @@ export function CsvUploadDialog({open, onClose}: Readonly<CsvUploadDialogProps>)
                             value={form.ticker}
                             onChange={handleChange}
                             fullWidth
+                            disabled={isRunning}
                         />
                         <TextField
                             label="Company Name"
@@ -99,15 +101,17 @@ export function CsvUploadDialog({open, onClose}: Readonly<CsvUploadDialogProps>)
                             value={form.companyName}
                             onChange={handleChange}
                             fullWidth
+                            disabled={isRunning}
                         />
                         <FormControl fullWidth>
-                            <InputLabel id="currency-type-label">Currency</InputLabel>
+                            <InputLabel id="currency-type-label" disabled={isRunning}>Currency</InputLabel>
                             <Select
                                 labelId="currency-type-label"
                                 label="Currency"
                                 name="currencyType"
                                 value={form.currencyType}
                                 onChange={handleCurrencyChange}
+                                disabled={isRunning}
                             >
                                 {Object.values(CurrencyType).map((currency) => (
                                     <MenuItem key={currency} value={currency}>
@@ -119,6 +123,7 @@ export function CsvUploadDialog({open, onClose}: Readonly<CsvUploadDialogProps>)
                         <Button
                             variant="outlined"
                             component="label"
+                            disabled={isRunning}
                         >
                             {form.file ? form.file.name : "Select CSV File"}
                             <input
