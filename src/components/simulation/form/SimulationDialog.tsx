@@ -22,6 +22,7 @@ import {TradingIndicatorsSection} from "./TradingIndicatorsSection.tsx";
 import {subYears} from "date-fns";
 import {WeekdaySelector} from "./controller/WeekdaySelector.tsx";
 import {Weekday} from "../../../model/Weekday.ts";
+import { TOOLTIP_MESSAGES } from "../../../constants/tooltipMessages.ts";
 
 interface BuyAndHoldSimulationProps {
     isOpen: boolean;
@@ -93,11 +94,19 @@ export function SimulationDialog({
         {name: "startCapital", type: "number", placeholder: "Start Capital", required: true},
         {
             name: "simulationType", type: "select", placeholder: "Simulation Type", required: true,
-            options: simulationTypeOptions
+            options: simulationTypeOptions,
+            tooltip: {
+                title: TOOLTIP_MESSAGES.simulation.simulationTypeTitle,
+                description: TOOLTIP_MESSAGES.simulation.simulationTypeInfo
+            }
         },
         {
             name: "riskTolerance", type: "number", placeholder: "Risk Tolerance (%)", required: false,
-            shouldRender: simType === SimulationTypes.RISK_BASED
+            shouldRender: simType === SimulationTypes.RISK_BASED,
+            tooltip: {
+                title: TOOLTIP_MESSAGES.simulation.riskToleranceTitle,
+                description: TOOLTIP_MESSAGES.simulation.riskToleranceInfo
+            }
         },
         {
             name: "transactionBufferPercentage", type: "number", placeholder: "Transaction Buffer (%)", required: true

@@ -18,6 +18,11 @@ export interface FormField<
     options?: Array<string> | Array<EnumOption<TValue>>;
     shouldRender?: boolean;
     multiple?: boolean;
+    tooltip?: {
+        title?: string;
+        description: string;
+        link?: string;
+    };
 }
 
 export interface FormFieldRenderProps<T extends FieldValues> {
@@ -25,6 +30,7 @@ export interface FormFieldRenderProps<T extends FieldValues> {
     controllerField: ControllerRenderProps<T, FieldPath<T>>;
     error: boolean;
     helperText?: string;
+    inputProps?: Record<string, unknown>;
 }
 
 function toDate(value: unknown) {
@@ -55,7 +61,7 @@ export function FormDatePicker<TFieldValues extends FieldValues>(
 }
 
 export function FormDropdown<T extends FieldValues>(
-    {field, controllerField, error, helperText}: Readonly<FormFieldRenderProps<T>>
+    {field, controllerField, error, helperText, inputProps}: Readonly<FormFieldRenderProps<T>>
 ) {
     const opts = field.options ?? [];
 
@@ -69,6 +75,7 @@ export function FormDropdown<T extends FieldValues>(
             required={field.required}
             error={error}
             helperText={helperText}
+            {...inputProps}
         >
             {opts.length > 0 ? (
                 opts.map((opt) =>

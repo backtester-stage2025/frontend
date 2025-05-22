@@ -1,5 +1,7 @@
 import {ChangeEvent, useEffect, useState} from 'react';
 import {Box, Button, Grid, InputAdornment, TextField, Typography} from '@mui/material';
+import {TooltipHtml} from "../util/TooltipHtml.tsx";
+import {TOOLTIP_MESSAGES} from '../../constants/tooltipMessages';
 
 export const MIN_SHORT_PERIOD = 5;
 export const MAX_SHORT_PERIOD = 100;
@@ -102,26 +104,30 @@ export function MovingAverageControls({
         <Box component="form" sx={{mb: 3}}>
             <Grid container spacing={2} alignItems="top">
                 <Grid size={{xs: 15, md: 5}}>
-                    <TextField
-                        id="shortPeriod"
-                        label="Short MA Period"
-                        type="number"
-                        value={inputPeriods.shortPeriod === 0 ? '' : inputPeriods.shortPeriod}
-                        onChange={handleShortPeriodChange}
-                        slotProps={{
-                            htmlInput: {min: MIN_SHORT_PERIOD, max: MAX_SHORT_PERIOD},
-                            input: {
-                                endAdornment: (
-                                    <InputAdornment position="end">days</InputAdornment>
-                                ),
-                            }
-                        }}
-                        error={!!inputErrors.shortPeriod}
-                        fullWidth
-                        variant="outlined"
-                        size="small"
-                        sx={{mb: 0.5}}
-                    />
+                    <TooltipHtml
+                        title={TOOLTIP_MESSAGES.movingAverageControls.shortMATitle}
+                        description={TOOLTIP_MESSAGES.movingAverageControls.shortMAInfo}>
+                        <TextField
+                            id="shortPeriod"
+                            label="Short MA Period"
+                            type="number"
+                            value={inputPeriods.shortPeriod === 0 ? '' : inputPeriods.shortPeriod}
+                            onChange={handleShortPeriodChange}
+                            slotProps={{
+                                htmlInput: {min: MIN_SHORT_PERIOD, max: MAX_SHORT_PERIOD},
+                                input: {
+                                    endAdornment: (
+                                        <InputAdornment position="end">days</InputAdornment>
+                                    ),
+                                }
+                            }}
+                            error={!!inputErrors.shortPeriod}
+                            fullWidth
+                            variant="outlined"
+                            size="small"
+                            sx={{mb: 0.5}}
+                        />
+                    </TooltipHtml>
                     {inputErrors.shortPeriod && (
                         <Typography color="error" variant="caption" sx={{display: 'block', ml: 2}}>
                             {inputErrors.shortPeriod}
@@ -129,26 +135,30 @@ export function MovingAverageControls({
                     )}
                 </Grid>
                 <Grid size={{xs: 15, md: 5}}>
-                    <TextField
-                        id="longPeriod"
-                        label="Long MA Period"
-                        type="number"
-                        value={inputPeriods.longPeriod === 0 ? '' : inputPeriods.longPeriod}
-                        onChange={handleLongPeriodChange}
-                        slotProps={{
-                            htmlInput: {min: MIN_LONG_PERIOD, max: MAX_LONG_PERIOD},
-                            input: {
-                                endAdornment: (
-                                    <InputAdornment position="end">days</InputAdornment>
-                                ),
-                            }
-                        }}
-                        error={!!inputErrors.longPeriod}
-                        fullWidth
-                        variant="outlined"
-                        size="small"
-                        sx={{mb: 0.5}}
-                    />
+                    <TooltipHtml
+                        title={TOOLTIP_MESSAGES.movingAverageControls.longMATitle}
+                        description={TOOLTIP_MESSAGES.movingAverageControls.longMAInfo}>
+                        <TextField
+                            id="longPeriod"
+                            label="Long MA Period"
+                            type="number"
+                            value={inputPeriods.longPeriod === 0 ? '' : inputPeriods.longPeriod}
+                            onChange={handleLongPeriodChange}
+                            slotProps={{
+                                htmlInput: {min: MIN_LONG_PERIOD, max: MAX_LONG_PERIOD},
+                                input: {
+                                    endAdornment: (
+                                        <InputAdornment position="end">days</InputAdornment>
+                                    ),
+                                }
+                            }}
+                            error={!!inputErrors.longPeriod}
+                            fullWidth
+                            variant="outlined"
+                            size="small"
+                            sx={{mb: 0.5}}
+                        />
+                    </TooltipHtml>
                     {inputErrors.longPeriod && (
                         <Typography color="error" variant="caption" sx={{display: 'block', ml: 2}}>
                             {inputErrors.longPeriod}
