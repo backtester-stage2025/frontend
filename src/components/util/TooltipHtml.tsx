@@ -2,7 +2,7 @@ import {ReactElement} from "react";
 import {Link, Tooltip, Typography} from '@mui/material';
 
 interface TooltipHtmlProps {
-    title: string;
+    title?: string;
     description: string;
     link?: string;
     children: ReactElement;

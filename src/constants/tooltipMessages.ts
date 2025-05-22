@@ -18,5 +18,14 @@ export const TOOLTIP_MESSAGES = {
             maShortDays: "The number of days used for calculating the short moving average.",
             maLongDays: "The number of days used for calculating the long moving average."
         }
+    },
+    stockMetrics: {
+        returnsInfo: "The average percentage daily and annual return of the stock over the simulation period.",
+        riskInfo: "The average percentage daily and annual risk of the stock over the simulation period.",
+        drawdownsInfo: "The average and maximum percentage drawdown of the stock over the simulation period." +
+            " This is the difference between the peak and lowest price.",
+        distributionInfo: "The skewness of the stock returns over the simulation period." +
+            " A positive skewness indicates a higher probability of positive returns," +
+            " while a negative skewness indicates a higher probability of negative returns."
     }
 }

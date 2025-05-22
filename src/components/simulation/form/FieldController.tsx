@@ -29,7 +29,7 @@ export function FieldController<T extends FieldValues>({control, errors, field}:
                             link={field.tooltip.link}
                         >
                             <IconButton sx={{ marginRight: 1, color: 'rgba(0, 0, 0, 0.3)'}}>
-                                <InfoIcon sx={{ fontSize: '1.6rem' }} />
+                                <InfoIcon sx={{ fontSize: '1.4rem' }} />
                             </IconButton>
                         </TooltipHtml>
                     </InputAdornment>
