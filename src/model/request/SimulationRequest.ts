@@ -12,6 +12,7 @@ export interface SimulationRequest {
     indicators: IndicatorDetails[];
     riskTolerance?: number;
     tradingWeekdays: Weekday[];
+    transactionBufferPercentage: number;
 }
 
 export interface IndicatorDetails {
