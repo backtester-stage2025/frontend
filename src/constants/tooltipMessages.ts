@@ -23,7 +23,8 @@ export const TOOLTIP_MESSAGES = {
         brokerTitle: "Broker",
         brokerInfo: "The broker you are using to buy and sell stocks. This decides the fee every time you buy or sell.",
         transactionBufferInfo: "This percentage defines the size that the trade has to be compared to your held stocks." +
-            " This is useful when a lot of trades would be made for small orders, causing high transaction fees."
+            " This is useful when a lot of trades would be made for small orders, causing high transaction fees." +
+            " [0% for no buffer]"
     },
     stockMetrics: {
         returnsInfo: "The average percentage daily and annual return of the stock over the simulation period.",
