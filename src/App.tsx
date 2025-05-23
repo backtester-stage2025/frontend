@@ -13,6 +13,7 @@ import {NotFound} from "./components/NotFound.tsx";
 import {AuthProvider} from "./context/AuthContext.tsx";
 import {Account} from "./components/account/Account.tsx";
 import {ProtectedRoute} from "./components/ProtectedRoute.tsx";
+import {CompareSimulations} from "./components/compare/CompareSimulations.tsx";
 import {InfoPage} from "./components/infoPages/InfoPage.tsx";
 
 function App() {
@@ -57,6 +58,7 @@ function App() {
                             <Route path="/strategy-tester" element={<ProtectedRoute element={<Simulation/>}/>}/>
                             <Route path="*" element={<NotFound/>}/>
                             <Route path="/account" element={<ProtectedRoute element={<Account/>}/>}/>
+                            <Route path="/compare" element={<ProtectedRoute element={<CompareSimulations/>}/>}/>
                             <Route path="/infopages" element={<InfoPage/>}></Route>
                         </Routes>
                     </BrowserRouter>
