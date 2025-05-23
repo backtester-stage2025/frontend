@@ -44,7 +44,7 @@ export function InfoPage() {
                 elevation={3}
                 sx={{
                     width: panelWidth,
-                    height: '80vh',
+                    height: '65vh',
                     position: 'fixed',
                     top: '10vh',
                     left: '1vw',
@@ -59,7 +59,7 @@ export function InfoPage() {
                         <ListItem disablePadding>
                             <ListItemButton onClick={handleToggleIndicators}>
                                 <ListItemIcon>
-                                    <QueryStatsIcon/>
+                                    <QueryStatsIcon sx={{ color: 'primary.main' }} />
                                 </ListItemIcon>
                                 <ListItemText
                                     primary="Indicators"

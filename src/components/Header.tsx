@@ -20,7 +20,7 @@ export function Header({onOpenDrawer}: Readonly<HeaderProps>) {
     };
 
     return (
-        <AppBar position="static" color="inherit">
+        <AppBar position="fixed" color="inherit">
             <Toolbar sx={{justifyContent: "space-between"}}>
                 <Box sx={{display: "flex", alignItems: "center"}}>
                     <IconButton onClick={onOpenDrawer}>

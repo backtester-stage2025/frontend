@@ -3,7 +3,7 @@ import ListIcon from '@mui/icons-material/List';
 import {Link} from 'react-router-dom'
 import {useAuth} from "../context/AuthContext.tsx";
 import HelpIcon from '@mui/icons-material/Help';
-import QueryStatsIcon from '@mui/icons-material/QueryStats';
+import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 
 interface NavigationProps {
     isOpen: boolean
@@ -15,7 +15,7 @@ export function Navigation({isOpen, onClose}: Readonly<NavigationProps>) {
 
     const menuItems = [
         {label: 'Stock List', link: '/stock-list', icon: <ListIcon/>, requiresAuth: false},
-        {label: 'Strategy Tester', link: '/strategy-tester', icon: <QueryStatsIcon/>, requiresAuth: true},
+        {label: 'Strategy Tester', link: '/strategy-tester', icon: <TrendingUpIcon/>, requiresAuth: true},
         {label: 'Info Pages', link: '/infopages', icon: <HelpIcon/>, requiresAuth: false},
     ]
 

@@ -1,7 +1,7 @@
 import {ChangeEvent, SyntheticEvent, useState} from "react";
 import {useSimulationReport} from "../../hooks/useSimulationReport.ts";
 import {StockReportRequest} from "../../model/request/StockReportRequest.ts";
-import {Alert, Box, Button, Snackbar, Tab, Tabs, Typography} from "@mui/material";
+import {Alert, Box, Button, Snackbar, Tab, Tabs, Toolbar, Typography} from "@mui/material";
 import {Loader} from "../util/Loader.tsx";
 import {UserPortfolio} from "../../model/simulation/UserPortfolio.ts";
 import {useStartSimulation} from "../../hooks/useStartSimulation.ts";
@@ -90,6 +90,7 @@ export function Simulation() {
 
     return (
         <Box sx={{width: "100%", maxWidth: 1200, mx: "auto", p: 3}}>
+            <Toolbar />
             <Box sx={{mb: 4, display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
                 <Typography variant="h4" component="h1" fontWeight="500">Portfolio Simulation</Typography>
                 <Button
