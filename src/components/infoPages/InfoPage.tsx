@@ -61,24 +61,20 @@ export function InfoPage() {
                 <Box sx={{overflow: 'auto', flexGrow: 1}}>
                     <List>
                         <TopLevelListItem
-                            icon={<FindInPageIcon sx={{color: 'primary.main'}}/>}
+                            icon={<FindInPageIcon sx={{color: 'primary.main'}} />}
                             text="Info Page"
-                            onClick={() => handleSelectTab("default")}
+                            onNavigate={() => handleSelectTab("default")}
                         />
                         <TopLevelListItem
-                            icon={<QueryStatsIcon sx={{color: 'primary.main'}}/>}
+                            icon={<QueryStatsIcon sx={{ color: "primary.main" }} />}
                             text="Indicators"
-                            onClick={handleToggleIndicators}
+                            onNavigate={() => handleSelectTab("indicator-types")}
+                            onToggleDropdown={handleToggleIndicators}
                             expandable
                             expanded={openIndicators}
                         />
                         {openIndicators && (
                             <List component="div" disablePadding sx={{pl: 4}}>
-                                <SubListItem
-                                    icon={<CircleIcon sx={{fontSize: '0.5rem'}}/>}
-                                    text="Indicator Types"
-                                    onClick={() => handleSelectTab("indicator-types")}
-                                />
                                 <SubListItem
                                     icon={<CircleIcon sx={{fontSize: '0.5rem'}}/>}
                                     text="Moving Average Crossover"
