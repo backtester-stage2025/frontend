@@ -26,7 +26,7 @@ export function Header({onOpenDrawer}: Readonly<HeaderProps>) {
                     <IconButton onClick={onOpenDrawer}>
                         <MenuIcon/>
                     </IconButton>
-                    <Typography variant="h6">Stock Trading Strategy Backtester</Typography>
+                    <Typography variant="h6" sx={{color: 'primary.main'}}>Stock Trading Strategy Backtester</Typography>
                 </Box>
                 <Box sx={{display: "flex", alignItems: "center", gap: 2}}>
                     <Login/>

@@ -8,7 +8,7 @@ export function BreakoutInfo() {
                     <Typography variant="h4" gutterBottom>
                         What is a Breakout?
                     </Typography>
-                    <Divider />
+                    <Divider sx={{ borderColor: 'primary.main' }} />
 
                     <Typography variant="subtitle1" sx={{ mt: 2 }}>
                         A <strong>Breakout</strong> happens when the price of a stock or other asset moves outside a

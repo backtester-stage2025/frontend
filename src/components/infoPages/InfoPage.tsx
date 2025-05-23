@@ -13,16 +13,33 @@ import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import QueryStatsIcon from "@mui/icons-material/QueryStats";
 import CircleIcon from '@mui/icons-material/Circle';
-import {JSX, useState} from "react";
+import {JSX, useEffect, useState} from "react";
 import {DefaultInfo} from "./DefaultInfo.tsx";
 import {MovingAverageCrossoverInfo} from "./MovingAverageCrossoverInfo.tsx";
 import {BreakoutInfo} from "./BreakoutInfo.tsx";
+import {IndicatorInfo} from "./IndicatorInfo.tsx";
+import {useSearchParams} from "react-router-dom";
 
 const panelWidth = 240;
 
 export function InfoPage() {
+    const [searchParams] = useSearchParams();
     const [openIndicators, setOpenIndicators] = useState(false);
     const [selectedIndicator, setSelectedIndicator] = useState<string | null>(null);
+
+    useEffect(() => {
+        const section = searchParams.get("section");
+        if (section === "indicator-types") {
+            setSelectedIndicator("Indicator type");
+            setOpenIndicators(true);
+        } else if (section === "moving-average-crossover") {
+            setSelectedIndicator("Moving Average Crossover");
+            setOpenIndicators(true);
+        } else if (section === "breakout") {
+            setSelectedIndicator("Breakout");
+            setOpenIndicators(true);
+        }
+    }, [searchParams]);
 
     const handleToggleIndicators = () => {
         setOpenIndicators(!openIndicators);
@@ -33,13 +50,14 @@ export function InfoPage() {
     };
 
     const indicatorComponents: Record<string, JSX.Element> = {
-        "Moving Average Crossover": <MovingAverageCrossoverInfo/>,
-        "Breakout": <BreakoutInfo/>,
+        "Indicator type": <IndicatorInfo />,
+        "Moving Average Crossover": <MovingAverageCrossoverInfo />,
+        "Breakout": <BreakoutInfo />,
     };
 
     return (
-        <Box sx={{display: 'flex'}}>
-            <CssBaseline/>
+        <Box sx={{ display: 'flex' }}>
+            <CssBaseline />
             <Paper
                 elevation={3}
                 sx={{
@@ -54,7 +72,7 @@ export function InfoPage() {
                     borderRadius: 2,
                 }}
             >
-                <Box sx={{overflow: 'auto', flexGrow: 1}}>
+                <Box sx={{ overflow: 'auto', flexGrow: 1 }}>
                     <List>
                         <ListItem disablePadding>
                             <ListItemButton onClick={handleToggleIndicators}>
@@ -66,47 +84,65 @@ export function InfoPage() {
                                     slotProps={{
                                         primary: {
                                             fontSize: '1.2rem',
-                                            fontWeight: '550'
-                                        }
+                                            fontWeight: '550',
+                                        },
                                     }}
                                 />
-                                {openIndicators ? <ExpandLess/> : <ExpandMore/>}
+                                {openIndicators ? <ExpandLess /> : <ExpandMore />}
                             </ListItemButton>
                         </ListItem>
                         {openIndicators && (
-                            <List component="div" disablePadding sx={{pl: 4}}>
+                            <List component="div" disablePadding sx={{ pl: 4 }}>
                                 <ListItem disablePadding>
                                     <ListItemButton
-                                        sx={{alignItems: 'center'}}
-                                        onClick={() => handleSelectIndicator("Moving Average Crossover")}
+                                        sx={{ alignItems: 'center' }}
+                                        onClick={() => handleSelectIndicator("Indicator type")}
                                     >
-                                        <ListItemIcon sx={{minWidth: '24px'}}>
-                                            <CircleIcon sx={{fontSize: '0.5rem'}}/>
+                                        <ListItemIcon sx={{ minWidth: '24px' }}>
+                                            <CircleIcon sx={{ fontSize: '0.5rem' }} />
                                         </ListItemIcon>
                                         <ListItemText
-                                            primary="Moving Average Crossover"
+                                            primary="Indicator Types"
                                             slotProps={{
                                                 primary: {
                                                     fontSize: '1rem',
-                                                }
+                                                },
                                             }}
                                         />
                                     </ListItemButton>
                                 </ListItem>
                                 <ListItem disablePadding>
                                     <ListItemButton
-                                        sx={{alignItems: 'center'}}
+                                        sx={{ alignItems: 'center' }}
+                                        onClick={() => handleSelectIndicator("Moving Average Crossover")}
+                                    >
+                                        <ListItemIcon sx={{ minWidth: '24px' }}>
+                                            <CircleIcon sx={{ fontSize: '0.5rem' }} />
+                                        </ListItemIcon>
+                                        <ListItemText
+                                            primary="Moving Average Crossover"
+                                            slotProps={{
+                                                primary: {
+                                                    fontSize: '1rem',
+                                                },
+                                            }}
+                                        />
+                                    </ListItemButton>
+                                </ListItem>
+                                <ListItem disablePadding>
+                                    <ListItemButton
+                                        sx={{ alignItems: 'center' }}
                                         onClick={() => handleSelectIndicator("Breakout")}
                                     >
-                                        <ListItemIcon sx={{minWidth: '24px'}}>
-                                            <CircleIcon sx={{fontSize: '0.5rem'}}/>
+                                        <ListItemIcon sx={{ minWidth: '24px' }}>
+                                            <CircleIcon sx={{ fontSize: '0.5rem' }} />
                                         </ListItemIcon>
                                         <ListItemText
                                             primary="Breakout"
                                             slotProps={{
                                                 primary: {
                                                     fontSize: '1rem',
-                                                }
+                                                },
                                             }}
                                         />
                                     </ListItemButton>
@@ -121,11 +157,13 @@ export function InfoPage() {
                 sx={{
                     flexGrow: 1,
                     p: 3,
-                    marginLeft: `${panelWidth + 20}px`
+                    marginLeft: `${panelWidth + 20}px`,
                 }}
             >
-                <Toolbar/>
-                {selectedIndicator ? indicatorComponents[selectedIndicator] : <DefaultInfo/>}
+                <Toolbar />
+                {selectedIndicator
+                    ? indicatorComponents[selectedIndicator]
+                    : <DefaultInfo />}
             </Box>
         </Box>
     );
