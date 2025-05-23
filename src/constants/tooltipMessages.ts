@@ -9,7 +9,8 @@ export const TOOLTIP_MESSAGES = {
         simulationTypeTitle: "Simulation Type",
         simulationTypeInfo: "This type defines the main strategy of the simulation.",
         riskToleranceTitle: "Risk Tolerance",
-        riskToleranceInfo: "The percentage of your capital that you are willing to risk on a single trade.",
+        riskToleranceInfo: "The risk tolerance is used to calculate the maximum number of shares to buy for a stock," +
+            " ensuring the investment aligns with your acceptable risk level based on the stock's volatility.",
         indicator: {
             title: "Indicator Type",
             description: "Deciding factor in when to continue current strategy or sell all stocks.",
