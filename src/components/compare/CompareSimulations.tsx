@@ -66,6 +66,8 @@ function getSingleMetricChartOptions(
     val1: number,
     val2: number
 ) {
+    const minVal = Math.min(val1, val2);
+
     return {
         animationEnabled: true,
         theme: "light2",
@@ -74,22 +76,22 @@ function getSingleMetricChartOptions(
         },
         axisY: {
             title: label,
-            minimum: 0
+            minimum: minVal < 0 ? minVal * 1.5 : 0
         },
         axisX: {
             title: "",
             valueFormatString: "",
-            labelFormatter: () => "", // Single category for both bars
+            labelFormatter: () => "",
         },
         toolTip: {
-            shared: true // works with multiple series now
+            shared: true
         },
         data: [
             {
                 type: "column",
                 name: "Simulation 1",
                 showInLegend: true,
-                dataPointWidth: 80, // wider bars
+                dataPointWidth: 80,
                 dataPoints: [{ label: "Comparison", y: val1 }]
             },
             {
@@ -102,6 +104,7 @@ function getSingleMetricChartOptions(
         ]
     };
 }
+
 function getNormalizedComparisonChartOptions(result1: SimulationResult, result2: SimulationResult) {
     const normalize = (portfolios: UserPortfolio[]) => {
         const startValue = portfolios[0]?.totalPortfolioValue || 1;
@@ -118,7 +121,7 @@ function getNormalizedComparisonChartOptions(result1: SimulationResult, result2:
         animationEnabled: true,
         theme: "light2",
         title: {
-            text: "Normalized Portfolio Comparison"
+            text: "Normalized Total Portfolio Values"
         },
         axisY: {
             title: "Portfolio Value (Normalized)",
@@ -162,14 +165,55 @@ function getNormalizedComparisonChartOptions(result1: SimulationResult, result2:
     };
 }
 
+interface ComparedSimulations {
+    result1: SimulationResult;
+    result2: SimulationResult;
+}
 
-export function CompareSimulations() {
-    const location = useLocation();
-    const { result1, result2 } = location.state as {
-        result1: SimulationResult;
-        result2: SimulationResult;
-    };
+function MetricsComparison({result1, result2}: Readonly<ComparedSimulations>) {
+    const metrics1 = extractMetrics(result1);
+    const metrics2 = extractMetrics(result2);
 
+    return (
+        <Grid size={{xs: 12}}>
+            <Paper elevation={3} sx={{ padding: 2 }}>
+                <Typography variant="h6" gutterBottom>
+                    Metrics
+                </Typography>
+                <Divider sx={{ mb: 2 }} />
+                <Grid container spacing={2}>
+                    {Object.keys(metrics1).map((key) => (
+                        <Fragment key={key}>
+                            <Grid size={{xs: 4}}>
+                                <Typography fontWeight="bold">{key}</Typography>
+                            </Grid>
+                            <Grid size={{xs: 4}}>
+                                <Typography>{metrics1[key]}</Typography>
+                            </Grid>
+                            <Grid size={{xs: 4}}>
+                                <Typography>{metrics2[key]}</Typography>
+                            </Grid>
+                        </Fragment>
+                    ))}
+                </Grid>
+            </Paper>
+        </Grid>
+    )
+}
+
+function NormalizedPortfolioValues({result1, result2}: Readonly<ComparedSimulations>) {
+    const chartOptions = getNormalizedComparisonChartOptions(result1, result2);
+
+    return (
+        <Grid size={{xs: 12}}>
+            <Paper elevation={3} sx={{ padding: 2 }}>
+                <CanvasJSChart options={chartOptions} />
+            </Paper>
+        </Grid>
+    )
+}
+
+function ComparisonBarCharts({result1, result2}: Readonly<ComparedSimulations>) {
     const toDays = (start: Date, end: Date) =>
         Math.floor((new Date(end).getTime() - new Date(start).getTime()) / (1000 * 3600 * 24));
 
@@ -180,7 +224,7 @@ export function CompareSimulations() {
             val2: toDays(result2.stockSimulationRequest.startDate, result2.stockSimulationRequest.endDate)
         },
         {
-            label: "Profit Margin (%)",
+            label: "Total Profit Margin (%)",
             val1: getProfitMargin(result1),
             val2: getProfitMargin(result2)
         },
@@ -201,9 +245,25 @@ export function CompareSimulations() {
         }
     ];
 
-    const chartOptions = getNormalizedComparisonChartOptions(result1, result2);
-    const metrics1 = extractMetrics(result1);
-    const metrics2 = extractMetrics(result2);
+    return (
+        <Grid size={{xs:12}} container spacing={2}>
+            {metrics.map(({ label, val1, val2 }) => (
+                <Grid size={{xs:12, md:6, xl: 4}} key={label}>
+                    <Paper elevation={3} sx={{ padding: 2 }}>
+                        <CanvasJSChart options={getSingleMetricChartOptions(label, val1, val2)} />
+                    </Paper>
+                </Grid>
+            ))}
+        </Grid>
+    )
+}
+
+export function CompareSimulations() {
+    const location = useLocation();
+    const { result1, result2 } = location.state as {
+        result1: SimulationResult;
+        result2: SimulationResult;
+    };
 
     return (
         <Grid container spacing={2} padding={2}>
@@ -213,45 +273,9 @@ export function CompareSimulations() {
                 </Typography>
             </Grid>
 
-            <Grid size={{xs: 12}}>
-                <Paper elevation={3} sx={{ padding: 2 }}>
-                    <Typography variant="h6" gutterBottom>
-                        Simulation Metrics Comparison
-                    </Typography>
-                    <Divider sx={{ mb: 2 }} />
-                    <Grid container spacing={2}>
-                        {Object.keys(metrics1).map((key) => (
-                            <Fragment key={key}>
-                                <Grid size={{xs: 4}}>
-                                    <Typography fontWeight="bold">{key}</Typography>
-                                </Grid>
-                                <Grid size={{xs: 4}}>
-                                    <Typography>{metrics1[key]}</Typography>
-                                </Grid>
-                                <Grid size={{xs: 4}}>
-                                    <Typography>{metrics2[key]}</Typography>
-                                </Grid>
-                            </Fragment>
-                        ))}
-                    </Grid>
-                </Paper>
-            </Grid>
-
-            <Grid size={{xs: 12}}>
-                <Paper elevation={3} sx={{ padding: 2 }}>
-                    <CanvasJSChart options={chartOptions} />
-                </Paper>
-            </Grid>
-
-            <Grid size={{xs:12}} container spacing={2}>
-                {metrics.map(({ label, val1, val2 }) => (
-                    <Grid size={{xs:12, md:6, xl: 4}} key={label}>
-                        <Paper elevation={3} sx={{ padding: 2 }}>
-                            <CanvasJSChart options={getSingleMetricChartOptions(label, val1, val2)} />
-                        </Paper>
-                    </Grid>
-                ))}
-            </Grid>
+            <MetricsComparison result1={result1} result2={result2} />
+            <NormalizedPortfolioValues result1={result1} result2={result2}/>
+            <ComparisonBarCharts result1={result1} result2={result2}/>
         </Grid>
     );
 }
