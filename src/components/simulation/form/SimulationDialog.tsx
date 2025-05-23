@@ -113,7 +113,10 @@ export function SimulationDialog({
             }
         },
         {
-            name: "transactionBufferPercentage", type: "number", placeholder: "Transaction Buffer (%)", required: true
+            name: "transactionBufferPercentage", type: "number", placeholder: "Transaction Buffer (%)", required: true,
+            tooltip: {
+                description: TOOLTIP_MESSAGES.simulation.transactionBufferInfo
+            }
         }
     ];
 
