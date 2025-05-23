@@ -50,14 +50,14 @@ export function InfoPage() {
     };
 
     const indicatorComponents: Record<string, JSX.Element> = {
-        "Indicator type": <IndicatorInfo />,
-        "Moving Average Crossover": <MovingAverageCrossoverInfo />,
-        "Breakout": <BreakoutInfo />,
+        "Indicator type": <IndicatorInfo/>,
+        "Moving Average Crossover": <MovingAverageCrossoverInfo/>,
+        "Breakout": <BreakoutInfo/>,
     };
 
     return (
-        <Box sx={{ display: 'flex' }}>
-            <CssBaseline />
+        <Box sx={{display: 'flex'}}>
+            <CssBaseline/>
             <Paper
                 elevation={3}
                 sx={{
@@ -72,12 +72,12 @@ export function InfoPage() {
                     borderRadius: 2,
                 }}
             >
-                <Box sx={{ overflow: 'auto', flexGrow: 1 }}>
+                <Box sx={{overflow: 'auto', flexGrow: 1}}>
                     <List>
                         <ListItem disablePadding>
                             <ListItemButton onClick={handleToggleIndicators}>
                                 <ListItemIcon>
-                                    <QueryStatsIcon sx={{ color: 'primary.main' }} />
+                                    <QueryStatsIcon sx={{color: 'primary.main'}}/>
                                 </ListItemIcon>
                                 <ListItemText
                                     primary="Indicators"
@@ -88,18 +88,18 @@ export function InfoPage() {
                                         },
                                     }}
                                 />
-                                {openIndicators ? <ExpandLess /> : <ExpandMore />}
+                                {openIndicators ? <ExpandLess/> : <ExpandMore/>}
                             </ListItemButton>
                         </ListItem>
                         {openIndicators && (
-                            <List component="div" disablePadding sx={{ pl: 4 }}>
+                            <List component="div" disablePadding sx={{pl: 4}}>
                                 <ListItem disablePadding>
                                     <ListItemButton
-                                        sx={{ alignItems: 'center' }}
+                                        sx={{alignItems: 'center'}}
                                         onClick={() => handleSelectIndicator("Indicator type")}
                                     >
-                                        <ListItemIcon sx={{ minWidth: '24px' }}>
-                                            <CircleIcon sx={{ fontSize: '0.5rem' }} />
+                                        <ListItemIcon sx={{minWidth: '24px'}}>
+                                            <CircleIcon sx={{fontSize: '0.5rem'}}/>
                                         </ListItemIcon>
                                         <ListItemText
                                             primary="Indicator Types"
@@ -113,11 +113,11 @@ export function InfoPage() {
                                 </ListItem>
                                 <ListItem disablePadding>
                                     <ListItemButton
-                                        sx={{ alignItems: 'center' }}
+                                        sx={{alignItems: 'center'}}
                                         onClick={() => handleSelectIndicator("Moving Average Crossover")}
                                     >
-                                        <ListItemIcon sx={{ minWidth: '24px' }}>
-                                            <CircleIcon sx={{ fontSize: '0.5rem' }} />
+                                        <ListItemIcon sx={{minWidth: '24px'}}>
+                                            <CircleIcon sx={{fontSize: '0.5rem'}}/>
                                         </ListItemIcon>
                                         <ListItemText
                                             primary="Moving Average Crossover"
@@ -131,11 +131,11 @@ export function InfoPage() {
                                 </ListItem>
                                 <ListItem disablePadding>
                                     <ListItemButton
-                                        sx={{ alignItems: 'center' }}
+                                        sx={{alignItems: 'center'}}
                                         onClick={() => handleSelectIndicator("Breakout")}
                                     >
-                                        <ListItemIcon sx={{ minWidth: '24px' }}>
-                                            <CircleIcon sx={{ fontSize: '0.5rem' }} />
+                                        <ListItemIcon sx={{minWidth: '24px'}}>
+                                            <CircleIcon sx={{fontSize: '0.5rem'}}/>
                                         </ListItemIcon>
                                         <ListItemText
                                             primary="Breakout"
@@ -160,10 +160,10 @@ export function InfoPage() {
                     marginLeft: `${panelWidth + 20}px`,
                 }}
             >
-                <Toolbar />
+                <Toolbar/>
                 {selectedIndicator
                     ? indicatorComponents[selectedIndicator]
-                    : <DefaultInfo />}
+                    : <DefaultInfo/>}
             </Box>
         </Box>
     );

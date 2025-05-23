@@ -7,7 +7,7 @@ export function DefaultInfo() {
                 <Typography variant="h4" gutterBottom>
                     Welcome to the Info Pages
                 </Typography>
-                <Divider sx={{ borderColor: 'primary.main' }} />
+                <Divider sx={{borderColor: 'primary.main'}}/>
 
                 <Typography variant="subtitle1" sx={{mt: 2, color: 'text.secondary'}}>
                     Please select a category from the menu to learn more.
