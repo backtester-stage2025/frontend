@@ -1,7 +1,9 @@
 import {Control, Controller, FieldError, FieldErrors, FieldValues} from "react-hook-form";
-import {TextField} from "@mui/material";
+import {IconButton, InputAdornment, TextField} from "@mui/material";
 import get from "lodash/get";
 import {FormAutoComplete, FormCheckbox, FormDatePicker, FormDropdown, FormField} from "./FormField.tsx";
+import {TooltipHtml} from "../../util/TooltipHtml.tsx";
+import InfoIcon from "@mui/icons-material/Info";
 
 interface FieldControllerProps<T extends FieldValues> {
     errors: FieldErrors<T> | undefined;
@@ -16,6 +18,26 @@ export function FieldController<T extends FieldValues>({control, errors, field}:
     const error = Boolean(errorObj);
     const helperText = errorObj?.message;
 
+    const inputProps = field.tooltip
+        ? {
+            InputProps: {
+                endAdornment: (
+                    <InputAdornment position="end">
+                        <TooltipHtml
+                            title={field.tooltip.title ?? ""}
+                            description={field.tooltip.description}
+                            link={field.tooltip.link}
+                        >
+                            <IconButton sx={{ marginRight: 1, color: 'rgba(0, 0, 0, 0.3)'}}>
+                                <InfoIcon sx={{ fontSize: '1.4rem' }} />
+                            </IconButton>
+                        </TooltipHtml>
+                    </InputAdornment>
+                ),
+            },
+        }
+        : {};
+
     return (
         <Controller
             name={field.name}
@@ -28,7 +50,7 @@ export function FieldController<T extends FieldValues>({control, errors, field}:
 
                 if (field.type === "select")
                     return <FormDropdown field={field} controllerField={controllerField} error={error}
-                                         helperText={helperText}/>
+                                         helperText={helperText} inputProps={inputProps}/>
 
                 if (field.type === "checkbox")
                     return <FormCheckbox field={field} controllerField={controllerField} error={error}
@@ -48,6 +70,7 @@ export function FieldController<T extends FieldValues>({control, errors, field}:
                         required={field.required}
                         error={error}
                         helperText={helperText}
+                        {...inputProps}
                     />
                 );
             }}

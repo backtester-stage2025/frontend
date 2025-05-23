@@ -5,6 +5,7 @@ import {SimulationRequest} from "../../../model/request/SimulationRequest.ts";
 import {Control, FieldErrors, useWatch} from "react-hook-form";
 import {IndicatorType, indicatorTypeOptions} from "../../../model/request/IndicatorType.ts";
 import {Box, Grid, IconButton} from "@mui/material";
+import {TOOLTIP_MESSAGES} from "../../../constants/tooltipMessages.ts";
 
 interface IndicatorRowProps {
     index: number;
@@ -19,7 +20,11 @@ export function IndicatorRow({index, control, errors, onRemove}: Readonly<Indica
         type: "select",
         placeholder: "Indicator Type",
         required: true,
-        options: indicatorTypeOptions
+        options: indicatorTypeOptions,
+        tooltip: {
+            title: TOOLTIP_MESSAGES.simulation.indicator.title,
+            description: TOOLTIP_MESSAGES.simulation.indicator.description
+        }
     };
 
     const selected = useWatch({
@@ -35,13 +40,19 @@ export function IndicatorRow({index, control, errors, onRemove}: Readonly<Indica
                 name: `indicators.${index}.movingAverageShortDays`,
                 type: "number",
                 placeholder: "Short MA Days",
-                required: true
+                required: true,
+                tooltip: {
+                    description: TOOLTIP_MESSAGES.simulation.indicator.maShortDays
+                }
             },
             {
                 name: `indicators.${index}.movingAverageLongDays`,
                 type: "number",
                 placeholder: "Long MA Days",
-                required: true
+                required: true,
+                tooltip: {
+                    description: TOOLTIP_MESSAGES.simulation.indicator.maLongDays
+                }
             }
         );
     } else if (selected === IndicatorType.BREAKOUT) {
@@ -49,7 +60,10 @@ export function IndicatorRow({index, control, errors, onRemove}: Readonly<Indica
             name: `indicators.${index}.breakoutDays`,
             type: "number",
             placeholder: "Breakout Days",
-            required: true
+            required: true,
+            tooltip: {
+                description: TOOLTIP_MESSAGES.simulation.indicator.breakoutDays
+            }
         });
     }
 

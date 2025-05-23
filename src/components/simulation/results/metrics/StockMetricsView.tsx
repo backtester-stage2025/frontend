@@ -2,6 +2,7 @@ import {StockMetrics} from "../../../../model/StockMetrics.ts";
 import {MetricGroup, MetricGroupProps} from "./MetricGroup.tsx";
 import {formatPercent} from "../../../../services/formatService.ts";
 import {Box, Grid, Typography} from "@mui/material";
+import {TOOLTIP_MESSAGES} from "../../../../constants/tooltipMessages.ts";
 
 export function StockMetricsView({stockMetrics, stockName}: Readonly<{
     stockMetrics: StockMetrics,
@@ -22,7 +23,10 @@ export function StockMetricsView({stockMetrics, stockName}: Readonly<{
                     isPositive: stockMetrics.averageAnnualReturn >= 0
                 }
             ],
-            color: "success.main"
+            color: "success.main",
+            tooltip: {
+                description: TOOLTIP_MESSAGES.stockMetrics.returnsInfo,
+            }
         },
         {
             title: "Risk",
@@ -30,7 +34,10 @@ export function StockMetricsView({stockMetrics, stockName}: Readonly<{
                 {name: "Daily Risk", value: formatPercent(stockMetrics.dailyRisk)},
                 {name: "Annual Risk", value: formatPercent(stockMetrics.annualRisk)}
             ],
-            color: "warning.main"
+            color: "warning.main",
+            tooltip: {
+                description: TOOLTIP_MESSAGES.stockMetrics.riskInfo,
+            }
         },
         {
             title: "Drawdowns",
@@ -38,14 +45,20 @@ export function StockMetricsView({stockMetrics, stockName}: Readonly<{
                 {name: "Average Drawdown", value: formatPercent(stockMetrics.averageDrawdownPercentage)},
                 {name: "Maximum Drawdown", value: formatPercent(stockMetrics.maxDrawdownPercentage)}
             ],
-            color: "error.main"
+            color: "error.main",
+            tooltip: {
+                description: TOOLTIP_MESSAGES.stockMetrics.drawdownsInfo,
+            }
         },
         {
             title: "Distribution",
             properties: [
                 {name: "Skewness", value: stockMetrics.skewness.toFixed(2), isPositive: stockMetrics.skewness > 0}
             ],
-            color: "info.main"
+            color: "info.main",
+            tooltip: {
+                description: TOOLTIP_MESSAGES.stockMetrics.distributionInfo,
+            }
         }
     ]
     return (

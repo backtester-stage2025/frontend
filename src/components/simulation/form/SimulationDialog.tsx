@@ -22,6 +22,7 @@ import {TradingIndicatorsSection} from "./TradingIndicatorsSection.tsx";
 import {subYears} from "date-fns";
 import {WeekdaySelector} from "./controller/WeekdaySelector.tsx";
 import {Weekday} from "../../../model/Weekday.ts";
+import { TOOLTIP_MESSAGES } from "../../../constants/tooltipMessages.ts";
 
 interface BuyAndHoldSimulationProps {
     isOpen: boolean;
@@ -82,7 +83,11 @@ export function SimulationDialog({
     const fieldConfigs: FormField<SimulationRequest>[] = [
         {
             name: "brokerName", type: "autocomplete", placeholder: "Broker", required: true,
-            options: brokers?.map((b: Broker) => `${b.name} (Fee: ${b.transactionFee.toFixed(2)}€)`)
+            options: brokers?.map((b: Broker) => `${b.name} (Fee: ${b.transactionFee.toFixed(2)}€)`),
+            tooltip: {
+                title: TOOLTIP_MESSAGES.simulation.brokerTitle,
+                description: TOOLTIP_MESSAGES.simulation.brokerInfo
+            }
         },
         {
             name: "stockNames", type: "autocomplete", placeholder: "Stock Names", required: true,
@@ -93,14 +98,25 @@ export function SimulationDialog({
         {name: "startCapital", type: "number", placeholder: "Start Capital", required: true},
         {
             name: "simulationType", type: "select", placeholder: "Simulation Type", required: true,
-            options: simulationTypeOptions
+            options: simulationTypeOptions,
+            tooltip: {
+                title: TOOLTIP_MESSAGES.simulation.simulationTypeTitle,
+                description: TOOLTIP_MESSAGES.simulation.simulationTypeInfo
+            }
         },
         {
             name: "riskTolerance", type: "number", placeholder: "Risk Tolerance (%)", required: false,
-            shouldRender: simType === SimulationTypes.RISK_BASED
+            shouldRender: simType === SimulationTypes.RISK_BASED,
+            tooltip: {
+                title: TOOLTIP_MESSAGES.simulation.riskToleranceTitle,
+                description: TOOLTIP_MESSAGES.simulation.riskToleranceInfo
+            }
         },
         {
-            name: "transactionBufferPercentage", type: "number", placeholder: "Transaction Buffer (%)", required: true
+            name: "transactionBufferPercentage", type: "number", placeholder: "Transaction Buffer (%)", required: true,
+            tooltip: {
+                description: TOOLTIP_MESSAGES.simulation.transactionBufferInfo
+            }
         }
     ];
 

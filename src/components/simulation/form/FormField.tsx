@@ -1,6 +1,6 @@
 import {ControllerRenderProps, FieldPath, FieldValues} from "react-hook-form";
 import {DatePicker} from "@mui/x-date-pickers/DatePicker";
-import {Autocomplete, Checkbox, FormControlLabel, MenuItem, TextField} from "@mui/material";
+import {Autocomplete, Checkbox, FormControlLabel, MenuItem, TextField, Tooltip} from "@mui/material";
 
 export interface EnumOption<E extends string | number> {
     label: string;
@@ -18,6 +18,11 @@ export interface FormField<
     options?: Array<string> | Array<EnumOption<TValue>>;
     shouldRender?: boolean;
     multiple?: boolean;
+    tooltip?: {
+        title?: string;
+        description: string;
+        link?: string;
+    };
 }
 
 export interface FormFieldRenderProps<T extends FieldValues> {
@@ -25,6 +30,7 @@ export interface FormFieldRenderProps<T extends FieldValues> {
     controllerField: ControllerRenderProps<T, FieldPath<T>>;
     error: boolean;
     helperText?: string;
+    inputProps?: Record<string, unknown>;
 }
 
 function toDate(value: unknown) {
@@ -55,7 +61,7 @@ export function FormDatePicker<TFieldValues extends FieldValues>(
 }
 
 export function FormDropdown<T extends FieldValues>(
-    {field, controllerField, error, helperText}: Readonly<FormFieldRenderProps<T>>
+    {field, controllerField, error, helperText, inputProps}: Readonly<FormFieldRenderProps<T>>
 ) {
     const opts = field.options ?? [];
 
@@ -69,6 +75,7 @@ export function FormDropdown<T extends FieldValues>(
             required={field.required}
             error={error}
             helperText={helperText}
+            {...inputProps}
         >
             {opts.length > 0 ? (
                 opts.map((opt) =>
@@ -121,27 +128,39 @@ export function FormAutoComplete<T extends FieldValues>(
     }
 
     return (
-        <Autocomplete
-            multiple={field.multiple}
-            options={labels}
-            value={value}
-            onChange={(_, newValue) => controllerField.onChange(newValue)}
-            renderInput={(params) => (
-                <TextField
-                    {...params}
-                    label={field.placeholder}
-                    required={field.required}
-                    error={error}
-                    helperText={helperText}
-                    fullWidth
-                    slotProps={{
-                        htmlInput: {
-                            ...params.inputProps,
-                            required: value.length === 0
-                        }
-                    }}
-                />
-            )}
-        />
+        <Tooltip
+            title={
+                field.tooltip ? (
+                    <>
+                        <strong>{field.tooltip.title}</strong>
+                        <p>{field.tooltip.description}</p>
+                        {field.tooltip.link && <a href={field.tooltip.link}>Learn more</a>}
+                    </>
+                ) : ""
+            }
+        >
+            <Autocomplete
+                multiple={field.multiple}
+                options={labels}
+                value={value}
+                onChange={(_, newValue) => controllerField.onChange(newValue)}
+                renderInput={(params) => (
+                    <TextField
+                        {...params}
+                        label={field.placeholder}
+                        required={field.required}
+                        error={error}
+                        helperText={helperText}
+                        fullWidth
+                        slotProps={{
+                            htmlInput: {
+                                ...params.inputProps,
+                                required: value.length === 0
+                            }
+                        }}
+                    />
+                )}
+            />
+        </Tooltip>
     );
 }
