@@ -3,7 +3,7 @@ import LabelImportantOutlinedIcon from '@mui/icons-material/LabelImportantOutlin
 
 export function IndicatorInfo() {
     return (
-        <Container maxWidth="md">
+        <Container maxWidth="lg">
             <Box sx={{textAlign: 'center', mt: 4}}>
                 <Typography variant="h4" gutterBottom align="left">
                     Indicator Types

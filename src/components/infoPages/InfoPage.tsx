@@ -7,9 +7,11 @@ import {DefaultInfo} from "./pages/DefaultInfo.tsx";
 import {MovingAverageCrossoverInfo} from "./pages/MovingAverageCrossoverInfo.tsx";
 import {BreakoutInfo} from "./pages/BreakoutInfo.tsx";
 import {IndicatorInfo} from "./pages/IndicatorInfo.tsx";
+import {StockMetricsInfo} from "./pages/StockMetricsInfo.tsx";
 import {useSearchParams} from "react-router-dom";
 import {TopLevelListItem} from "./TopLevelListItem";
 import {SubListItem} from "./SubListItem";
+import BarChartIcon from "@mui/icons-material/BarChart";
 
 const panelWidth = 240;
 
@@ -17,6 +19,7 @@ const panelWidth = 240;
 export function InfoPage() {
     const [searchParams] = useSearchParams();
     const [openIndicators, setOpenIndicators] = useState(false);
+    const [openStockMetrics, setOpenStockMetrics] = useState(false);
     const [activeTab, setActiveTab] = useState<string | null>(null);
 
     useEffect(() => {
@@ -29,6 +32,9 @@ export function InfoPage() {
     const handleToggleIndicators = () => {
         setOpenIndicators(!openIndicators);
     };
+    const handleToggleStockMetrics = () => {
+        setOpenStockMetrics(!openStockMetrics);
+    };
 
     const handleSelectTab = (tab: string) => {
         setActiveTab(tab);
@@ -39,6 +45,7 @@ export function InfoPage() {
         "moving-average-crossover": <MovingAverageCrossoverInfo/>,
         "breakout": <BreakoutInfo/>,
         "default": <DefaultInfo/>,
+        "stock-metrics": <StockMetricsInfo/>,
     };
 
     return (
@@ -84,6 +91,28 @@ export function InfoPage() {
                                     icon={<CircleIcon sx={{fontSize: '0.5rem'}}/>}
                                     text="Breakout"
                                     onClick={() => handleSelectTab("breakout")}
+                                />
+                            </List>
+                        )}
+                        <TopLevelListItem
+                            icon={<BarChartIcon sx={{ color: "primary.main" }} />}
+                            text="Stock Metrics"
+                            onNavigate={() => handleSelectTab("stock-metrics")}
+                            onToggleDropdown={handleToggleStockMetrics}
+                            expandable
+                            expanded={openStockMetrics}
+                        />
+                        {openStockMetrics && (
+                            <List component="div" disablePadding sx={{ pl: 4 }}>
+                                <SubListItem
+                                    icon={<CircleIcon sx={{ fontSize: "0.5rem" }} />}
+                                    text="Metric 1"
+                                    onClick={() => handleSelectTab("metric-1")}
+                                />
+                                <SubListItem
+                                    icon={<CircleIcon sx={{ fontSize: "0.5rem" }} />}
+                                    text="Metric 2"
+                                    onClick={() => handleSelectTab("metric-2")}
                                 />
                             </List>
                         )}
