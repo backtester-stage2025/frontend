@@ -5,7 +5,8 @@ import {
     Dialog,
     DialogActions,
     DialogContent,
-    DialogTitle, Grid,
+    DialogTitle,
+    Grid,
     Tab,
     Tabs,
     TextField,
@@ -161,8 +162,8 @@ export function StockList() {
             ) : (
                 <Box sx={{width: '95%', maxWidth: 1200, mx: 'auto'}}>
                     <Grid container spacing={2} justifyContent="center">
-                        {filteredStocks.map((stockDetails: StockDetails) => (
-                            <Grid size={{xs:12, sm:6, md:4}} key={stockDetails.officialName}>
+                        {filteredStocks.map((stockDetails: StockDetails, index) => (
+                            <Grid size={{xs: 12, sm: 6, md: 4}} key={index}>
                                 <StockCard
                                     details={stockDetails}
                                     onDelete={!stockDetails.publiclyAvailable ? handleDeleteConfirm : undefined}

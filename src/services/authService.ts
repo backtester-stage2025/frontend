@@ -13,8 +13,7 @@ export const authenticateUser = async (accessToken: string) => {
 export function addAccessTokenToAuthHeader(token: string | undefined) {
     if (token) {
         axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
-    }
-    else {
+    } else {
         removeAccessTokenFromAuthHeader()
     }
 }

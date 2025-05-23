@@ -1,6 +1,6 @@
-import { useNavigate } from "react-router-dom";
-import { Card, CardContent, Typography, Box, IconButton, Chip } from "@mui/material";
-import { StockDetails } from "../../model/StockDetails.ts";
+import {useNavigate} from "react-router-dom";
+import {Box, Card, CardContent, Chip, IconButton, Typography} from "@mui/material";
+import {StockDetails} from "../../model/StockDetails.ts";
 import DeleteIcon from '@mui/icons-material/Delete';
 import PublicIcon from '@mui/icons-material/Public';
 import PersonIcon from '@mui/icons-material/Person';
@@ -10,7 +10,7 @@ interface StockCardProps {
     onDelete?: (officialName: string) => void;
 }
 
-export function StockCard({ details, onDelete }: Readonly<StockCardProps>) {
+export function StockCard({details, onDelete}: Readonly<StockCardProps>) {
     const navigate = useNavigate();
 
     const handleClick = () => {
@@ -43,10 +43,10 @@ export function StockCard({ details, onDelete }: Readonly<StockCardProps>) {
             key={details.officialName}
             onClick={handleClick}
         >
-            <CardContent sx={{ p: 1 }}>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+            <CardContent sx={{p: 1}}>
+                <Box sx={{display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start'}}>
                     <Box>
-                        <Typography variant="h6" fontWeight="bold" sx={{ mb: 0.5 }}>
+                        <Typography variant="h6" fontWeight="bold" sx={{mb: 0.5}}>
                             {details.companyName}
                         </Typography>
                         <Typography variant="body2" color="text.secondary">
@@ -58,16 +58,16 @@ export function StockCard({ details, onDelete }: Readonly<StockCardProps>) {
                             size="small"
                             color="error"
                             onClick={handleDelete}
-                            sx={{ ml: 1 }}
+                            sx={{ml: 1}}
                             aria-label="delete stock"
                         >
-                            <DeleteIcon />
+                            <DeleteIcon/>
                         </IconButton>
                     )}
                 </Box>
-                <Box sx={{ display: 'flex', mt: 2, justifyContent: 'space-between', alignItems: 'center' }}>
+                <Box sx={{display: 'flex', mt: 2, justifyContent: 'space-between', alignItems: 'center'}}>
                     <Chip
-                        icon={details.publiclyAvailable ? <PublicIcon /> : <PersonIcon />}
+                        icon={details.publiclyAvailable ? <PublicIcon/> : <PersonIcon/>}
                         label={details.publiclyAvailable ? "Public" : "Your upload"}
                         size="small"
                         color={details.publiclyAvailable ? "success" : "primary"}

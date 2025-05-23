@@ -70,7 +70,7 @@ export function IndicatorRow({index, control, errors, onRemove}: Readonly<Indica
     return (
         <Box sx={{position: 'relative'}}>
             <Grid container spacing={2} alignItems="flex-start">
-                <Grid size={{xs:12, md:6}}>
+                <Grid size={{xs: 12, md: 6}}>
                     <FieldController<SimulationRequest>
                         control={control}
                         errors={errors}
@@ -78,10 +78,10 @@ export function IndicatorRow({index, control, errors, onRemove}: Readonly<Indica
                     />
                 </Grid>
 
-                <Grid size={{xs:12, md:5}}>
+                <Grid size={{xs: 12, md: 5}}>
                     <Grid container spacing={2}>
                         {extraConfigs.map((cfg) => (
-                            <Grid size={{xs:12}} key={cfg.name}>
+                            <Grid size={{xs: 12}} key={cfg.name}>
                                 <FieldController<SimulationRequest>
                                     control={control}
                                     errors={errors}
@@ -92,7 +92,7 @@ export function IndicatorRow({index, control, errors, onRemove}: Readonly<Indica
                     </Grid>
                 </Grid>
 
-                <Grid size={{xs:12, md:1}} sx={{
+                <Grid size={{xs: 12, md: 1}} sx={{
                     display: 'flex',
                     justifyContent: {xs: 'flex-start', md: 'center'},
                     alignItems: 'center',
