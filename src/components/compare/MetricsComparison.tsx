@@ -1,7 +1,7 @@
 import {Box, Divider, Grid, Paper, Typography} from "@mui/material";
 import {Fragment} from "react";
 import {SimulationResult} from "../../model/simulation/SimulationResult.ts";
-import {extractMetrics} from "../../services/comparison/comparisonMetricsFormatService.ts";
+import {extractRequest, extractResults} from "../../services/comparison/comparisonMetricsFormatService.ts";
 
 interface MetricsComparisonProps {
     results: SimulationResult[];
@@ -13,71 +13,103 @@ export function MetricsComparison({results, colors}: Readonly<MetricsComparisonP
         return null;
     }
 
-    const metricsPerSimulation = results.map(extractMetrics);
-    const metricKeys = Object.keys(metricsPerSimulation[0])
-
     return (
         <Grid size={{xs: 12}}>
-            <Paper elevation={3} sx={{padding: 2}}>
-                <Typography variant="h6" gutterBottom>
-                    Metrics
-                </Typography>
-                <Divider sx={{mb: 2}}/>
-
-                <Box
-                    sx={{
-                        display: 'grid',
-                        gridTemplateColumns: `1fr repeat(${results.length}, 1fr)`,
-                        gap: 2,
-                        alignItems: 'stretch',
-                    }}
-                >
-                    <MetricsHeader metricsPerSimulation={metricsPerSimulation} results={results} colors={colors}/>
-                    {metricKeys.map((key) => (
-                        <MetricRow
-                            key={key}
-                            metricKey={key}
-                            metricsPerSimulation={metricsPerSimulation}
-                            colors={colors}
-                        />
-                    ))}
-                </Box>
-            </Paper>
+            <MetricsCard
+                name={"Details"}
+                contents={results.map(extractRequest)}
+                colors={colors}
+            />
+            <MetricsCard
+                name={"Results"}
+                contents={results.map(extractResults)}
+                colors={colors}
+            />
         </Grid>
+    );
+}
+
+interface MetricsCardProps {
+    name: string;
+    contents: Record<string, string>[];
+    colors: string[];
+}
+
+function MetricsCard({contents, colors, name}: Readonly<MetricsCardProps>) {
+    return (
+        <Paper elevation={3} sx={{padding: 2, m: 2}}>
+            <Typography variant="h6" gutterBottom>
+                {name}
+            </Typography>
+            <Divider sx={{mb: 2}}/>
+            <MetricsGrid
+                contents={contents}
+                colors={colors}
+            />
+        </Paper>
+    )
+}
+
+interface MetricsGridProps {
+    contents: Record<string, string>[];
+    colors: string[];
+}
+
+function MetricsGrid({contents, colors}: Readonly<MetricsGridProps>) {
+    const keys = Object.keys(contents[0]);
+    return (
+        <Box
+            sx={{
+                display: 'grid',
+                gridTemplateColumns: `1fr repeat(${contents.length}, 1fr)`,
+                gap: 2,
+                alignItems: 'stretch',
+            }}
+        >
+            <MetricsHeader metricsPerSimulation={contents} colors={colors}/>
+            {keys.map((key) => (
+                <MetricRow
+                    key={key}
+                    metricKey={key}
+                    values={contents}
+                    colors={colors}
+                />
+            ))}
+        </Box>
     );
 }
 
 interface MetricsHeaderProps {
     metricsPerSimulation: Record<string, string>[];
-    results: SimulationResult[];
     colors: string[];
 }
 
-function MetricsHeader({metricsPerSimulation, results, colors}: Readonly<MetricsHeaderProps>) {
+function MetricsHeader({metricsPerSimulation, colors}: Readonly<MetricsHeaderProps>) {
     return <>
         <Box/> {/* Empty box for left-side label */}
-        {metricsPerSimulation.map((_,i)=><Box
-            key={`header_${results[i].id}`}
-            sx={{
-                mb: 1,
-                textAlign: 'center',
-                fontWeight: 'bold',
-                borderBottom: `4px solid ${colors[i % colors.length]}`,
-                pb: '4px'
-            }}
-        >
-            Simulation {i + 1}
-        </Box>)}
+        {metricsPerSimulation.map((_, i) => (
+            <Box key={`header_${colors[i]}`}
+                 sx={{
+                     mb: 1,
+                     textAlign: 'center',
+                     fontWeight: 'bold',
+                     borderBottom: `4px solid ${colors[i % colors.length]}`,
+                     pb: '4px'
+                 }}
+            >
+                Simulation {i + 1}
+            </Box>
+        ))}
     </>;
 }
 
-interface MetricColumnProps {
+interface MetricRowProps {
     metricKey: string;
-    metricsPerSimulation: Record<string, string>[];
+    values: Record<string, string>[];
     colors: string[];
 }
 
-function MetricRow({metricKey, metricsPerSimulation, colors}: Readonly<MetricColumnProps>) {
+function MetricRow({metricKey, values, colors}: Readonly<MetricRowProps>) {
     return (
         <Fragment>
             <Box sx={{
@@ -91,7 +123,7 @@ function MetricRow({metricKey, metricsPerSimulation, colors}: Readonly<MetricCol
                 {metricKey}
             </Box>
 
-            {metricsPerSimulation.map((metricsForSimulation, simulationIndex) => (
+            {values.map((metricsForSimulation, simulationIndex) => (
                 <MetricCell
                     key={`${metricKey}_${simulationIndex}`}
                     metricsForSimulation={metricsForSimulation}

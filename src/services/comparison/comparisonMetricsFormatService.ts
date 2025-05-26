@@ -3,15 +3,28 @@ import {IndicatorType} from "../../model/request/IndicatorType.ts";
 import {SimulationTypes} from "../../model/request/SimulationTypes.ts";
 import {SimulationResult} from "../../model/simulation/SimulationResult.ts";
 
-export function extractMetrics(result: SimulationResult): Record<string, string> {
-    const {startDate, endDate, brokerName, stockNames, startCapital} = result.stockSimulationRequest;
+export function extractRequest(result: SimulationResult) : Record<string, string> {
+    const {startDate, endDate, brokerName, stockNames, startCapital, indicators} = result.stockSimulationRequest;
+
+    return {
+        "Strategy": positionAdjustment(result.stockSimulationRequest),
+        "Indicators used": indicatorDescriptions(indicators),
+        "Stocks Used": stockNames.join("\n"),
+        "Start Capital": `$${startCapital.toFixed(2)}`,
+        "Broker Name": brokerName,
+        "Start Date": startDate.toString(),
+        "End Date": endDate.toString()
+    }
+}
+
+export function extractResults(result: SimulationResult): Record<string, string> {
+    const {startDate, endDate, startCapital} = result.stockSimulationRequest;
     const portfolios = result.userPortfolios;
     const start = new Date(startDate);
     const end = new Date(endDate);
     const days = Math.ceil((+end - +start) / (1000 * 60 * 60 * 24));
     const finalValue = portfolios[portfolios.length - 1]?.totalPortfolioValue || 0;
     const profitMargin = ((finalValue - startCapital) / startCapital) * 100;
-    const indicators = result.stockSimulationRequest.indicators;
 
     const avgGrowth = portfolios.length > 1
         ? ((finalValue / startCapital) ** (1 / (portfolios.length - 1)) - 1) * 100
@@ -25,12 +38,7 @@ export function extractMetrics(result: SimulationResult): Record<string, string>
     });
 
     return {
-        "Broker Name": brokerName,
         "Simulation Length": `${days} days`,
-        "Stocks Used": stockNames.join("\n"),
-        "Indicators used": indicatorDescriptions(indicators),
-        "Position Adjustment": positionAdjustment(result.stockSimulationRequest),
-        "Start Capital": `$${startCapital.toFixed(2)}`,
         "Final Portfolio Value": `$${finalValue.toFixed(2)}`,
         "Profit Margin": `${profitMargin.toFixed(2)}%`,
         "Avg Daily Growth": `${avgGrowth.toFixed(2)}%`,
