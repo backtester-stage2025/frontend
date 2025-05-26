@@ -173,7 +173,6 @@ export function CsvUploadDialog({open, onClose}: Readonly<CsvUploadDialogProps>)
                     onClose();
                 },
                 onError: (error) => {
-                    console.log("error", error);
                     if (error?.message.includes("already exists. Please use a different name.")) {
                         setShowOverwriteDialog(true);
                     } else {
