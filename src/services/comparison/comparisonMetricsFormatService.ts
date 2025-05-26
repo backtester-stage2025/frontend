@@ -1,7 +1,7 @@
-import {IndicatorDetails, SimulationRequest} from "../model/request/SimulationRequest.ts";
-import {IndicatorType} from "../model/request/IndicatorType.ts";
-import {SimulationTypes} from "../model/request/SimulationTypes.ts";
-import {SimulationResult} from "../model/simulation/SimulationResult.ts";
+import {IndicatorDetails, SimulationRequest} from "../../model/request/SimulationRequest.ts";
+import {IndicatorType} from "../../model/request/IndicatorType.ts";
+import {SimulationTypes} from "../../model/request/SimulationTypes.ts";
+import {SimulationResult} from "../../model/simulation/SimulationResult.ts";
 
 export function extractMetrics(result: SimulationResult): Record<string, string> {
     const {startDate, endDate, brokerName, stockNames, startCapital} = result.stockSimulationRequest;

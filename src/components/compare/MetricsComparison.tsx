@@ -1,7 +1,7 @@
 import {Box, Divider, Grid, Paper, Typography} from "@mui/material";
 import {Fragment} from "react";
 import {SimulationResult} from "../../model/simulation/SimulationResult.ts";
-import {extractMetrics} from "../../services/comparisonFormatService.ts";
+import {extractMetrics} from "../../services/comparison/comparisonMetricsFormatService.ts";
 
 interface MetricsComparisonProps {
     results: SimulationResult[];

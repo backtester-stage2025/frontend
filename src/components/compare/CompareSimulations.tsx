@@ -4,6 +4,7 @@ import CanvasJSReact from "@canvasjs/react-stockcharts";
 import {SimulationResult} from "../../model/simulation/SimulationResult.ts";
 import {UserPortfolio} from "../../model/simulation/UserPortfolio.ts";
 import {MetricsComparison} from "./MetricsComparison.tsx";
+import {ComparisonBarCharts} from "./ComparisonBarCharts.tsx";
 
 const CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
@@ -15,63 +16,6 @@ const canvasColors = [
     "#d62728", // Red – Simulation 4
     "#9467bd"  // Purple – Simulation 5
 ];
-
-function getProfitMargin(result: SimulationResult): number {
-    const start = result.stockSimulationRequest.startCapital;
-    const end = result.userPortfolios[result.userPortfolios.length - 1]?.totalPortfolioValue ?? start;
-    return ((end - start) / start) * 100;
-}
-
-function getAverageDailyGrowth(result: SimulationResult): number {
-    const days = (new Date(result.stockSimulationRequest.endDate).getTime() - new Date(result.stockSimulationRequest.startDate).getTime()) / (1000 * 3600 * 24);
-    const start = result.stockSimulationRequest.startCapital;
-    const end = result.userPortfolios[result.userPortfolios.length - 1]?.totalPortfolioValue ?? start;
-    return ((end / start) ** (1 / days) - 1) * 100;
-}
-
-function getTransactionCount(result: SimulationResult): number {
-    return result.userPortfolios.reduce((sum, p) => sum + p.sharesBought.length, 0);
-}
-
-function getTotalFees(result: SimulationResult): number {
-    return result.userPortfolios.flatMap(p => p.sharesBought).reduce((sum, tx) => sum + tx.transactionFee, 0);
-}
-
-function getSingleMetricChartOptions(label: string, values: number[]) {
-    const minVal = Math.min(...values);
-    const maxVal = Math.max(...values);
-
-    return {
-        animationEnabled: true,
-        theme: "light2",
-        title: {
-            text: label
-        },
-        axisY: {
-            title: label,
-            minimum: minVal < 0 ? minVal * 1.5 : 0,
-            maximum: maxVal > 0 ? maxVal * 1.5 : minVal * -0.2
-        },
-        axisX: {
-            title: "",
-            valueFormatString: "",
-            margin: 15
-        },
-        toolTip: {
-            shared: false
-        },
-        data: [
-            {
-                type: "column",
-                dataPoints: values.map((value, index) => ({
-                    label: `Simulation ${index + 1}`,
-                    y: value,
-                    color: canvasColors[index % canvasColors.length]
-                }))
-            }
-        ]
-    };
-}
 
 function getNormalizedComparisonChartOptions(results: Readonly<SimulationResult[]>) {
     const normalize = (portfolios: UserPortfolio[]) => {
@@ -138,7 +82,7 @@ interface SimulationResults {
     results: SimulationResult[]
 }
 
-function NormalizedPortfolioValues({results}: Readonly<SimulationResults>) {
+export function NormalizedPortfolioValues({results}: Readonly<SimulationResults>) {
     const chartOptions = getNormalizedComparisonChartOptions(results);
 
     return (
@@ -146,49 +90,6 @@ function NormalizedPortfolioValues({results}: Readonly<SimulationResults>) {
             <Paper elevation={3} sx={{padding: 2}}>
                 <CanvasJSChart options={chartOptions}/>
             </Paper>
-        </Grid>
-    )
-}
-
-function ComparisonBarCharts({results}: Readonly<SimulationResults>) {
-    const toDays = (start: Date, end: Date) =>
-        Math.floor((new Date(end).getTime() - new Date(start).getTime()) / (1000 * 3600 * 24));
-
-    const metrics = [
-        {
-            label: "Simulation Length (days)",
-            values: results.map(r => toDays(
-                r.stockSimulationRequest.startDate,
-                r.stockSimulationRequest.endDate
-            )),
-        },
-        {
-            label: "Total Profit Margin (%)",
-            values: results.map(getProfitMargin)
-        },
-        {
-            label: "Avg Daily Growth (%)",
-            values: results.map(getAverageDailyGrowth)
-        },
-        {
-            label: "Total Transactions",
-            values: results.map(getTransactionCount)
-        },
-        {
-            label: "Total Fees ($)",
-            values: results.map(getTotalFees)
-        }
-    ];
-
-    return (
-        <Grid size={{xs: 12}} container spacing={2}>
-            {metrics.map(({label, values}) => (
-                <Grid size={{xs: 12, md: 6, xl: 4}} key={label}>
-                    <Paper elevation={3} sx={{padding: 2}}>
-                        <CanvasJSChart options={getSingleMetricChartOptions(label, values)}/>
-                    </Paper>
-                </Grid>
-            ))}
         </Grid>
     )
 }
@@ -208,7 +109,7 @@ export function CompareSimulations() {
 
             <MetricsComparison results={results} colors={canvasColors}/>
             <NormalizedPortfolioValues results={results}/>
-            <ComparisonBarCharts results={results}/>
+            <ComparisonBarCharts results={results} colors={canvasColors}/>
         </Grid>
     );
 }
