@@ -4,6 +4,7 @@ export interface StockDetails {
     companyName: string;
     currencyType: CurrencyType;
     officialName: string;
+    publiclyAvailable: boolean;
 }
 
 export enum CurrencyType {

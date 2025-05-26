@@ -1,14 +1,12 @@
 import {Alert, Box, CircularProgress, Grid, Paper, Typography} from "@mui/material";
 import HistoryIcon from "@mui/icons-material/History";
 import {useSimulationHistory} from "../../hooks/useSimulationHistory.ts";
-import {useAuth} from "../../context/AuthContext.tsx";
 import {SimulationResult} from "../../model/simulation/SimulationResult.ts";
 import {useNavigate} from "react-router-dom";
 import {SimulationCard} from "./SimulationCard.tsx";
 
 export function SimulationHistory() {
-    const {userId} = useAuth();
-    const {isLoading, isError, simulationHistory} = useSimulationHistory(userId ?? "");
+    const {isLoading, isError, simulationHistory} = useSimulationHistory();
 
     const navigate = useNavigate();
 

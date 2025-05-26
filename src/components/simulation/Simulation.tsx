@@ -176,14 +176,14 @@ export function Simulation() {
             )}
             <Snackbar
                 open={snackbarOpen}
-                autoHideDuration={5000}
+                autoHideDuration={6000}
                 onClose={() => setSnackbarOpen(false)}
-                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+                anchorOrigin={{vertical: 'top', horizontal: 'center'}}
             >
                 <Alert
                     onClose={() => setSnackbarOpen(false)}
                     severity={snackbarSeverity}
-                    sx={{ width: '100%', mt: 6 }}
+                    sx={{width: '100%', mt: 6}}
                 >
                     {snackbarMessage}
                 </Alert>

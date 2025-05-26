@@ -30,7 +30,8 @@ export function Header({onOpenDrawer}: Readonly<HeaderProps>) {
                 </Box>
                 <Box sx={{display: "flex", alignItems: "center", gap: 2}}>
                     <Login/>
-                    <IconButton onClick={isAuthenticated ? () => handleAccountClick() : () => login()} color="inherit" sx={{padding: '4px'}}>
+                    <IconButton onClick={isAuthenticated ? () => handleAccountClick() : () => login()} color="inherit"
+                                sx={{padding: '4px'}}>
                         <Avatar
                             src={picture}
                             sx={{

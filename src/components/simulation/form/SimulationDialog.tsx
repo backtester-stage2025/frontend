@@ -22,6 +22,8 @@ import {TradingIndicatorsSection} from "./TradingIndicatorsSection.tsx";
 import {subYears} from "date-fns";
 import {WeekdaySelector} from "./controller/WeekdaySelector.tsx";
 import {Weekday} from "../../../model/Weekday.ts";
+import {StockDetails} from "../../../model/StockDetails.ts";
+import {getFieldNameStockDetails} from "../../../services/formatService.ts";
 import { TOOLTIP_MESSAGES } from "../../../constants/tooltipMessages.ts";
 
 interface BuyAndHoldSimulationProps {
@@ -54,11 +56,11 @@ export function SimulationDialog({
 
     const {control, handleSubmit, formState: {errors}} = useForm<SimulationRequest>({
         resolver: zodResolver(simulationRequestSchema),
-        defaultValues: initialValues ? {
+        defaultValues: stockData && initialValues ? {
             ...initialValues,
             stockNames: initialValues.stockNames.map(officialName => {
-                const stock = stockData?.find(s => s.officialName === officialName);
-                return stock?.companyName ?? officialName;
+                const stock = stockData.find(s => s.officialName === officialName);
+                return stock ? getFieldNameStockDetails(stock) : '';
             })
         } : {
             brokerName: '',
@@ -76,7 +78,7 @@ export function SimulationDialog({
 
     const simType = useWatch({control, name: "simulationType"}) as SimulationTypes | undefined;
 
-    if (isLoadingBrokers ||isLoadingStockDate) return <Loader/>;
+    if (isLoadingBrokers || isLoadingStockDate) return <Loader/>;
     if (isErrorLoadingBrokers) return <ErrorAlert message="Error loading brokers"/>;
     if (isErrorLoadingStockData) return <ErrorAlert message="Error loading stock data"/>;
 
@@ -91,7 +93,7 @@ export function SimulationDialog({
         },
         {
             name: "stockNames", type: "autocomplete", placeholder: "Stock Names", required: true,
-            options: stockData?.map((details) => details.companyName), multiple: true
+            options: stockData?.map((sd: StockDetails) => getFieldNameStockDetails(sd)), multiple: true
         },
         {name: "startDate", type: "date", placeholder: "Start Date", required: true},
         {name: "endDate", type: "date", placeholder: "End Date", required: true},
@@ -133,27 +135,22 @@ export function SimulationDialog({
             : nameWithPriceInBrackets;
     }
 
+    const trimStockNames = (companyNameWithOfficialName: string): string => {
+        const lastOpenParen = companyNameWithOfficialName.lastIndexOf('(');
+        const lastCloseParen = companyNameWithOfficialName.indexOf(')', lastOpenParen);
+
+        return companyNameWithOfficialName.substring(lastOpenParen + 1, lastCloseParen).trim();
+    };
+
     const onSubmitHandler = (data: SimulationRequest) => {
         setIsSubmitting(true);
 
         // check the stock data to map the stock name
         if (!stockData?.length) return showSubmitError("Stock data is not available.");
 
-        const officialStockNames = data.stockNames.map((name) => {
-            const stock = stockData.find(stock => stock.companyName === name);
-            if (!stock) {
-                showSubmitError(`Could not find a matching stock for "${name}".`);
-                return null;
-            }
-            return stock.officialName;
-        }).filter((name): name is string => name !== null);
-
-        if (officialStockNames.length !== data.stockNames.length) {
-            setIsSubmitting(false);
-            return;
-        }
+        const trimmedStockNames = data.stockNames.map(data => trimStockNames(data))
         const trimmedBrokerName = trimBrokerName(data.brokerName)
-        onSubmit({...data, stockNames: officialStockNames, brokerName: trimmedBrokerName});
+        onSubmit({...data, stockNames: trimmedStockNames, brokerName: trimmedBrokerName});
         setIsSubmitting(false);
     };
 
