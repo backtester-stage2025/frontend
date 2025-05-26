@@ -25,7 +25,9 @@ export function StockMetricsView({stockMetrics, stockName}: Readonly<{
             ],
             color: "success.main",
             tooltip: {
+                title: TOOLTIP_MESSAGES.stockMetrics.returnsTitle,
                 description: TOOLTIP_MESSAGES.stockMetrics.returnsInfo,
+                link: TOOLTIP_MESSAGES.stockMetrics.returnsLink
             }
         },
         {
@@ -36,7 +38,9 @@ export function StockMetricsView({stockMetrics, stockName}: Readonly<{
             ],
             color: "warning.main",
             tooltip: {
+                title: TOOLTIP_MESSAGES.stockMetrics.riskTitle,
                 description: TOOLTIP_MESSAGES.stockMetrics.riskInfo,
+                link: TOOLTIP_MESSAGES.stockMetrics.riskLink
             }
         },
         {
@@ -47,7 +51,9 @@ export function StockMetricsView({stockMetrics, stockName}: Readonly<{
             ],
             color: "error.main",
             tooltip: {
+                title: TOOLTIP_MESSAGES.stockMetrics.drawdownsTitle,
                 description: TOOLTIP_MESSAGES.stockMetrics.drawdownsInfo,
+                link: TOOLTIP_MESSAGES.stockMetrics.drawdownsLink
             }
         },
         {
@@ -57,7 +63,9 @@ export function StockMetricsView({stockMetrics, stockName}: Readonly<{
             ],
             color: "info.main",
             tooltip: {
+                title: TOOLTIP_MESSAGES.stockMetrics.distributionTitle,
                 description: TOOLTIP_MESSAGES.stockMetrics.distributionInfo,
+                link: TOOLTIP_MESSAGES.stockMetrics.distributionLink
             }
         }
     ]

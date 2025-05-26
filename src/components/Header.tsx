@@ -20,13 +20,13 @@ export function Header({onOpenDrawer}: Readonly<HeaderProps>) {
     };
 
     return (
-        <AppBar position="static" color="transparent">
+        <AppBar position="fixed" color="inherit">
             <Toolbar sx={{justifyContent: "space-between"}}>
                 <Box sx={{display: "flex", alignItems: "center"}}>
                     <IconButton onClick={onOpenDrawer}>
                         <MenuIcon/>
                     </IconButton>
-                    <Typography variant="h6">Stock Trading Strategy Backtester</Typography>
+                    <Typography variant="h6" sx={{color: 'primary.main'}}>Stock Trading Strategy Backtester</Typography>
                 </Box>
                 <Box sx={{display: "flex", alignItems: "center", gap: 2}}>
                     <Login/>

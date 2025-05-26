@@ -23,7 +23,8 @@ export function IndicatorRow({index, control, errors, onRemove}: Readonly<Indica
         options: indicatorTypeOptions,
         tooltip: {
             title: TOOLTIP_MESSAGES.simulation.indicator.title,
-            description: TOOLTIP_MESSAGES.simulation.indicator.description
+            description: TOOLTIP_MESSAGES.simulation.indicator.description,
+            link: TOOLTIP_MESSAGES.simulation.indicator.link
         }
     };
 

@@ -1,6 +1,6 @@
 import {useSearchParams} from "react-router-dom";
 import {StockChart} from "./StockChart";
-import {Box} from "@mui/material";
+import {Box, Toolbar} from "@mui/material";
 
 export function StockOverview() {
     const [searchParams] = useSearchParams();
@@ -11,8 +11,11 @@ export function StockOverview() {
     }
 
     return (
-        <Box sx={{marginTop: 5}}>
-            <StockChart stockName={stockName}/>
-        </Box>
+        <>
+            <Toolbar/>
+            <Box sx={{marginTop: 5}}>
+                <StockChart stockName={stockName}/>
+            </Box>
+        </>
     );
 }
