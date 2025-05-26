@@ -114,7 +114,6 @@ export function StockList() {
     return (
         <>
             <Toolbar/>
-            <h1>Available Stocks</h1>
             <Box sx={{textAlign: 'center', mb: 4}}>
                 <Typography variant="h4" component="h1" sx={{fontWeight: 'bold', mb: 1}}>
                     Available Stocks
