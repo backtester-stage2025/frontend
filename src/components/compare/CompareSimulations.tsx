@@ -1,12 +1,9 @@
 import {useLocation} from "react-router-dom";
-import {Box, Divider, Grid, Paper, Typography} from "@mui/material";
+import {Grid, Paper, Typography} from "@mui/material";
 import CanvasJSReact from "@canvasjs/react-stockcharts";
 import {SimulationResult} from "../../model/simulation/SimulationResult.ts";
 import {UserPortfolio} from "../../model/simulation/UserPortfolio.ts";
-import {Fragment} from "react";
-import {IndicatorDetails, SimulationRequest} from "../../model/request/SimulationRequest.ts";
-import {IndicatorType} from "../../model/request/IndicatorType.ts";
-import {SimulationTypes} from "../../model/request/SimulationTypes.ts";
+import {MetricsComparison} from "./MetricsComparison.tsx";
 
 const CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
@@ -18,65 +15,6 @@ const canvasColors = [
     "#d62728", // Red – Simulation 4
     "#9467bd"  // Purple – Simulation 5
 ];
-
-function indicatorDescription(details: IndicatorDetails) {
-    switch (details.indicator) {
-        case IndicatorType.MOVING_AVERAGE_CROSSOVER:
-            return `Moving average crossover\n( ${details.movingAverageShortDays} and ${details.movingAverageLongDays} days)`;
-        case IndicatorType.BREAKOUT:
-            return `Breakout rule\n(${details.breakoutDays} days)`;
-    }
-}
-
-function indicatorDescriptions(indicators: IndicatorDetails[]) {
-    if (indicators.length === 0) {
-        return "None";
-    }
-    return indicators.map(indicatorDescription).join("\n");
-}
-
-function positionAdjustment(request: SimulationRequest) {
-    switch (request.simulationType) {
-        case SimulationTypes.BUY_AND_HOLD: return "Buy and Hold";
-        case  SimulationTypes.RISK_BASED: return `Risk based (${request.riskTolerance}% risk)`;
-    }
-}
-
-function extractMetrics(result: SimulationResult): Record<string, string> {
-    const {startDate, endDate, brokerName, stockNames, startCapital} = result.stockSimulationRequest;
-    const portfolios = result.userPortfolios;
-    const start = new Date(startDate);
-    const end = new Date(endDate);
-    const days = Math.ceil((+end - +start) / (1000 * 60 * 60 * 24));
-    const finalValue = portfolios[portfolios.length - 1]?.totalPortfolioValue || 0;
-    const profitMargin = ((finalValue - startCapital) / startCapital) * 100;
-    const indicators = result.stockSimulationRequest.indicators;
-
-    const avgGrowth = portfolios.length > 1
-        ? ((finalValue / startCapital) ** (1 / (portfolios.length - 1)) - 1) * 100
-        : 0;
-
-    let transactionCount = 0;
-    let totalFees = 0;
-    portfolios.forEach(p => {
-        transactionCount += p.sharesBought.length;
-        totalFees += p.sharesBought.reduce((sum, tx) => sum + tx.transactionFee, 0);
-    });
-
-    return {
-        "Broker Name": brokerName,
-        "Simulation Length": `${days} days`,
-        "Stocks Used": stockNames.join("\n"),
-        "Indicators used": indicatorDescriptions(indicators),
-        "Position Adjustment": positionAdjustment(result.stockSimulationRequest),
-        "Start Capital": `$${startCapital.toFixed(2)}`,
-        "Final Portfolio Value": `$${finalValue.toFixed(2)}`,
-        "Profit Margin": `${profitMargin.toFixed(2)}%`,
-        "Avg Daily Growth": `${avgGrowth.toFixed(2)}%`,
-        "Total Transactions": transactionCount.toString(),
-        "Total Transaction Fees": `$${totalFees.toFixed(2)}`
-    };
-}
 
 function getProfitMargin(result: SimulationResult): number {
     const start = result.stockSimulationRequest.startCapital;
@@ -145,7 +83,7 @@ function getNormalizedComparisonChartOptions(results: Readonly<SimulationResult[
     };
 
     const normalizedPortfolios = results.map(r => normalize(r.userPortfolios));
-    const maxSimulationLength = Math.max(...normalizedPortfolios.map(points=>points.length));
+    const maxSimulationLength = Math.max(...normalizedPortfolios.map(points => points.length));
     const xInterval = Math.ceil(maxSimulationLength / 10);
 
     return {
@@ -198,95 +136,6 @@ function getNormalizedComparisonChartOptions(results: Readonly<SimulationResult[
 
 interface SimulationResults {
     results: SimulationResult[]
-}
-
-
-function MetricsComparison({ results }: Readonly<SimulationResults>) {
-    if (results.length === 0) {
-        return null;
-    }
-
-    const metrics = results.map(extractMetrics);
-    const metricKeys = Object.keys(metrics[0]) as (keyof SimulationResult)[];
-
-    return (
-        <Grid size={{ xs: 12 }}>
-            <Paper elevation={3} sx={{ padding: 2 }}>
-                <Typography variant="h6" gutterBottom>
-                    Metrics
-                </Typography>
-                <Divider sx={{ mb: 2 }} />
-
-                <Box
-                    sx={{
-                        display: 'grid',
-                        gridTemplateColumns: `2fr repeat(${metrics.length}, 1fr)`,
-                        gap: 2,
-                        alignItems: 'stretch',
-                    }}
-                >
-                    <Box /> {/* Empty box for left-side label */}
-                    {metrics.map((_, i) => (
-                        <Box
-                            key={`header_${results[i].id}`}
-                            sx={{
-                                mb: 1,
-                                textAlign: 'center',
-                                fontWeight: 'bold',
-                                borderBottom: `4px solid ${canvasColors[i % canvasColors.length]}`,
-                                pb: '4px'
-                            }}
-                        >
-                            Simulation {i + 1}
-                        </Box>
-                    ))}
-
-                    {metricKeys.map((key) => (
-                        <Fragment key={key as string}>
-                            <Box
-                                sx={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    fontWeight: 'bold',
-                                    height: '100%',
-                                    textAlign: 'center'
-                                }}
-                            >
-                                {key}
-                            </Box>
-
-                            {metrics.map((m, simIndex) => (
-                                <Box
-                                    key={`${key}_${simIndex}`}
-                                    sx={{
-                                        p: 1,
-                                        whiteSpace: 'pre-line',
-                                        height: '100%',
-                                        display: 'flex',
-                                        flexDirection: 'column',
-                                        justifyContent: 'space-between',
-                                        textAlign: 'center',
-                                    }}
-                                >
-                                    <Typography variant="body2">{m[key]}</Typography>
-
-                                    <Divider
-                                        sx={{
-                                            mt: 1,
-                                            backgroundColor: canvasColors[simIndex % canvasColors.length],
-                                            height: '1px',
-                                            alignSelf: 'stretch',
-                                        }}
-                                    />
-                                </Box>
-                            ))}
-                        </Fragment>
-                    ))}
-                </Box>
-            </Paper>
-        </Grid>
-    );
 }
 
 function NormalizedPortfolioValues({results}: Readonly<SimulationResults>) {
@@ -357,7 +206,7 @@ export function CompareSimulations() {
                 </Typography>
             </Grid>
 
-            <MetricsComparison results={results} />
+            <MetricsComparison results={results} colors={canvasColors}/>
             <NormalizedPortfolioValues results={results}/>
             <ComparisonBarCharts results={results}/>
         </Grid>
