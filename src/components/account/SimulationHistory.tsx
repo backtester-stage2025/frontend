@@ -12,10 +12,13 @@ export function SimulationHistory() {
 
     const navigate = useNavigate();
 
+    const MAX_SELECT_LENGTH = 5;
+    const MIN_SELECT_LENGTH = 2;
+
     const [selectedSimulationsForComparison, setSelectedSimulationsForComparison] = useState<SimulationResult[]>([]);
 
     const selectSimulationForComparison = (simulation: SimulationResult) => {
-        if (selectedSimulationsForComparison.length < 2) {
+        if (selectedSimulationsForComparison.length < MAX_SELECT_LENGTH) {
             setSelectedSimulationsForComparison(prev => [...prev, simulation]);
         }
     }
@@ -82,10 +85,10 @@ export function SimulationHistory() {
                         isSelected={!!selectedSimulationsForComparison.find(s => s.id === simulation.id)}
                         addSimulation={selectSimulationForComparison}
                         removeSimulation={unselectSimulationForComparison}
-                        disableSelection={selectedSimulationsForComparison.length === 2 && !selectedSimulationsForComparison.find(s => s.id === simulation.id)}
+                        disableSelection={selectedSimulationsForComparison.length === MAX_SELECT_LENGTH && !selectedSimulationsForComparison.find(s => s.id === simulation.id)}
                     />
                 )}
-                {selectedSimulationsForComparison.length === 2 && (
+                {selectedSimulationsForComparison.length >= MIN_SELECT_LENGTH && (
                     <Box position="fixed" bottom={16} right={16} zIndex={1000}>
                         <Button
                             variant="contained"
