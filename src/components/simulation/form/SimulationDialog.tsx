@@ -99,7 +99,7 @@ export function SimulationDialog({
         {name: "endDate", type: "date", placeholder: "End Date", required: true},
         {name: "startCapital", type: "number", placeholder: "Start Capital", required: true},
         {
-            name: "simulationType", type: "select", placeholder: "Simulation Type", required: true,
+            name: "simulationType", type: "select", placeholder: "Position Adjustment", required: true,
             options: simulationTypeOptions,
             tooltip: {
                 title: TOOLTIP_MESSAGES.simulation.simulationTypeTitle,
