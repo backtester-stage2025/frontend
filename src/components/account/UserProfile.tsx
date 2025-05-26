@@ -5,8 +5,8 @@ import {useSimulationHistory} from "../../hooks/useSimulationHistory.ts";
 
 
 export function UserProfile() {
-    const {username, email, picture, userId} = useAuth();
-    const {isLoading, simulationHistory} = useSimulationHistory(userId ?? "");
+    const {username, email, picture} = useAuth();
+    const {isLoading, simulationHistory} = useSimulationHistory();
 
     return (
         <Grid size={{xs: 12, md: 4}}>
