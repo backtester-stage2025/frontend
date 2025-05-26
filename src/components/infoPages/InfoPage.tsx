@@ -30,6 +30,12 @@ export function InfoPage() {
         const section = searchParams.get("section");
         if (section) {
             setActiveTab(section);
+
+            if (["moving-average-crossover", "breakout", "indicator-types"].includes(section)) {
+                setOpenIndicators(true);
+            } else if (["returns", "risk", "drawdown", "skewness", "stock-metrics"].includes(section)) {
+                setOpenStockMetrics(true);
+            }
         }
     }, [searchParams]);
 
@@ -83,7 +89,10 @@ export function InfoPage() {
                         <TopLevelListItem
                             icon={<QueryStatsIcon sx={{color: "primary.main"}}/>}
                             text="Indicators"
-                            onNavigate={() => handleSelectTab("indicator-types")}
+                            onNavigate={() => {
+                                handleSelectTab("indicator-types");
+                                setOpenIndicators(true);
+                            }}
                             onToggleDropdown={handleToggleIndicators}
                             expandable
                             expanded={openIndicators}
@@ -105,7 +114,10 @@ export function InfoPage() {
                         <TopLevelListItem
                             icon={<BarChartIcon sx={{color: "primary.main"}}/>}
                             text="Stock Metrics"
-                            onNavigate={() => handleSelectTab("stock-metrics")}
+                            onNavigate={() => {
+                                handleSelectTab("stock-metrics");
+                                setOpenStockMetrics(true);
+                            }}
                             onToggleDropdown={handleToggleStockMetrics}
                             expandable
                             expanded={openStockMetrics}
