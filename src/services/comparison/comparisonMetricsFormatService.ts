@@ -3,7 +3,7 @@ import {IndicatorType} from "../../model/request/IndicatorType.ts";
 import {SimulationTypes} from "../../model/request/SimulationTypes.ts";
 import {SimulationResult} from "../../model/simulation/SimulationResult.ts";
 
-export function extractRequest(result: SimulationResult) : Record<string, string> {
+export function extractRequestDetails(result: SimulationResult) : Record<string, string> {
     const {startDate, endDate, brokerName, stockNames, startCapital, indicators} = result.stockSimulationRequest;
 
     return {

@@ -18,7 +18,6 @@ export function getSingleMetricChartOptions(label: string, values: number[], col
         },
         axisX: {
             title: "",
-            valueFormatString: "",
             margin: 15
         },
         toolTip: {

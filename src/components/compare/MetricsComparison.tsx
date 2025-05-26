@@ -1,7 +1,7 @@
 import {Box, Divider, Grid, Paper, Typography} from "@mui/material";
 import {Fragment} from "react";
 import {SimulationResult} from "../../model/simulation/SimulationResult.ts";
-import {extractRequest, extractResults} from "../../services/comparison/comparisonMetricsFormatService.ts";
+import {extractRequestDetails, extractResults} from "../../services/comparison/comparisonMetricsFormatService.ts";
 
 interface MetricsComparisonProps {
     results: SimulationResult[];
@@ -17,7 +17,7 @@ export function MetricsComparison({results, colors}: Readonly<MetricsComparisonP
         <Grid size={{xs: 12}}>
             <MetricsCard
                 name={"Details"}
-                contents={results.map(extractRequest)}
+                contents={results.map(extractRequestDetails)}
                 colors={colors}
             />
             <MetricsCard
