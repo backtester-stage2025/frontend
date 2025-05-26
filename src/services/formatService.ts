@@ -1,4 +1,5 @@
 import {SimulationResult} from "../model/simulation/SimulationResult.ts";
+import {StockDetails} from "../model/StockDetails.ts";
 
 export function formatDateToLocalDateString(date: Date): string {
     return date.toISOString().split('T')[0];
@@ -49,4 +50,8 @@ export function calculateReturnPercentage(simulation: SimulationResult) {
     const endValue = finalPortfolio?.totalPortfolioValue || 0;
 
     return ((endValue - startCapital) / startCapital * 100).toFixed(2);
+}
+
+export function getFieldNameStockDetails (sd: StockDetails) {
+    return `${sd.companyName} (${sd.officialName})`
 }
