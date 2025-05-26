@@ -34,7 +34,7 @@ export function TopLevelListItem({
                 />
             </ListItemButton>
             {expandable && (
-                <IconButton onClick={onToggleDropdown}>
+                <IconButton onClick={onToggleDropdown} sx={{ marginRight: "4px" }}>
                     {expanded ? <ExpandLess /> : <ExpandMore />}
                 </IconButton>
             )}

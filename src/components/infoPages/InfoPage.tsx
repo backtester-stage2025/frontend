@@ -8,13 +8,17 @@ import {MovingAverageCrossoverInfo} from "./pages/MovingAverageCrossoverInfo.tsx
 import {BreakoutInfo} from "./pages/BreakoutInfo.tsx";
 import {IndicatorInfo} from "./pages/IndicatorInfo.tsx";
 import {StockMetricsInfo} from "./pages/StockMetricsInfo.tsx";
+import {ReturnsInfo} from "./pages/ReturnsInfo";
+import {RiskInfo} from "./pages/RiskInfo";
+import {DrawdownInfo} from "./pages/DrawdownInfo";
+import {SkewnessInfo} from "./pages/SkewnessInfo";
 import {useSearchParams} from "react-router-dom";
 import {TopLevelListItem} from "./TopLevelListItem";
 import {SubListItem} from "./SubListItem";
 import BarChartIcon from "@mui/icons-material/BarChart";
 
-const panelWidth = 240;
 
+const panelWidth = 240;
 
 export function InfoPage() {
     const [searchParams] = useSearchParams();
@@ -46,6 +50,10 @@ export function InfoPage() {
         "breakout": <BreakoutInfo/>,
         "default": <DefaultInfo/>,
         "stock-metrics": <StockMetricsInfo/>,
+        "returns": <ReturnsInfo/>,
+        "risk": <RiskInfo/>,
+        "drawdown": <DrawdownInfo/>,
+        "skewness": <SkewnessInfo/>
     };
 
     return (
@@ -68,12 +76,12 @@ export function InfoPage() {
                 <Box sx={{overflow: 'auto', flexGrow: 1}}>
                     <List>
                         <TopLevelListItem
-                            icon={<FindInPageIcon sx={{color: 'primary.main'}} />}
+                            icon={<FindInPageIcon sx={{color: 'primary.main'}}/>}
                             text="Info Page"
                             onNavigate={() => handleSelectTab("default")}
                         />
                         <TopLevelListItem
-                            icon={<QueryStatsIcon sx={{ color: "primary.main" }} />}
+                            icon={<QueryStatsIcon sx={{color: "primary.main"}}/>}
                             text="Indicators"
                             onNavigate={() => handleSelectTab("indicator-types")}
                             onToggleDropdown={handleToggleIndicators}
@@ -95,7 +103,7 @@ export function InfoPage() {
                             </List>
                         )}
                         <TopLevelListItem
-                            icon={<BarChartIcon sx={{ color: "primary.main" }} />}
+                            icon={<BarChartIcon sx={{color: "primary.main"}}/>}
                             text="Stock Metrics"
                             onNavigate={() => handleSelectTab("stock-metrics")}
                             onToggleDropdown={handleToggleStockMetrics}
@@ -103,16 +111,26 @@ export function InfoPage() {
                             expanded={openStockMetrics}
                         />
                         {openStockMetrics && (
-                            <List component="div" disablePadding sx={{ pl: 4 }}>
+                            <List component="div" disablePadding sx={{pl: 4}}>
                                 <SubListItem
-                                    icon={<CircleIcon sx={{ fontSize: "0.5rem" }} />}
-                                    text="Metric 1"
-                                    onClick={() => handleSelectTab("metric-1")}
+                                    icon={<CircleIcon sx={{fontSize: "0.5rem"}}/>}
+                                    text="Returns"
+                                    onClick={() => handleSelectTab("returns")}
                                 />
                                 <SubListItem
-                                    icon={<CircleIcon sx={{ fontSize: "0.5rem" }} />}
-                                    text="Metric 2"
-                                    onClick={() => handleSelectTab("metric-2")}
+                                    icon={<CircleIcon sx={{fontSize: "0.5rem"}}/>}
+                                    text="Risk"
+                                    onClick={() => handleSelectTab("risk")}
+                                />
+                                <SubListItem
+                                    icon={<CircleIcon sx={{fontSize: "0.5rem"}}/>}
+                                    text="Drawdown"
+                                    onClick={() => handleSelectTab("drawdown")}
+                                />
+                                <SubListItem
+                                    icon={<CircleIcon sx={{fontSize: "0.5rem"}}/>}
+                                    text="Skewness"
+                                    onClick={() => handleSelectTab("skewness")}
                                 />
                             </List>
                         )}

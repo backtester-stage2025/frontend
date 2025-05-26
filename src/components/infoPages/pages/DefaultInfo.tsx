@@ -12,7 +12,7 @@ export function DefaultInfo() {
                 <Typography variant="subtitle1" sx={{mt: 2, color: 'text.secondary'}}>
                     Please select a category from the menu to learn more.
                 </Typography>
-                <Typography variant="body2" sx={{mt: 2}}>
+                <Typography variant="body1" sx={{mt: 2}}>
                     These pages provide detailed explanations and examples to help you understand different trading
                     strategies and concepts.
                     Use the navigation menu to explore topics like Moving Average Crossovers or Breakouts.
