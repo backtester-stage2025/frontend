@@ -1,5 +1,5 @@
-import { useLocation } from "react-router-dom";
-import {Grid, Typography, Paper, Divider} from "@mui/material";
+import {useLocation} from "react-router-dom";
+import {Divider, Grid, Paper, Typography} from "@mui/material";
 import CanvasJSReact from "@canvasjs/react-stockcharts";
 import {SimulationResult} from "../../model/simulation/SimulationResult.ts";
 import {UserPortfolio} from "../../model/simulation/UserPortfolio.ts";
@@ -8,7 +8,7 @@ import {Fragment} from "react";
 const CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
 function extractMetrics(result: SimulationResult): Record<string, string> {
-    const { startDate, endDate, brokerName, stockNames, startCapital } = result.stockSimulationRequest;
+    const {startDate, endDate, brokerName, stockNames, startCapital} = result.stockSimulationRequest;
     const portfolios = result.userPortfolios;
     const start = new Date(startDate);
     const end = new Date(endDate);
@@ -63,10 +63,10 @@ function getTotalFees(result: SimulationResult): number {
 
 function getSingleMetricChartOptions(
     label: string,
-    val1: number,
-    val2: number
+    values: number[]
 ) {
-    const minVal = Math.min(val1, val2);
+    const minVal = Math.min(...values);
+    const maxVal = Math.max(...values);
 
     return {
         animationEnabled: true,
@@ -76,7 +76,8 @@ function getSingleMetricChartOptions(
         },
         axisY: {
             title: label,
-            minimum: minVal < 0 ? minVal * 1.5 : 0
+            minimum: minVal < 0 ? minVal * 1.5 : 0,
+            maximum: maxVal > 0 ? maxVal * 1.5 : minVal * -0.2,
         },
         axisX: {
             title: "",
@@ -86,26 +87,17 @@ function getSingleMetricChartOptions(
         toolTip: {
             shared: true
         },
-        data: [
-            {
-                type: "column",
-                name: "Simulation 1",
-                showInLegend: true,
-                dataPointWidth: 80,
-                dataPoints: [{ label: "Comparison", y: val1 }]
-            },
-            {
-                type: "column",
-                name: "Simulation 2",
-                showInLegend: true,
-                dataPointWidth: 80,
-                dataPoints: [{ label: "Comparison", y: val2 }]
-            }
-        ]
+        data: values.map((value, index) => ({
+            type: "column",
+            name: `Simulation ${index + 1}`,
+            showInLegend: true,
+            dataPoints: [{label: "Comparison", y: value}],
+        }))
+
     };
 }
 
-function getNormalizedComparisonChartOptions(result1: SimulationResult, result2: SimulationResult) {
+function getNormalizedComparisonChartOptions(results: Readonly<SimulationResult[]>) {
     const normalize = (portfolios: UserPortfolio[]) => {
         const startValue = portfolios[0]?.totalPortfolioValue || 1;
         return portfolios.map((portfolio, relativeDay) => ({
@@ -114,8 +106,9 @@ function getNormalizedComparisonChartOptions(result1: SimulationResult, result2:
         }));
     };
 
-    const dataPoints1 = normalize(result1.userPortfolios);
-    const dataPoints2 = normalize(result2.userPortfolios);
+    const normalizedPortfolios = results.map(r => normalize(r.userPortfolios));
+    const maxSimulationLength = Math.max(...normalizedPortfolios.map(points=>points.length));
+    const xInterval = Math.ceil(maxSimulationLength / 10);
 
     return {
         animationEnabled: true,
@@ -129,7 +122,7 @@ function getNormalizedComparisonChartOptions(result1: SimulationResult, result2:
         },
         axisX: {
             title: "Simulation Day",
-            interval: Math.ceil(Math.max(dataPoints1.length, dataPoints2.length) / 10), // 10 ticks
+            interval: xInterval,
             labelFormatter: function (e: { value: number }) {
                 return `Day ${e.value}`;
             }
@@ -148,51 +141,47 @@ function getNormalizedComparisonChartOptions(result1: SimulationResult, result2:
                 return `Day ${e.entries[0].dataPoint.x}<br/>` + lines.join("<br/>");
             }
         },
-        data: [
-            {
-                type: "line",
-                name: "Simulation 1",
-                showInLegend: true,
-                dataPoints: dataPoints1
-            },
-            {
-                type: "line",
-                name: "Simulation 2",
-                showInLegend: true,
-                dataPoints: dataPoints2
-            }
-        ]
+        data: normalizedPortfolios.map((dataPoints, index) => ({
+            type: "line",
+            name: `Simulation ${index + 1}`,
+            showInLegend: true,
+            dataPoints: dataPoints
+        }))
     };
 }
 
-interface ComparedSimulations {
-    result1: SimulationResult;
-    result2: SimulationResult;
+interface SimulationResults {
+    results: SimulationResult[]
 }
 
-function MetricsComparison({result1, result2}: Readonly<ComparedSimulations>) {
-    const metrics1 = extractMetrics(result1);
-    const metrics2 = extractMetrics(result2);
+function MetricsComparison({results}: Readonly<SimulationResults>) {
+    if (results.length === 0) {
+        return null;
+    }
+    const metrics = results.map(extractMetrics);
+    const metricKeys = Object.keys(metrics[0]) as (keyof SimulationResult)[];
 
     return (
         <Grid size={{xs: 12}}>
-            <Paper elevation={3} sx={{ padding: 2 }}>
+            <Paper elevation={3} sx={{padding: 2}}>
                 <Typography variant="h6" gutterBottom>
                     Metrics
                 </Typography>
-                <Divider sx={{ mb: 2 }} />
+                <Divider sx={{mb: 2}}/>
                 <Grid container spacing={2}>
-                    {Object.keys(metrics1).map((key) => (
+
+                    {metricKeys.map((key) => (
                         <Fragment key={key}>
                             <Grid size={{xs: 4}}>
                                 <Typography fontWeight="bold">{key}</Typography>
                             </Grid>
-                            <Grid size={{xs: 4}}>
-                                <Typography>{metrics1[key]}</Typography>
-                            </Grid>
-                            <Grid size={{xs: 4}}>
-                                <Typography>{metrics2[key]}</Typography>
-                            </Grid>
+                            {metrics.map((m) => (
+                                <Grid size={{xs: 4}} key={m.id}>
+                                    <Typography>
+                                        {m[key]}
+                                    </Typography>
+                                </Grid>
+                            ))}
                         </Fragment>
                     ))}
                 </Grid>
@@ -201,56 +190,54 @@ function MetricsComparison({result1, result2}: Readonly<ComparedSimulations>) {
     )
 }
 
-function NormalizedPortfolioValues({result1, result2}: Readonly<ComparedSimulations>) {
-    const chartOptions = getNormalizedComparisonChartOptions(result1, result2);
+function NormalizedPortfolioValues({results}: Readonly<SimulationResults>) {
+    const chartOptions = getNormalizedComparisonChartOptions(results);
 
     return (
         <Grid size={{xs: 12}}>
-            <Paper elevation={3} sx={{ padding: 2 }}>
-                <CanvasJSChart options={chartOptions} />
+            <Paper elevation={3} sx={{padding: 2}}>
+                <CanvasJSChart options={chartOptions}/>
             </Paper>
         </Grid>
     )
 }
 
-function ComparisonBarCharts({result1, result2}: Readonly<ComparedSimulations>) {
+function ComparisonBarCharts({results}: Readonly<SimulationResults>) {
     const toDays = (start: Date, end: Date) =>
         Math.floor((new Date(end).getTime() - new Date(start).getTime()) / (1000 * 3600 * 24));
 
     const metrics = [
         {
             label: "Simulation Length (days)",
-            val1: toDays(result1.stockSimulationRequest.startDate, result1.stockSimulationRequest.endDate),
-            val2: toDays(result2.stockSimulationRequest.startDate, result2.stockSimulationRequest.endDate)
+            values: results.map(r => toDays(
+                r.stockSimulationRequest.startDate,
+                r.stockSimulationRequest.endDate
+            )),
         },
         {
             label: "Total Profit Margin (%)",
-            val1: getProfitMargin(result1),
-            val2: getProfitMargin(result2)
+            values: results.map(getProfitMargin)
         },
         {
             label: "Avg Daily Growth (%)",
-            val1: getAverageDailyGrowth(result1),
-            val2: getAverageDailyGrowth(result2)
+            values: results.map(getAverageDailyGrowth)
         },
         {
             label: "Total Transactions",
-            val1: getTransactionCount(result1),
-            val2: getTransactionCount(result2)
+            values: results.map(getTransactionCount)
         },
         {
             label: "Total Fees ($)",
-            val1: getTotalFees(result1),
-            val2: getTotalFees(result2)
+            values: results.map(getTotalFees)
         }
     ];
 
     return (
-        <Grid size={{xs:12}} container spacing={2}>
-            {metrics.map(({ label, val1, val2 }) => (
-                <Grid size={{xs:12, md:6, xl: 4}} key={label}>
-                    <Paper elevation={3} sx={{ padding: 2 }}>
-                        <CanvasJSChart options={getSingleMetricChartOptions(label, val1, val2)} />
+        <Grid size={{xs: 12}} container spacing={2}>
+            {metrics.map(({label, values}) => (
+                <Grid size={{xs: 12, md: 6, xl: 4}} key={label}>
+                    <Paper elevation={3} sx={{padding: 2}}>
+                        <CanvasJSChart options={getSingleMetricChartOptions(label, values)}/>
                     </Paper>
                 </Grid>
             ))}
@@ -260,10 +247,8 @@ function ComparisonBarCharts({result1, result2}: Readonly<ComparedSimulations>) 
 
 export function CompareSimulations() {
     const location = useLocation();
-    const { result1, result2 } = location.state as {
-        result1: SimulationResult;
-        result2: SimulationResult;
-    };
+    const inputState = location.state as SimulationResults;
+    const results = inputState.results;
 
     return (
         <Grid container spacing={2} padding={2}>
@@ -273,9 +258,9 @@ export function CompareSimulations() {
                 </Typography>
             </Grid>
 
-            <MetricsComparison result1={result1} result2={result2} />
-            <NormalizedPortfolioValues result1={result1} result2={result2}/>
-            <ComparisonBarCharts result1={result1} result2={result2}/>
+            <MetricsComparison results={results} />
+            <NormalizedPortfolioValues results={results}/>
+            <ComparisonBarCharts results={results}/>
         </Grid>
     );
 }

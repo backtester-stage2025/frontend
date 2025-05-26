@@ -41,8 +41,7 @@ export function SimulationHistory() {
     const compareSimulations = (simulationResults: SimulationResult[]) => {
         navigate("/compare", {
             state: {
-                result1: simulationResults[0],
-                result2: simulationResults[1]
+                results: simulationResults
             }
         })
     }
