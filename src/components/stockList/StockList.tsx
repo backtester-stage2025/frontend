@@ -1,18 +1,5 @@
 import {useStockData} from "../../hooks/useStockData.ts";
-import {
-    Box,
-    Button,
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogTitle,
-    Grid,
-    Tab,
-    Tabs,
-    TextField,
-    Toolbar,
-    Typography
-} from "@mui/material";
+import {Box, Button, Grid, Tab, Tabs, TextField, Toolbar, Typography} from "@mui/material";
 import {useEffect, useState} from "react";
 import {Loader} from "../util/Loader.tsx";
 import {StockCard} from "./StockCard.tsx";
@@ -20,10 +7,11 @@ import {StockDetails} from "../../model/StockDetails.ts";
 import {ErrorAlert} from "../util/Alerts.tsx";
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import {useAuth} from "../../context/AuthContext.tsx";
-import {CsvUploadDialog} from "./CsvUploadDialog.tsx";
+import {CsvUploadDialog} from "./csv/CsvUploadDialog.tsx";
 import {useDeleteCsv} from "../../hooks/useCsvMutations.ts";
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
+import {DeleteConfirmationDialog} from "./DeleteConfirmationDialog.tsx";
 
 export function StockList() {
     const {isLoading, isError, stockData, error, refetch: refetchStockData} = useStockData();
@@ -184,34 +172,9 @@ export function StockList() {
                 }}
             />
 
-            {/* Delete Confirmation Dialog */}
-            <Dialog
-                open={deleteDialogOpen}
-                onClose={() => !isRunning && setDeleteDialogOpen(false)}
-            >
-                <DialogTitle>Confirm Deletion</DialogTitle>
-                <DialogContent>
-                    <Typography>
-                        Are you sure you want to delete this stock data? This action cannot be undone.
-                    </Typography>
-                    {isErrorDeleteCsv && deleteCsvError && (
-                        <Alert severity="error" sx={{mt: 2}}>
-                            {deleteCsvError.message || "An error occurred during deletion."}
-                        </Alert>
-                    )}
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={() => setDeleteDialogOpen(false)} disabled={isRunning}>Cancel</Button>
-                    <Button
-                        onClick={handleDeleteStock}
-                        color="error"
-                        variant="contained"
-                        disabled={isRunning}
-                    >
-                        {isRunning ? "Deleting..." : "Delete"}
-                    </Button>
-                </DialogActions>
-            </Dialog>
+            <DeleteConfirmationDialog deleteDialogOpen={deleteDialogOpen} setDeleteDialogOpen={setDeleteDialogOpen}
+                                      isRunning={isRunning} isErrorDeleteCsv={isErrorDeleteCsv}
+                                      deleteCsvError={deleteCsvError} handleDeleteStock={handleDeleteStock}/>
 
             {/* Success/Error Snackbar */}
             <Snackbar

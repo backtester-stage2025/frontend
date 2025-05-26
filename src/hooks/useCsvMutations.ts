@@ -7,12 +7,13 @@ type UploadCsvVariables = {
     ticker: string;
     companyName: string;
     currencyType: string;
+    overwrite: boolean;
 }
 
 export function useUploadCsv() {
     const {mutate: sendRequest, isPending: isRunning, isError, error} = useMutation({
-        mutationFn: ({file, exchange, ticker, companyName, currencyType}: UploadCsvVariables) =>
-            uploadCsv(file, exchange, ticker, companyName, currencyType)
+        mutationFn: ({file, exchange, ticker, companyName, currencyType, overwrite}: UploadCsvVariables) =>
+            uploadCsv(file, exchange, ticker, companyName, currencyType, overwrite)
     });
 
     return {
