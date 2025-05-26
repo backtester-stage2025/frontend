@@ -15,9 +15,10 @@ import {
     TextField
 } from "@mui/material";
 import {ChangeEvent, FocusEvent, useState} from "react";
-import {useUploadCsv} from "../../hooks/useCsvMutations.ts";
-import {CurrencyType} from "../../model/StockDetails.ts";
+import {useUploadCsv} from "../../../hooks/useCsvMutations.ts";
+import {CurrencyType} from "../../../model/StockDetails.ts";
 import {SelectChangeEvent} from "@mui/material/Select";
+import {OverwriteTableDialog} from "./OverwriteTableDialog.tsx";
 
 type CsvUploadDialogProps = {
     open: boolean;
@@ -56,6 +57,9 @@ export function CsvUploadDialog({open, onClose}: Readonly<CsvUploadDialogProps>)
     });
     const [successMsg, setSuccessMsg] = useState("");
     const [showError, setShowError] = useState(false);
+
+    const [showOverwriteDialog, setShowOverwriteDialog] = useState(false);
+    const [lastFormData, setLastFormData] = useState<typeof form | null>(null);
 
     const validateField = (name: string, value: string | File | null): string => {
         switch (name) {
@@ -147,15 +151,18 @@ export function CsvUploadDialog({open, onClose}: Readonly<CsvUploadDialogProps>)
 
     const handleSubmit = () => {
         if (!validateForm()) return;
-
         if (!form.file) return;
+
+        setLastFormData(form);
+
         sendRequest(
             {
                 file: form.file,
                 exchange: form.exchange,
                 ticker: form.ticker,
                 companyName: form.companyName,
-                currencyType: form.currencyType
+                currencyType: form.currencyType,
+                overwrite: false
             },
             {
                 onSuccess: (response) => {
@@ -165,10 +172,48 @@ export function CsvUploadDialog({open, onClose}: Readonly<CsvUploadDialogProps>)
                     setErrors({exchange: "", ticker: "", companyName: "", file: ""});
                     onClose();
                 },
+                onError: (error) => {
+                    console.log("error", error);
+                    if (error?.message.includes("already exists. Please use a different name.")) {
+                        setShowOverwriteDialog(true);
+                    } else {
+                        setShowError(true);
+                    }
+                }
+            }
+        );
+    };
+
+    const handleOverwriteConfirm = () => {
+        setShowOverwriteDialog(false);
+        if (!lastFormData?.file) return;
+
+        sendRequest(
+            {
+                file: lastFormData.file,
+                exchange: lastFormData.exchange,
+                ticker: lastFormData.ticker,
+                companyName: lastFormData.companyName,
+                currencyType: lastFormData.currencyType,
+                overwrite: true
+            },
+            {
+                onSuccess: (response) => {
+                    setSuccessMsg(`Successfully replaced table with ${response.filename} containing ${response.dataPointsCount} data points.`);
+                    setForm({exchange: "", ticker: "", companyName: "", currencyType: CurrencyType.EUR, file: null});
+                    setTouched({exchange: false, ticker: false, companyName: false, file: false});
+                    setErrors({exchange: "", ticker: "", companyName: "", file: ""});
+                    onClose();
+                },
                 onError: () => setShowError(true)
             }
         );
     };
+
+    const handleOverwriteCancel = () => {
+        setShowOverwriteDialog(false);
+    };
+
 
     const handleCloseSnackbar = () => setSuccessMsg("");
     const handleCloseError = () => setShowError(false);
@@ -264,6 +309,11 @@ export function CsvUploadDialog({open, onClose}: Readonly<CsvUploadDialogProps>)
                     </Button>
                 </DialogActions>
             </Dialog>
+            <OverwriteTableDialog
+                open={showOverwriteDialog}
+                onConfirm={handleOverwriteConfirm}
+                onCancel={handleOverwriteCancel}
+            />
             <Snackbar
                 open={!!successMsg}
                 autoHideDuration={6000}
