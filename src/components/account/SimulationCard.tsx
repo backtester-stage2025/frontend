@@ -10,6 +10,7 @@ import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import {calculateReturnPercentage} from "../../services/formatService.ts";
 import {SimulationSummary} from "../../model/simulation/SimulationSummary.ts";
 import {UUID} from "../../model/UUID.ts";
+import ShareIcon from '@mui/icons-material/Share';
 import {CompareCheckbox} from "./CompareCheckbox.tsx";
 
 interface SimulationCardProps {
@@ -186,6 +187,7 @@ export function SimulationCard({
                             size="small"
                             variant="outlined"
                             color="secondary"
+                            startIcon={<ShareIcon/>}
                             onClick={() => shareSimulation(simulation.id)}
                             sx={{fontWeight: 'medium'}}
                         >
