@@ -1,3 +1,8 @@
+const simulationTypeInfo = "This type defines the main strategy of the simulation.<br/><br/>\n" +
+    "<b>Buy and hold</b>: Buy as many stocks as you can and hold them until your indicators tell you to sell.<br/></br>" +
+    "<b>Risk-based (dynamic)</b>: Instead of investing everything, buy and sell dynamically to keep value deviations below a set threshold.</br></br>" +
+    "<b>Risk-based (static)</b>: To minimize transaction costs, don't buy and sell dynamically. Calculate the risk when buying and hold the stocks until it's time to sell.";
+
 export const TOOLTIP_MESSAGES = {
     movingAverageControls: {
         shortMATitle: "Short Moving Average Period",
@@ -7,7 +12,7 @@ export const TOOLTIP_MESSAGES = {
     },
     simulation: {
         simulationTypeTitle: "Simulation Type",
-        simulationTypeInfo: "This type defines the main strategy of the simulation.",
+        simulationTypeInfo: simulationTypeInfo,
         riskToleranceTitle: "Risk Tolerance",
         riskToleranceInfo: "The risk tolerance is used to calculate the maximum number of shares to buy for a stock," +
             " ensuring the investment aligns with your acceptable risk level based on the stock's volatility.",

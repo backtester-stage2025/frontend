@@ -22,9 +22,11 @@ export function TooltipHtml({title, description, link, children}: Readonly<Toolt
                             {title}
                         </Typography>
                     )}
-                    <Typography variant="body2" sx={{fontSize: '0.75rem'}}>
-                        {description}
-                    </Typography>
+                    <Typography
+                        variant="body2"
+                        sx={{ fontSize: '0.75rem' }}
+                        dangerouslySetInnerHTML={{ __html: description }}
+                    />
                 </div>
             }
             arrow

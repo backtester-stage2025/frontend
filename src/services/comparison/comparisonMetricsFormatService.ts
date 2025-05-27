@@ -33,7 +33,7 @@ export function extractResults(result: SimulationResult): Record<string, string>
     let transactionCount = 0;
     let totalFees = 0;
     portfolios.forEach(p => {
-        transactionCount += p.sharesBought.length;
+        transactionCount += p.sharesBought.filter(tr=>tr.totalSharesBought != 0).length;
         totalFees += p.sharesBought.reduce((sum, tx) => sum + tx.transactionFee, 0);
     });
 
@@ -69,5 +69,7 @@ function positionAdjustment(request: SimulationRequest) {
             return "Buy and Hold";
         case  SimulationTypes.RISK_BASED:
             return `Risk based (${request.riskTolerance}% risk)`;
+        case  SimulationTypes.STATIC:
+            return `Static (${request.riskTolerance}% risk)`;
     }
 }
