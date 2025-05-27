@@ -1,4 +1,16 @@
-import {Box, Button, Card, CardContent, Chip, Divider, Grid, Stack, Typography} from "@mui/material";
+import {
+    Box,
+    Button,
+    Card,
+    CardContent,
+    Checkbox,
+    Chip,
+    Divider,
+    FormControlLabel,
+    Grid,
+    Stack,
+    Typography
+} from "@mui/material";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import {format} from "date-fns";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
@@ -9,13 +21,74 @@ import ArrowRightAltIcon from "@mui/icons-material/ArrowRightAlt";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import {calculateReturnPercentage} from "../../services/formatService.ts";
 import {SimulationSummary} from "../../model/simulation/SimulationSummary.ts";
+import {ChangeEvent} from "react";
 
 interface SimulationCardProps {
     simulation: SimulationSummary;
     viewSimulationDetails: (simulation: SimulationSummary) => void;
+    isSelected: boolean;
+    addSimulation: (result: SimulationSummary) => void;
+    removeSimulation: (result: SimulationSummary) => void;
+    disableSelection: boolean;
 }
 
-export function SimulationCard({simulation, viewSimulationDetails}: Readonly<SimulationCardProps>) {
+interface CompareCheckboxProps {
+    disabled: boolean;
+    checked: boolean;
+    onSelect: () => void;
+    onUnselect: () => void;
+}
+
+function CompareCheckbox(props: Readonly<CompareCheckboxProps>) {
+    return <FormControlLabel
+        control={
+            <Checkbox
+                size="small"
+                disabled={props.disabled}
+                checked={props.checked}
+                onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                    if (e.target.checked) {
+                        props.onSelect()
+                    } else {
+                        props.onUnselect()
+                    }
+                }}
+                sx={{
+                    p: 0.5,
+                    mr: 0.5,
+                }}
+            />
+        }
+        label={
+            <Typography
+                variant="caption"
+                sx={{
+                    fontWeight: "normal",
+                    mr: 1,
+                    fontSize: "1.1rem",
+                    color: props.disabled ? "text.disabled" : "text.secondary",
+                }}
+            >
+                Compare
+            </Typography>
+        }
+        sx={{
+            mb: 1,
+            ml: 0.5,
+        }}
+        labelPlacement={"start"}
+    />;
+}
+
+export function SimulationCard({
+                                   simulation,
+                                   viewSimulationDetails,
+                                   isSelected,
+                                   addSimulation,
+                                   removeSimulation,
+                                   disableSelection
+                               }
+                               : Readonly<SimulationCardProps>) {
 
     const returnPercentage = calculateReturnPercentage(simulation);
     const finalValue = simulation.latestPortfolioValue || 0;
@@ -39,26 +112,35 @@ export function SimulationCard({simulation, viewSimulationDetails}: Readonly<Sim
             }}
         >
             <CardContent sx={{p: 2.5, "&:last-child": {pb: 0.5}}}>
-                <Box display="flex" justifyContent="space-between" alignItems="center" mb={1.5}>
+                <Box display="flex" justifyContent="space-between" alignItems="flex-start" mb={1.5}>
                     <Box>
                         <Typography variant="subtitle1" fontWeight="bold" mb={0.5}>
                             Stocks:
                         </Typography>
                         <Stack spacing={0.5}>
-                            {simulation.stockSimulationRequest.stockNames.map((stock, index) => (
-                                <Typography key={index} variant="body2" sx={{display: 'flex', alignItems: 'center'}}>
+                            {simulation.stockSimulationRequest.stockNames.map((stock) => (
+                                <Typography key={stock} variant="body2" sx={{display: 'flex', alignItems: 'center'}}>
                                     • {stock}
                                 </Typography>
                             ))}
                         </Stack>
                     </Box>
-                    <Chip
-                        size="small"
-                        icon={<CalendarTodayIcon/>}
-                        label={format(new Date(simulation.simulationDate), 'PPP p')}
-                        color="primary"
-                        variant="outlined"
-                    />
+                    <Stack spacing={1} alignItems="flex-end">
+                        <CompareCheckbox
+                            disabled={disableSelection}
+                            checked={isSelected}
+                            onSelect={() => addSimulation(simulation)}
+                            onUnselect={() => removeSimulation(simulation)}
+                        />
+                        <Chip
+                            size="small"
+                            icon={<CalendarTodayIcon fontSize="small"/>}
+                            label={format(new Date(simulation.simulationDate), 'PPP p')}
+                            color="primary"
+                            variant="outlined"
+                            sx={{mb: 1, p: 0.5}}
+                        />
+                    </Stack>
                 </Box>
 
                 <Divider sx={{mb: 2}}/>

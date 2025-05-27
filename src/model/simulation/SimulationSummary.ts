@@ -1,7 +1,7 @@
 import {SimulationRequest} from "../request/SimulationRequest.ts";
 
 export interface SimulationSummary {
-    simulationId: string;
+    id: string;
     simulationDate: Date;
     stockSimulationRequest: SimulationRequest;
     latestPortfolioValue: number;
