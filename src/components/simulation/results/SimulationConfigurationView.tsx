@@ -1,71 +1,23 @@
-import {
-    Box,
-    Card,
-    CardContent,
-    Chip,
-    Divider,
-    Grid,
-    Typography,
-    List,
-    ListItem,
-    ListItemText
-} from "@mui/material";
+import {Box, Card, CardContent, Chip, Divider, Grid, List, ListItem, ListItemText, Typography} from "@mui/material";
 import {SimulationRequest} from "../../../model/request/SimulationRequest.ts";
-import {IndicatorType} from "../../../model/request/IndicatorType.ts";
-import {Weekday} from "../../../model/Weekday.ts";
-import {SimulationTypes} from "../../../model/request/SimulationTypes.ts";
+import {
+    formatDateToLocalDateString,
+    formatEuro,
+    getIndicatorTypeLabel,
+    getSimulationTypeLabel,
+    getWeekdayLabel
+} from "../../../services/formatService.ts";
 
 interface SimulationConfigurationViewProps {
     simulationRequest: SimulationRequest;
 }
-
-const formatDate = (date: Date): string => {
-    return new Date(date).toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-    });
-};
-
-const formatCurrency = (amount: number): string => {
-    return new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'USD'
-    }).format(amount);
-};
-
-const getSimulationTypeLabel = (type: SimulationTypes): string => {
-    switch (type) {
-        case SimulationTypes.RISK_BASED:
-            return "Risk Based";
-        case SimulationTypes.BUY_AND_HOLD:
-            return "Buy and Hold";
-        default:
-            return type;
-    }
-};
-
-const getIndicatorTypeLabel = (type: IndicatorType): string => {
-    switch (type) {
-        case IndicatorType.MOVING_AVERAGE_CROSSOVER:
-            return "Moving Average Crossover";
-        case IndicatorType.BREAKOUT:
-            return "Breakout";
-        default:
-            return type;
-    }
-};
-
-const getWeekdayLabel = (weekday: Weekday): string => {
-    return weekday.charAt(0) + weekday.slice(1).toLowerCase();
-};
 
 export function SimulationConfigurationView({simulationRequest}: Readonly<SimulationConfigurationViewProps>) {
     return (
         <Box sx={{p: 2}}>
             <Grid container spacing={3}>
                 {/* Basic Configuration */}
-                <Grid size={{xs:6, md:4}}>
+                <Grid size={{xs: 6, md: 4}}>
                     <Card>
                         <CardContent>
                             <Typography variant="h6" gutterBottom>
@@ -87,7 +39,7 @@ export function SimulationConfigurationView({simulationRequest}: Readonly<Simula
                                 <ListItem>
                                     <ListItemText
                                         primary="Start Capital"
-                                        secondary={formatCurrency(simulationRequest.startCapital)}
+                                        secondary={formatEuro(simulationRequest.startCapital)}
                                     />
                                 </ListItem>
                                 {simulationRequest.riskTolerance !== undefined && (
@@ -110,7 +62,7 @@ export function SimulationConfigurationView({simulationRequest}: Readonly<Simula
                 </Grid>
 
                 {/* Date Range */}
-                <Grid size={{xs:6, md:4}}>
+                <Grid size={{xs: 6, md: 4}}>
                     <Card>
                         <CardContent>
                             <Typography variant="h6" gutterBottom>
@@ -120,13 +72,13 @@ export function SimulationConfigurationView({simulationRequest}: Readonly<Simula
                                 <ListItem>
                                     <ListItemText
                                         primary="Start Date"
-                                        secondary={formatDate(simulationRequest.startDate)}
+                                        secondary={formatDateToLocalDateString(new Date(simulationRequest.startDate))}
                                     />
                                 </ListItem>
                                 <ListItem>
                                     <ListItemText
                                         primary="End Date"
-                                        secondary={formatDate(simulationRequest.endDate)}
+                                        secondary={formatDateToLocalDateString(new Date(simulationRequest.endDate))}
                                     />
                                 </ListItem>
                                 <ListItem>
@@ -141,7 +93,7 @@ export function SimulationConfigurationView({simulationRequest}: Readonly<Simula
                 </Grid>
 
                 {/* Indicators */}
-                <Grid size={{xs:6, md:4}}>
+                <Grid size={{xs: 6, md: 4}}>
                     <Card>
                         <CardContent>
                             <Typography variant="h6" gutterBottom>
@@ -187,7 +139,7 @@ export function SimulationConfigurationView({simulationRequest}: Readonly<Simula
                 </Grid>
 
                 {/* Stocks */}
-                <Grid size={{xs:12, md:6}}>
+                <Grid size={{xs: 12, md: 6}}>
                     <Card>
                         <CardContent>
                             <Typography variant="h6" gutterBottom>
@@ -203,7 +155,7 @@ export function SimulationConfigurationView({simulationRequest}: Readonly<Simula
                 </Grid>
 
                 {/* Trading Days */}
-                <Grid size={{xs:12, md:6}}>
+                <Grid size={{xs: 12, md: 6}}>
                     <Card>
                         <CardContent>
                             <Typography variant="h6" gutterBottom>

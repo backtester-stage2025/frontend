@@ -1,27 +1,31 @@
 import {Alert, Box, Button, CircularProgress, Grid, Paper, Typography} from "@mui/material";
 import HistoryIcon from "@mui/icons-material/History";
-import {useShareSimulation, useSimulationHistory} from "../../hooks/useSimulationHistory.ts";
+import {useSimulationHistory} from "../../hooks/useSimulationHistory.ts";
 import {useNavigate} from "react-router-dom";
 import {SimulationCard} from "./SimulationCard.tsx";
 import {SimulationSummary} from "../../model/simulation/SimulationSummary.ts";
 import {useState} from "react";
 import CompareArrowsIcon from '@mui/icons-material/CompareArrows';
 import {UUID} from "../../model/UUID.ts";
+import {ShareSimulationDialog} from "../simulation/ShareSimulationDialog.tsx";
+
+const MAX_SELECT_LENGTH = 5;
+const MIN_SELECT_LENGTH = 2;
 
 export function SimulationHistory() {
     const {isLoading, isError, simulationHistory} = useSimulationHistory();
-    const {
-        sendRequest: shareSimulationRequest,
-        isRunning: isSharing,
-        error: sharingError
-    } = useShareSimulation();
 
     const navigate = useNavigate();
 
-    const MAX_SELECT_LENGTH = 5;
-    const MIN_SELECT_LENGTH = 2;
-
     const [selectedSimulationsForComparison, setSelectedSimulationsForComparison] = useState<SimulationSummary[]>([]);
+    const [shareDialogOpen, setShareDialogOpen] = useState(false);
+    const [simulationIdForShare, setSimulationIdForShare] = useState<string | null>(null)
+
+    const handleShareSimulation = (simulationId: UUID) => {
+        if (!simulationId) return;
+        setSimulationIdForShare(simulationId);
+        setShareDialogOpen(true);
+    };
 
     const selectSimulationForComparison = (simulation: SimulationSummary) => {
         if (selectedSimulationsForComparison.length < MAX_SELECT_LENGTH) {
@@ -34,7 +38,7 @@ export function SimulationHistory() {
     }
 
     const viewSimulationDetails = (simulationResult: SimulationSummary) => {
-        navigate(`/strategy-tester?simulationId=${simulationResult.id}&allowOpenForm=false`, {});
+        navigate(`/strategy-tester?id=${simulationResult.id}&allowOpenForm=false`, {});
     };
 
     const compareSimulations = (simulationResults: SimulationSummary[]) => {
@@ -43,10 +47,6 @@ export function SimulationHistory() {
                 results: simulationResults
             }
         })
-    }
-
-    const shareSimulation = (id: UUID) => {
-        shareSimulationRequest(id as string);
     }
 
     return (
@@ -86,7 +86,7 @@ export function SimulationHistory() {
                         addSimulation={selectSimulationForComparison}
                         removeSimulation={unselectSimulationForComparison}
                         disableSelection={selectedSimulationsForComparison.length === MAX_SELECT_LENGTH && !selectedSimulationsForComparison.find(s => s.id === simulation.id)}
-                        shareSimulation={shareSimulation}
+                        shareSimulation={handleShareSimulation}
                     />
                 )}
                 {selectedSimulationsForComparison.length >= MIN_SELECT_LENGTH && (
@@ -103,6 +103,8 @@ export function SimulationHistory() {
                     </Box>
                 )}
             </Paper>
+
+            <ShareSimulationDialog shareDialogOpen={shareDialogOpen} setShareDialogOpen={setShareDialogOpen} simulationId={simulationIdForShare}/>
         </Grid>
     )
 }

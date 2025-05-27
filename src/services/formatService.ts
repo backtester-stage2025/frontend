@@ -1,5 +1,8 @@
 import {StockDetails} from "../model/StockDetails.ts";
 import {SimulationSummary} from "../model/simulation/SimulationSummary.ts";
+import {SimulationTypes} from "../model/request/SimulationTypes.ts";
+import {IndicatorType} from "../model/request/IndicatorType.ts";
+import {Weekday} from "../model/Weekday.ts";
 
 export function formatDateToLocalDateString(date: Date): string {
     return date.toISOString().split('T')[0];
@@ -53,4 +56,30 @@ export function calculateReturnPercentage(simulation: SimulationSummary) {
 
 export function getFieldNameStockDetails(sd: StockDetails) {
     return `${sd.companyName} (${sd.officialName})`
+}
+
+export function getSimulationTypeLabel(type: SimulationTypes) {
+    switch (type) {
+        case SimulationTypes.RISK_BASED:
+            return "Risk Based";
+        case SimulationTypes.BUY_AND_HOLD:
+            return "Buy and Hold";
+        default:
+            return type;
+    }
+}
+
+export function getIndicatorTypeLabel(type: IndicatorType) {
+    switch (type) {
+        case IndicatorType.MOVING_AVERAGE_CROSSOVER:
+            return "Moving Average Crossover";
+        case IndicatorType.BREAKOUT:
+            return "Breakout";
+        default:
+            return type;
+    }
+}
+
+export function getWeekdayLabel(weekday: Weekday) {
+    return weekday.charAt(0) + weekday.slice(1).toLowerCase();
 }

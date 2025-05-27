@@ -9,10 +9,10 @@ import {useStartSimulation} from "../../hooks/useStartSimulation.ts";
 import {SimulationRequest} from "../../model/request/SimulationRequest.ts";
 import {SimulationDialog} from "./form/SimulationDialog.tsx";
 import {useSearchParams} from "react-router-dom";
-import {useGetSimulationById, useShareSimulation} from "../../hooks/useSimulationHistory.ts";
+import {useGetSimulationById} from "../../hooks/useSimulationHistory.ts";
 import {UUID} from "../../model/UUID.ts";
 import {useAuth} from "../../context/AuthContext.tsx";
-import {ShareSimulationDialog} from "./results/ShareSimulationDialog.tsx";
+import {ShareSimulationDialog} from "./ShareSimulationDialog.tsx";
 import {SimulationTabs} from "./results/SimulationTabs.tsx";
 
 export function Simulation() {
@@ -27,11 +27,7 @@ export function Simulation() {
         isLoading: isLoadingSimulation,
         simulation,
     } = useGetSimulationById(simulationId);
-    const {
-        sendRequest: shareSimulation,
-        isRunning: isSharing,
-        error: sharingError
-    } = useShareSimulation();
+
     const {sendRequest, isRunning, isError, error} = useStartSimulation();
 
     const [isDialogOpen, setIsDialogOpen] = useState(simulationId == null);
@@ -45,8 +41,6 @@ export function Simulation() {
     const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">("success");
 
     const [shareDialogOpen, setShareDialogOpen] = useState(false);
-    const [shareUrl, setShareUrl] = useState("");
-    const [showShareUrl, setShowShareUrl] = useState(false);
 
     useEffect(() => {
         if (simulation) {
@@ -106,47 +100,6 @@ export function Simulation() {
         });
     };
 
-    const handleShareSimulation = () => {
-        if (!simulationId) return;
-        setShareDialogOpen(true);
-        setShowShareUrl(false);
-    };
-
-    const confirmShare = () => {
-        if (!simulationId) return;
-
-        shareSimulation(simulationId, {
-            onSuccess: () => {
-                const url = `${window.location.origin}/strategy-tester?id=${simulationId}&openForm=false`;
-                setShareUrl(url);
-                setShowShareUrl(true);
-
-                setSnackbarMessage("Simulation shared successfully!");
-                setSnackbarSeverity("success");
-                setSnackbarOpen(true);
-            },
-            onError: () => {
-                setSnackbarMessage(sharingError?.message ?? "Failed to share simulation. Please try again.");
-                setSnackbarSeverity("error");
-                setSnackbarOpen(true);
-                setShareDialogOpen(false);
-            }
-        });
-    };
-
-    const copyToClipboard = async () => {
-        await navigator.clipboard.writeText(shareUrl);
-        setSnackbarMessage("URL copied to clipboard!");
-        setSnackbarSeverity("success");
-        setSnackbarOpen(true)
-    };
-
-    const closeShareDialog = () => {
-        setShareDialogOpen(false);
-        setShowShareUrl(false);
-        setShareUrl("");
-    };
-
     const handleToggleFilter = (event: ChangeEvent<HTMLInputElement>) => {
         setShowOnlyTradesDays(event.target.checked);
     };
@@ -154,6 +107,11 @@ export function Simulation() {
     if (isRunning) {
         return <Loader message="Running simulation..."/>;
     }
+
+    const handleShareSimulation = () => {
+        if (!simulationId) return;
+        setShareDialogOpen(true);
+    };
 
     return (
         <Box sx={{width: "100%", maxWidth: 1200, mx: "auto", p: 3}}>
@@ -167,7 +125,6 @@ export function Simulation() {
                                 <Tooltip title="Share this simulation">
                                     <IconButton
                                         onClick={handleShareSimulation}
-                                        disabled={isSharing}
                                         color="primary"
                                         size="large"
                                     >
@@ -196,9 +153,8 @@ export function Simulation() {
                 </>
             }
 
-            <ShareSimulationDialog shareDialogOpen={shareDialogOpen} closeShareDialog={closeShareDialog}
-                                   showShareUrl={showShareUrl} shareUrl={shareUrl} copyToClipboard={copyToClipboard}
-                                   confirmShare={confirmShare} isSharing={isSharing}/>
+            <ShareSimulationDialog shareDialogOpen={shareDialogOpen} setShareDialogOpen={setShareDialogOpen}
+                                   simulationId={simulationId as string}/>
 
             {(result || isRunning || isLoadingReport || isLoadingSimulation) && (
                 <SimulationTabs isRunning={isRunning} result={result}

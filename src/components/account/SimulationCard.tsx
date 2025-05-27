@@ -1,16 +1,4 @@
-import {
-    Box,
-    Button,
-    Card,
-    CardContent,
-    Checkbox,
-    Chip,
-    Divider,
-    FormControlLabel,
-    Grid,
-    Stack,
-    Typography
-} from "@mui/material";
+import {Box, Button, Card, CardContent, Chip, Divider, Grid, Stack, Typography} from "@mui/material";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import {format} from "date-fns";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
@@ -21,8 +9,8 @@ import ArrowRightAltIcon from "@mui/icons-material/ArrowRightAlt";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import {calculateReturnPercentage} from "../../services/formatService.ts";
 import {SimulationSummary} from "../../model/simulation/SimulationSummary.ts";
-import {ChangeEvent} from "react";
 import {UUID} from "../../model/UUID.ts";
+import {CompareCheckbox} from "./CompareCheckbox.tsx";
 
 interface SimulationCardProps {
     simulation: SimulationSummary;
@@ -34,54 +22,6 @@ interface SimulationCardProps {
     shareSimulation: (id: UUID) => void;
 }
 
-interface CompareCheckboxProps {
-    disabled: boolean;
-    checked: boolean;
-    onSelect: () => void;
-    onUnselect: () => void;
-}
-
-function CompareCheckbox(props: Readonly<CompareCheckboxProps>) {
-    return <FormControlLabel
-        control={
-            <Checkbox
-                size="small"
-                disabled={props.disabled}
-                checked={props.checked}
-                onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                    if (e.target.checked) {
-                        props.onSelect()
-                    } else {
-                        props.onUnselect()
-                    }
-                }}
-                sx={{
-                    p: 0.5,
-                    mr: 0.5,
-                }}
-            />
-        }
-        label={
-            <Typography
-                variant="caption"
-                sx={{
-                    fontWeight: "normal",
-                    mr: 1,
-                    fontSize: "1.1rem",
-                    color: props.disabled ? "text.disabled" : "text.secondary",
-                }}
-            >
-                Compare
-            </Typography>
-        }
-        sx={{
-            mb: 1,
-            ml: 0.5,
-        }}
-        labelPlacement={"start"}
-    />;
-}
-
 export function SimulationCard({
                                    simulation,
                                    viewSimulationDetails,
@@ -90,9 +30,7 @@ export function SimulationCard({
                                    removeSimulation,
                                    disableSelection,
                                    shareSimulation
-                               }
-                               : Readonly<SimulationCardProps>) {
-
+                               }: Readonly<SimulationCardProps>) {
     const returnPercentage = calculateReturnPercentage(simulation);
     const finalValue = simulation.latestPortfolioValue || 0;
     const startCapital = simulation.stockSimulationRequest.startCapital;
@@ -233,16 +171,27 @@ export function SimulationCard({
                             {simulation.totalPortfolioCount} days simulated
                         </Typography>
                     </Box>
-                    <Button
-                        size="small"
-                        variant="contained"
-                        color={isPositiveReturn ? "success" : "primary"}
-                        startIcon={<TrendingUpIcon/>}
-                        onClick={() => viewSimulationDetails(simulation)}
-                        sx={{fontWeight: 'medium'}}
-                    >
-                        View Details
-                    </Button>
+                    <Stack direction="row" spacing={1}>
+                        <Button
+                            size="small"
+                            variant="contained"
+                            color={isPositiveReturn ? "success" : "primary"}
+                            startIcon={<TrendingUpIcon/>}
+                            onClick={() => viewSimulationDetails(simulation)}
+                            sx={{fontWeight: 'medium'}}
+                        >
+                            View Details
+                        </Button>
+                        <Button
+                            size="small"
+                            variant="outlined"
+                            color="secondary"
+                            onClick={() => shareSimulation(simulation.id)}
+                            sx={{fontWeight: 'medium'}}
+                        >
+                            Share
+                        </Button>
+                    </Stack>
                 </Box>
             </CardContent>
         </Card>
