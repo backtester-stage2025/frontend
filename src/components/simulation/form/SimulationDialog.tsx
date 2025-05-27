@@ -24,7 +24,7 @@ import {WeekdaySelector} from "./controller/WeekdaySelector.tsx";
 import {Weekday} from "../../../model/Weekday.ts";
 import {StockDetails} from "../../../model/StockDetails.ts";
 import {getFieldNameStockDetails} from "../../../services/formatService.ts";
-import { TOOLTIP_MESSAGES } from "../../../constants/tooltipMessages.ts";
+import {TOOLTIP_MESSAGES} from "../../../constants/tooltipMessages.ts";
 
 interface BuyAndHoldSimulationProps {
     isOpen: boolean;
@@ -108,7 +108,7 @@ export function SimulationDialog({
         },
         {
             name: "riskTolerance", type: "number", placeholder: "Risk Tolerance (%)", required: false,
-            shouldRender: simType === SimulationTypes.RISK_BASED,
+            shouldRender: simType === SimulationTypes.RISK_BASED || simType === SimulationTypes.STATIC,
             tooltip: {
                 title: TOOLTIP_MESSAGES.simulation.riskToleranceTitle,
                 description: TOOLTIP_MESSAGES.simulation.riskToleranceInfo

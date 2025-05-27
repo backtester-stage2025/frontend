@@ -50,7 +50,7 @@ export const simulationRequestSchema = z.object({
         message: "End Date must be after Start Date",
     })
     .superRefine((data, ctx) => {
-        if (data.simulationType === SimulationTypes.RISK_BASED) {
+        if (data.simulationType === SimulationTypes.RISK_BASED || data.simulationType === SimulationTypes.STATIC) {
             if (data.riskTolerance === undefined) {
                 ctx.addIssue({
                     path: ["riskTolerance"],
