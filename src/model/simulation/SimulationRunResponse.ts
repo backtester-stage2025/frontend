@@ -1,7 +1,8 @@
 import {UserPortfolio} from "./UserPortfolio.ts";
+import {UUID} from "../UUID.ts";
 
 export interface SimulationRunResponse {
-    simulationId: string;
+    simulationId: UUID;
     userPortfolios: UserPortfolio[];
     saveSuccessful: boolean
 }

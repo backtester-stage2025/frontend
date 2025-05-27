@@ -1,14 +1,20 @@
 import {Alert, Box, Button, CircularProgress, Grid, Paper, Typography} from "@mui/material";
 import HistoryIcon from "@mui/icons-material/History";
-import {useSimulationHistory} from "../../hooks/useSimulationHistory.ts";
+import {useShareSimulation, useSimulationHistory} from "../../hooks/useSimulationHistory.ts";
 import {useNavigate} from "react-router-dom";
 import {SimulationCard} from "./SimulationCard.tsx";
 import {SimulationSummary} from "../../model/simulation/SimulationSummary.ts";
 import {useState} from "react";
 import CompareArrowsIcon from '@mui/icons-material/CompareArrows';
+import {UUID} from "../../model/UUID.ts";
 
 export function SimulationHistory() {
     const {isLoading, isError, simulationHistory} = useSimulationHistory();
+    const {
+        sendRequest: shareSimulationRequest,
+        isRunning: isSharing,
+        error: sharingError
+    } = useShareSimulation();
 
     const navigate = useNavigate();
 
@@ -28,8 +34,7 @@ export function SimulationHistory() {
     }
 
     const viewSimulationDetails = (simulationResult: SimulationSummary) => {
-        navigate(`/strategy-tester?simulationId=${simulationResult.id}&allowOpenForm=false`, {
-        });
+        navigate(`/strategy-tester?simulationId=${simulationResult.id}&allowOpenForm=false`, {});
     };
 
     const compareSimulations = (simulationResults: SimulationSummary[]) => {
@@ -38,6 +43,10 @@ export function SimulationHistory() {
                 results: simulationResults
             }
         })
+    }
+
+    const shareSimulation = (id: UUID) => {
+        shareSimulationRequest(id as string);
     }
 
     return (
@@ -77,6 +86,7 @@ export function SimulationHistory() {
                         addSimulation={selectSimulationForComparison}
                         removeSimulation={unselectSimulationForComparison}
                         disableSelection={selectedSimulationsForComparison.length === MAX_SELECT_LENGTH && !selectedSimulationsForComparison.find(s => s.id === simulation.id)}
+                        shareSimulation={shareSimulation}
                     />
                 )}
                 {selectedSimulationsForComparison.length >= MIN_SELECT_LENGTH && (
@@ -85,8 +95,8 @@ export function SimulationHistory() {
                             variant="contained"
                             color="secondary"
                             onClick={() => compareSimulations(selectedSimulationsForComparison)}
-                            startIcon={<CompareArrowsIcon />}
-                            size = {"large"}
+                            startIcon={<CompareArrowsIcon/>}
+                            size={"large"}
                         >
                             Compare Simulations
                         </Button>

@@ -22,6 +22,7 @@ import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import {calculateReturnPercentage} from "../../services/formatService.ts";
 import {SimulationSummary} from "../../model/simulation/SimulationSummary.ts";
 import {ChangeEvent} from "react";
+import {UUID} from "../../model/UUID.ts";
 
 interface SimulationCardProps {
     simulation: SimulationSummary;
@@ -30,6 +31,7 @@ interface SimulationCardProps {
     addSimulation: (result: SimulationSummary) => void;
     removeSimulation: (result: SimulationSummary) => void;
     disableSelection: boolean;
+    shareSimulation: (id: UUID) => void;
 }
 
 interface CompareCheckboxProps {
@@ -86,7 +88,8 @@ export function SimulationCard({
                                    isSelected,
                                    addSimulation,
                                    removeSimulation,
-                                   disableSelection
+                                   disableSelection,
+                                   shareSimulation
                                }
                                : Readonly<SimulationCardProps>) {
 

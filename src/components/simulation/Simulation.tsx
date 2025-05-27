@@ -1,28 +1,28 @@
-import {ChangeEvent, SyntheticEvent, useEffect, useState} from "react";
+import {ChangeEvent, useEffect, useState} from "react";
 import {useSimulationReport} from "../../hooks/useSimulationReport.ts";
 import {StockReportRequest} from "../../model/request/StockReportRequest.ts";
-import {Alert, Box, Button, IconButton, Snackbar, Tab, Tabs, Toolbar, Tooltip, Typography} from "@mui/material";
+import {Alert, Box, Button, IconButton, Snackbar, Toolbar, Tooltip, Typography} from "@mui/material";
 import {Share as ShareIcon} from "@mui/icons-material";
 import {Loader} from "../util/Loader.tsx";
 import {UserPortfolio} from "../../model/simulation/UserPortfolio.ts";
 import {useStartSimulation} from "../../hooks/useStartSimulation.ts";
 import {SimulationRequest} from "../../model/request/SimulationRequest.ts";
 import {SimulationDialog} from "./form/SimulationDialog.tsx";
-import {TransactionHistory} from "./results/transactions/TransactionHistory.tsx";
-import {StockHoldingChart} from "./results/StockHoldingChart.tsx";
-import {StockMetricsContent} from "./results/metrics/StockMetricsContent.tsx";
-import {InvestmentPerformanceView} from "./results/InvestmentPerformanceView/InvestmentPerformanceView.tsx";
 import {useSearchParams} from "react-router-dom";
 import {useGetSimulationById, useShareSimulation} from "../../hooks/useSimulationHistory.ts";
-import {SimulationConfigurationView} from "./results/SimulationConfigurationView.tsx";
+import {UUID} from "../../model/UUID.ts";
+import {useAuth} from "../../context/AuthContext.tsx";
+import {ShareSimulationDialog} from "./results/ShareSimulationDialog.tsx";
+import {SimulationTabs} from "./results/SimulationTabs.tsx";
 
 export function Simulation() {
     const [searchParams] = useSearchParams();
 
-    let simulationId = searchParams.get("simulationId")
+    const [simulationId, setSimulationId] = useState<UUID>(searchParams.get("id") as UUID);
     const allowOpenFormParam = searchParams.get("allowOpenForm");
     const allowOpenForm = allowOpenFormParam === null ? true : allowOpenFormParam !== "false";
 
+    const {isAuthenticated} = useAuth()
     const {
         isLoading: isLoadingSimulation,
         simulation,
@@ -36,7 +36,6 @@ export function Simulation() {
 
     const [isDialogOpen, setIsDialogOpen] = useState(simulationId == null);
     const [result, setResult] = useState<UserPortfolio[]>(simulation?.userPortfolios ?? []);
-    const [tabValue, setTabValue] = useState(0);
     const [showOnlyTradesDays, setShowOnlyTradesDays] = useState(true);
     const [stockReportRequest, setStockReportRequest] = useState<StockReportRequest | null>(simulation?.stockSimulationRequest ?? null);
     const [lastSimulationRequest, setLastSimulationRequest] = useState<SimulationRequest | null>(simulation?.stockSimulationRequest ?? null);
@@ -45,6 +44,9 @@ export function Simulation() {
     const [snackbarMessage, setSnackbarMessage] = useState("");
     const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">("success");
 
+    const [shareDialogOpen, setShareDialogOpen] = useState(false);
+    const [shareUrl, setShareUrl] = useState("");
+    const [showShareUrl, setShowShareUrl] = useState(false);
 
     useEffect(() => {
         if (simulation) {
@@ -77,7 +79,7 @@ export function Simulation() {
                 setResult(portfolios);
                 setIsDialogOpen(false);
 
-                simulationId = data.simulationId;
+                setSimulationId(data.simulationId);
 
                 if (portfolios?.length) {
                     const firstDate = new Date(portfolios[0].date);
@@ -106,10 +108,20 @@ export function Simulation() {
 
     const handleShareSimulation = () => {
         if (!simulationId) return;
+        setShareDialogOpen(true);
+        setShowShareUrl(false);
+    };
+
+    const confirmShare = () => {
+        if (!simulationId) return;
 
         shareSimulation(simulationId, {
             onSuccess: () => {
-                setSnackbarMessage("Simulation shared successfully! Share link copied to clipboard.");
+                const url = `${window.location.origin}/strategy-tester?id=${simulationId}&openForm=false`;
+                setShareUrl(url);
+                setShowShareUrl(true);
+
+                setSnackbarMessage("Simulation shared successfully!");
                 setSnackbarSeverity("success");
                 setSnackbarOpen(true);
             },
@@ -117,12 +129,22 @@ export function Simulation() {
                 setSnackbarMessage(sharingError?.message ?? "Failed to share simulation. Please try again.");
                 setSnackbarSeverity("error");
                 setSnackbarOpen(true);
+                setShareDialogOpen(false);
             }
         });
     };
 
-    const handleTabChange = (_event: SyntheticEvent, newValue: number) => {
-        setTabValue(newValue);
+    const copyToClipboard = async () => {
+        await navigator.clipboard.writeText(shareUrl);
+        setSnackbarMessage("URL copied to clipboard!");
+        setSnackbarSeverity("success");
+        setSnackbarOpen(true)
+    };
+
+    const closeShareDialog = () => {
+        setShareDialogOpen(false);
+        setShowShareUrl(false);
+        setShareUrl("");
     };
 
     const handleToggleFilter = (event: ChangeEvent<HTMLInputElement>) => {
@@ -136,7 +158,7 @@ export function Simulation() {
     return (
         <Box sx={{width: "100%", maxWidth: 1200, mx: "auto", p: 3}}>
             <Toolbar/>
-            {allowOpenForm &&
+            {allowOpenForm && isAuthenticated &&
                 <>
                     <Box sx={{mb: 4, display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
                         <Typography variant="h4" component="h1" fontWeight="500">Portfolio Simulation</Typography>
@@ -173,84 +195,19 @@ export function Simulation() {
                     />
                 </>
             }
+
+            <ShareSimulationDialog shareDialogOpen={shareDialogOpen} closeShareDialog={closeShareDialog}
+                                   showShareUrl={showShareUrl} shareUrl={shareUrl} copyToClipboard={copyToClipboard}
+                                   confirmShare={confirmShare} isSharing={isSharing}/>
+
             {(result || isRunning || isLoadingReport || isLoadingSimulation) && (
-                <>
-                    <Box sx={{borderBottom: 1, borderColor: 'divider', mb: 2}}>
-                        <Tabs value={tabValue} onChange={handleTabChange} aria-label="simulation tabs">
-                            <Tab label="Overview"/>
-                            <Tab label="Holdings"/>
-                            <Tab label="Transactions"/>
-                            <Tab label="Configuration"/>
-                            <Tab label="Stock Metrics"/>
-                        </Tabs>
-                    </Box>
-
-                    {/* Profit chart Tab */}
-                    {tabValue === 0 && (
-                        <Box>
-                            {isRunning ? (
-                                <Loader/>
-                            ) : (
-                                result && <InvestmentPerformanceView portfolioData={result}/>
-                            )}
-                        </Box>
-                    )}
-
-                    {/* Holdings Tab */}
-                    {tabValue === 1 && (
-                        <Box>
-                            {isRunning ? (
-                                <Loader/>
-                            ) : (
-                                result && <StockHoldingChart portfolioData={result}/>
-                            )}
-                        </Box>
-                    )}
-
-                    {/* Transactions Tab */}
-                    {tabValue === 2 && (
-                        <Box>
-                            {isRunning ? (
-                                <Loader/>
-                            ) : (
-                                result && (
-                                    <TransactionHistory
-                                        portfolioData={result}
-                                        showOnlyTradesDays={showOnlyTradesDays}
-                                        onToggleFilter={handleToggleFilter}
-                                    />
-                                )
-                            )}
-                        </Box>
-                    )}
-
-                    {/* Configuration Tab */}
-                    {tabValue === 3 && (
-                        <Box>
-                            {lastSimulationRequest ? (
-                                <SimulationConfigurationView simulationRequest={lastSimulationRequest}/>
-                            ) : (
-                                <Typography variant="body1" color="text.secondary">
-                                    No simulation configuration available
-                                </Typography>
-                            )}
-                        </Box>
-                    )}
-
-                    {/* Stock Metrics Tab */}
-                    {tabValue === 4 && simulationReport && (
-                        <Box>
-                            {simulationReport.map((report) => (
-                                <StockMetricsContent
-                                    key={JSON.stringify(report.stockMetrics)}
-                                    isLoadingReport={isLoadingReport}
-                                    simulationReport={report}
-                                />
-                            ))}
-                        </Box>
-                    )}
-                </>
+                <SimulationTabs isRunning={isRunning} result={result}
+                                showOnlyTradesDays={showOnlyTradesDays}
+                                handleToggleFilter={handleToggleFilter} simulationReport={simulationReport}
+                                lastSimulationRequest={lastSimulationRequest}
+                                isLoadingReport={isLoadingReport}/>
             )}
+
             <Snackbar
                 open={snackbarOpen}
                 autoHideDuration={6000}

@@ -1,5 +1,6 @@
 import {useMutation, useQuery} from "@tanstack/react-query";
 import {getSimulationById, getSimulationHistory, shareSimulation} from "../services/SimulationHistoryService.ts";
+import {UUID} from "../model/UUID.ts";
 
 export function useSimulationHistory() {
     const {isLoading, isError, data: simulationHistory} = useQuery({
@@ -13,7 +14,7 @@ export function useSimulationHistory() {
     }
 }
 
-export function useGetSimulationById(id: string | null) {
+export function useGetSimulationById(id: UUID | null) {
     const {isLoading, isError, data: simulation, refetch} = useQuery({
         queryKey: ['simulation', id],
         queryFn: () => getSimulationById(id as string),
