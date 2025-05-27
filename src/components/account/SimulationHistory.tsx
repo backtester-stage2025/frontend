@@ -1,14 +1,31 @@
-import {Alert, Box, CircularProgress, Grid, Paper, Typography} from "@mui/material";
+import {Alert, Box, Button, CircularProgress, Grid, Paper, Typography} from "@mui/material";
 import HistoryIcon from "@mui/icons-material/History";
 import {useSimulationHistory} from "../../hooks/useSimulationHistory.ts";
 import {SimulationResult} from "../../model/simulation/SimulationResult.ts";
 import {useNavigate} from "react-router-dom";
 import {SimulationCard} from "./SimulationCard.tsx";
+import {useState} from "react";
+import CompareArrowsIcon from '@mui/icons-material/CompareArrows';
 
 export function SimulationHistory() {
     const {isLoading, isError, simulationHistory} = useSimulationHistory();
 
     const navigate = useNavigate();
+
+    const MAX_SELECT_LENGTH = 5;
+    const MIN_SELECT_LENGTH = 2;
+
+    const [selectedSimulationsForComparison, setSelectedSimulationsForComparison] = useState<SimulationResult[]>([]);
+
+    const selectSimulationForComparison = (simulation: SimulationResult) => {
+        if (selectedSimulationsForComparison.length < MAX_SELECT_LENGTH) {
+            setSelectedSimulationsForComparison(prev => [...prev, simulation]);
+        }
+    }
+
+    const unselectSimulationForComparison = (simulation: SimulationResult) => {
+        setSelectedSimulationsForComparison(prev => prev.filter(s => s.id !== simulation.id));
+    }
 
     const viewSimulationDetails = (simulationResult: SimulationResult) => {
         navigate("/strategy-tester", {
@@ -23,6 +40,15 @@ export function SimulationHistory() {
             }
         });
     };
+
+    const compareSimulations = (simulationResults: SimulationResult[]) => {
+        navigate("/compare", {
+            state: {
+                results: simulationResults
+            }
+        })
+    }
+
     return (
         <Grid size={{xs: 12, md: 8}}>
             <Paper elevation={3} sx={{p: 3, borderRadius: 2}}>
@@ -51,8 +77,29 @@ export function SimulationHistory() {
 
                 {!isLoading && !isError && simulationHistory?.sort((a, b) =>
                     new Date(b.simulationDate).getTime() - new Date(a.simulationDate).getTime()
-                ).map((simulation, index) =>
-                    <SimulationCard key={index} simulation={simulation} viewSimulationDetails={viewSimulationDetails}/>
+                ).map((simulation) =>
+                    <SimulationCard
+                        key={simulation.id}
+                        simulation={simulation}
+                        viewSimulationDetails={viewSimulationDetails}
+                        isSelected={!!selectedSimulationsForComparison.find(s => s.id === simulation.id)}
+                        addSimulation={selectSimulationForComparison}
+                        removeSimulation={unselectSimulationForComparison}
+                        disableSelection={selectedSimulationsForComparison.length === MAX_SELECT_LENGTH && !selectedSimulationsForComparison.find(s => s.id === simulation.id)}
+                    />
+                )}
+                {selectedSimulationsForComparison.length >= MIN_SELECT_LENGTH && (
+                    <Box position="fixed" bottom={16} right={16} zIndex={1000}>
+                        <Button
+                            variant="contained"
+                            color="secondary"
+                            onClick={() => compareSimulations(selectedSimulationsForComparison)}
+                            startIcon={<CompareArrowsIcon />}
+                            size = {"large"}
+                        >
+                            Compare Simulations
+                        </Button>
+                    </Box>
                 )}
             </Paper>
         </Grid>

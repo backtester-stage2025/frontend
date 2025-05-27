@@ -6,5 +6,5 @@ export interface UserPortfolio {
     cashBalance: number;
     totalPortfolioValue: number;
     shareHoldings: ShareHolding[];
-    sharesBought: ShareTransaction [];
+    sharesBought: ShareTransaction[];
 }
