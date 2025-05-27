@@ -12,7 +12,7 @@ export async function getSimulationHistory(): Promise<SimulationSummary[]> {
 
 export async function getSimulationById(id: string): Promise<SimulationResult> {
     return safeApiCall(async () => {
-        const {data} = await axios.get<SimulationResult>(`/api/simulation-history?id=${id}`)
+        const {data} = await axios.get<SimulationResult>(`/api/simulation-history/${id}`)
         return data;
     });
 }

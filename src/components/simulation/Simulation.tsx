@@ -1,4 +1,4 @@
-import {ChangeEvent, SyntheticEvent, useState} from "react";
+import {ChangeEvent, SyntheticEvent, useEffect, useState} from "react";
 import {useSimulationReport} from "../../hooks/useSimulationReport.ts";
 import {StockReportRequest} from "../../model/request/StockReportRequest.ts";
 import {Alert, Box, Button, Snackbar, Tab, Tabs, Toolbar, Typography} from "@mui/material";
@@ -12,29 +12,41 @@ import {StockHoldingChart} from "./results/StockHoldingChart.tsx";
 import {StockMetricsContent} from "./results/metrics/StockMetricsContent.tsx";
 import {InvestmentPerformanceView} from "./results/InvestmentPerformanceView/InvestmentPerformanceView.tsx";
 import {useLocation} from "react-router-dom";
+import {useGetSimulationById} from "../../hooks/useSimulationHistory.ts";
 
 export function Simulation() {
     const location = useLocation();
-    const {simulationId = null, isDialogInitialOpen = true, request = null} = location.state ?? {};
+    const {simulationId = null, allowOpenForm = true} = location.state ?? {};
 
-    const {simulationValues} = (simulationId);
+    const {isLoading: isLoadingSimulation, simulation} = useGetSimulationById(simulationId);
 
-    const [isDialogOpen, setIsDialogOpen] = useState(isDialogInitialOpen);
-    const [result, setResult] = useState<UserPortfolio[]>([]);
+    const [isDialogOpen, setIsDialogOpen] = useState(simulationId == null);
+    const [result, setResult] = useState<UserPortfolio[]>(simulation?.userPortfolios ?? []);
     const [tabValue, setTabValue] = useState(0);
     const [showOnlyTradesDays, setShowOnlyTradesDays] = useState(true);
-    const [stockReportRequest, setStockReportRequest] = useState<StockReportRequest | null>(request);
-    const [lastSimulationRequest, setLastSimulationRequest] = useState<SimulationRequest | null>(request);
+    const [stockReportRequest, setStockReportRequest] = useState<StockReportRequest | null>(simulation?.stockSimulationRequest ?? null);
+    const [lastSimulationRequest, setLastSimulationRequest] = useState<SimulationRequest | null>(simulation?.stockSimulationRequest ?? null);
 
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState("");
     const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">("success");
 
     const {sendRequest, isRunning, isError, error} = useStartSimulation();
+
+    useEffect(() => {
+        if (simulation) {
+            setResult(simulation.userPortfolios);
+            setStockReportRequest(simulation.stockSimulationRequest);
+            setLastSimulationRequest(simulation.stockSimulationRequest);
+            refetchSimulationReport();
+        }
+    }, [simulation]);
+
     const {
         isLoading: isLoadingReport,
-        simulationReport
-    } = useSimulationReport(stockReportRequest || null);
+        simulationReport,
+        refetch: refetchSimulationReport,
+    } = useSimulationReport(stockReportRequest ?? null);
 
     const sendAndProcessRequest = (request: SimulationRequest) => {
         setLastSimulationRequest(request);
@@ -92,28 +104,31 @@ export function Simulation() {
 
     return (
         <Box sx={{width: "100%", maxWidth: 1200, mx: "auto", p: 3}}>
-            <Toolbar />
-            <Box sx={{mb: 4, display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
-                <Typography variant="h4" component="h1" fontWeight="500">Portfolio Simulation</Typography>
-                <Button
-                    onClick={() => setIsDialogOpen(true)}
-                    variant="contained"
-                    size="large"
-                >
-                    Configure Simulation
-                </Button>
-            </Box>
+            <Toolbar/>
+            {allowOpenForm &&
+                <>
+                    <Box sx={{mb: 4, display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
+                        <Typography variant="h4" component="h1" fontWeight="500">Portfolio Simulation</Typography>
+                        <Button
+                            onClick={() => setIsDialogOpen(true)}
+                            variant="contained"
+                            size="large"
+                        >
+                            Configure Simulation
+                        </Button>
+                    </Box>
 
-            <SimulationDialog
-                isOpen={isDialogOpen}
-                onClose={() => setIsDialogOpen(false)}
-                onSubmit={sendAndProcessRequest}
-                isServerError={isError}
-                serverError={error}
-                initialValues={lastSimulationRequest}
-            />
-
-            {(result || isRunning || isLoadingReport) && (
+                    <SimulationDialog
+                        isOpen={isDialogOpen}
+                        onClose={() => setIsDialogOpen(false)}
+                        onSubmit={sendAndProcessRequest}
+                        isServerError={isError}
+                        serverError={error}
+                        initialValues={lastSimulationRequest}
+                    />
+                </>
+            }
+            {(result || isRunning || isLoadingReport || isLoadingSimulation) && (
                 <>
                     <Box sx={{borderBottom: 1, borderColor: 'divider', mb: 2}}>
                         <Tabs value={tabValue} onChange={handleTabChange} aria-label="simulation tabs">

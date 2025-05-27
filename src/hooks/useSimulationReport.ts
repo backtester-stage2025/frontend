@@ -3,14 +3,15 @@ import {StockReportRequest} from "../model/request/StockReportRequest.ts";
 import {getSimulationReport} from "../services/backtestService.ts";
 
 export function useSimulationReport(request: StockReportRequest | null) {
-    const {isLoading, isError, data: simulationReport} = useQuery({
-        queryKey: ['simulationReport'],
+    const {isLoading, isError, data: simulationReport, refetch} = useQuery({
+        queryKey: ['simulationReport', request],
         queryFn: () => getSimulationReport(request as StockReportRequest),
         enabled: !!request
     });
     return {
         isLoading,
         isError,
-        simulationReport
+        simulationReport,
+        refetch
     }
 }
