@@ -11,18 +11,10 @@ export function SimulationHistory() {
     const navigate = useNavigate();
 
     const viewSimulationDetails = (simulationResult: SimulationSummary) => {
-        navigate("/strategy-tester", {
-            state: {
-                simulationId: simulationResult.simulationId,
-                isDialogInitialOpen: false,
-                /*request: {
-                    ...simulationResult.stockSimulationRequest,
-                    startDate: new Date(simulationResult.stockSimulationRequest.startDate),
-                    endDate: new Date(simulationResult.stockSimulationRequest.endDate)
-                }*/
-            }
+        navigate(`/strategy-tester?simulationId=${simulationResult.simulationId}&allowOpenForm=false`, {
         });
     };
+
     return (
         <Grid size={{xs: 12, md: 8}}>
             <Paper elevation={3} sx={{p: 3, borderRadius: 2}}>

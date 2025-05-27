@@ -13,10 +13,10 @@ export function useSimulationHistory() {
     }
 }
 
-export function useGetSimulationById(id: string) {
+export function useGetSimulationById(id: string | null) {
     const {isLoading, isError, data: simulation} = useQuery({
         queryKey: ['simulation', id],
-        queryFn: () => getSimulationById(id),
+        queryFn: () => getSimulationById(id as string),
         enabled: !!id
     })
 

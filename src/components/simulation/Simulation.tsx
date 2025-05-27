@@ -11,13 +11,16 @@ import {TransactionHistory} from "./results/transactions/TransactionHistory.tsx"
 import {StockHoldingChart} from "./results/StockHoldingChart.tsx";
 import {StockMetricsContent} from "./results/metrics/StockMetricsContent.tsx";
 import {InvestmentPerformanceView} from "./results/InvestmentPerformanceView/InvestmentPerformanceView.tsx";
-import {useLocation} from "react-router-dom";
+import {useSearchParams} from "react-router-dom";
 import {useGetSimulationById} from "../../hooks/useSimulationHistory.ts";
 import {SimulationConfigurationView} from "./results/SimulationConfigurationView.tsx";
 
 export function Simulation() {
-    const location = useLocation();
-    const {simulationId = null, allowOpenForm = true} = location.state ?? {};
+    const [searchParams] = useSearchParams();
+
+    const simulationId = searchParams.get("simulationId")
+    const allowOpenFormParam = searchParams.get("allowOpenForm");
+    const allowOpenForm = allowOpenFormParam === null ? true : allowOpenFormParam !== "false";
 
     const {isLoading: isLoadingSimulation, simulation} = useGetSimulationById(simulationId);
 
