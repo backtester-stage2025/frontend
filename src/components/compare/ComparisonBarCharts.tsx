@@ -19,12 +19,33 @@ export function ComparisonBarCharts({results, colors}: Readonly<ComparisonBarCha
     return (
         <Grid size={{xs: 12}} container spacing={2}>
             {metrics.map(({label, values}) => (
-                <Grid size={{xs: 12, md: 6, xl: 4}} key={label}>
-                    <Paper elevation={3} sx={{padding: 2}}>
-                        <CanvasJSChart options={getSingleMetricChartOptions(label, values, colors)}/>
-                    </Paper>
-                </Grid>
+                <BarChart
+                    key={label}
+                    label={label}
+                    values={values}
+                    colors={colors}
+                />
             ))}
+        </Grid>
+    )
+}
+
+interface BarChartProps {
+    values: number[];
+    label: string;
+    colors: string[];
+}
+
+function BarChart({label, values, colors}: Readonly<BarChartProps>) {
+    if (values.every(v=>v===0)) {
+        return null;
+    }
+
+    return (
+        <Grid size={{xs: 12, md: 6, xl: 4}}>
+            <Paper elevation={3} sx={{padding: 2}}>
+                <CanvasJSChart options={getSingleMetricChartOptions(label, values, colors)}/>
+            </Paper>
         </Grid>
     )
 }
