@@ -82,7 +82,7 @@ function getAverageDailyGrowth(result: SimulationResult): number {
 }
 
 function getTransactionCount(result: SimulationResult): number {
-    return result.userPortfolios.reduce((sum, p) => sum + p.sharesBought.length, 0);
+    return result.userPortfolios.reduce((sum, p) => sum + p.sharesBought.filter(st=> st.totalSharesBought != 0).length, 0);
 }
 
 function getTotalFees(result: SimulationResult): number {
