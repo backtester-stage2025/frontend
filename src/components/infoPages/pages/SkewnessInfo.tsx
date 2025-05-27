@@ -13,7 +13,7 @@ export function SkewnessInfo() {
                 </Typography>
                 <Box>
                     <img
-                        src="/src/assets/skew.png"
+                        src="/assets/skew.png"
                         alt="Skewness Example"
                         style={{maxWidth: '100%', borderRadius: '8px'}}
                     />

@@ -73,7 +73,7 @@ export function MovingAverageCrossoverInfo() {
 
                     <Box>
                         <img
-                            src="/src/assets/MAC-example.png"
+                            src="/assets/MAC-example.png"
                             alt="Moving Average Crossover Example"
                             style={{maxWidth: '100%', borderRadius: '8px'}}
                         />
