@@ -19,6 +19,7 @@ export function Simulation() {
 
     const [isDialogOpen, setIsDialogOpen] = useState(isDialogInitialOpen);
     const [result, setResult] = useState<UserPortfolio[]>(results);
+    const [currencyType, setCurrencyType] = useState<string | undefined>("EUR");
     const [tabValue, setTabValue] = useState(0);
     const [showOnlyTradesDays, setShowOnlyTradesDays] = useState(true);
     const [stockReportRequest, setStockReportRequest] = useState<StockReportRequest | null>(request);
@@ -40,6 +41,7 @@ export function Simulation() {
             onSuccess: (data) => {
                 const portfolios = data.userPortfolios;
                 const saveSuccessful = data.saveSuccessful;
+                const currencyType = data.currencyType;
 
                 setSnackbarMessage(saveSuccessful
                     ? "Simulation successfully saved!"
@@ -47,7 +49,7 @@ export function Simulation() {
                 setSnackbarSeverity(saveSuccessful ? "success" : "error");
                 setSnackbarOpen(true);
 
-
+                setCurrencyType(currencyType);
                 setResult(portfolios);
                 setIsDialogOpen(false);
 
@@ -128,7 +130,7 @@ export function Simulation() {
                             {isRunning ? (
                                 <Loader/>
                             ) : (
-                                result && <InvestmentPerformanceView portfolioData={result}/>
+                                result && <InvestmentPerformanceView portfolioData={result} currencyPreference={currencyType}/>
                             )}
                         </Box>
                     )}
@@ -139,7 +141,7 @@ export function Simulation() {
                             {isRunning ? (
                                 <Loader/>
                             ) : (
-                                result && <StockHoldingChart portfolioData={result}/>
+                                result && <StockHoldingChart portfolioData={result} currencyPreference={currencyType}/>
                             )}
                         </Box>
                     )}
@@ -153,6 +155,7 @@ export function Simulation() {
                                 result && (
                                     <TransactionHistory
                                         portfolioData={result}
+                                        currencyPreference={currencyType}
                                         showOnlyTradesDays={showOnlyTradesDays}
                                         onToggleFilter={handleToggleFilter}
                                     />

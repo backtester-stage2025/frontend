@@ -4,12 +4,14 @@ import {useMemo} from "react";
 import {UserPortfolio} from "../../../../model/simulation/UserPortfolio.ts";
 import {ProfitChart} from "./ProfitChart.tsx";
 import {InvestmentSummaryCards} from "./InvestmentSummaryCards.tsx";
+import { CurrencyTypeDisplay } from "../../../../model/CurrencyType.ts";
 
 interface InvestmentPerformanceViewProps {
     portfolioData: UserPortfolio[];
+    currencyPreference?: string;
 }
 
-export function InvestmentPerformanceView({portfolioData}: Readonly<InvestmentPerformanceViewProps>) {
+export function InvestmentPerformanceView({ portfolioData, currencyPreference }: Readonly<InvestmentPerformanceViewProps>) {
     const summaryData = useMemo(() => {
         if (!portfolioData || portfolioData.length === 0) return null;
 
@@ -54,6 +56,10 @@ export function InvestmentPerformanceView({portfolioData}: Readonly<InvestmentPe
         };
     }, [portfolioData]);
 
+    const currencyLabel = currencyPreference
+        ? CurrencyTypeDisplay[currencyPreference] || currencyPreference
+        : "€";
+
     return (
         <Paper elevation={2} sx={{p: 3, borderRadius: 2, height: '100%'}}>
             {summaryData &&
@@ -63,11 +69,15 @@ export function InvestmentPerformanceView({portfolioData}: Readonly<InvestmentPe
                         Portfolio Summary
                     </Typography>
 
-                    <InvestmentSummaryCards summaryData={summaryData}/>
+                    <InvestmentSummaryCards
+                        summaryData={summaryData}
+                        currencyPreference={currencyPreference}
+                        currencyLabel={currencyLabel}
+                    />
                 </Box>
             }
 
-            <ProfitChart portfolioData={portfolioData}/>
+            <ProfitChart portfolioData={portfolioData} currencyLabel={currencyLabel} currencyPreference={currencyPreference}/>
         </Paper>
     )
 }

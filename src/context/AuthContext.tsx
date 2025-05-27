@@ -6,7 +6,9 @@ interface AuthContextType {
     email?: string;
     userId?: string;
     picture?: string
-    setAuthState: (isAuthenticated: boolean, username?: string, email?: string, userId?: string, picture?: string) => void;
+    currencyPreference?: string;
+    setAuthState: (isAuthenticated: boolean, username?: string, email?: string, userId?: string,
+                   picture?: string, currencyPreference?: string) => void;
     clearAuthState: () => void;
 }
 
@@ -18,13 +20,16 @@ export const AuthProvider = ({children}: { children: ReactNode }) => {
     const [email, setEmail] = useState<string | undefined>(undefined);
     const [userId, setUserId] = useState<string | undefined>(undefined);
     const [picture, setPicture] = useState<string | undefined>(undefined);
+    const [currencyPreference, setCurrencyPreference] = useState<string | undefined>(undefined);
 
-    const setAuthState = (isAuthenticated: boolean, username?: string, email?: string, userId?: string, picture?: string) => {
+    const setAuthState = (isAuthenticated: boolean, username?: string, email?: string, userId?: string,
+                          picture?: string, currencyPreference?: string) => {
         setIsAuthenticated(isAuthenticated);
         setUsername(username);
         setEmail(email);
         setUserId(userId);
         setPicture(picture);
+        setCurrencyPreference(currencyPreference);
     };
 
     const clearAuthState = () => {
@@ -33,6 +38,7 @@ export const AuthProvider = ({children}: { children: ReactNode }) => {
         setEmail(undefined);
         setUserId(undefined);
         setPicture(undefined);
+        setCurrencyPreference(undefined);
     };
 
     const value = useMemo(() => ({
@@ -41,9 +47,10 @@ export const AuthProvider = ({children}: { children: ReactNode }) => {
         email,
         userId,
         picture,
+        currencyPreference,
         setAuthState,
         clearAuthState,
-    }), [isAuthenticated, username, email, userId, picture]);
+    }), [isAuthenticated, username, email, userId, picture, currencyPreference]);
 
     return (
         <AuthContext.Provider value={value}>

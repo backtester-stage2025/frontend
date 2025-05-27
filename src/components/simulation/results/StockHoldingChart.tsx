@@ -4,17 +4,22 @@ import Select, {SelectChangeEvent} from '@mui/material/Select';
 import {Box, FormControl, MenuItem, Paper, ToggleButton, ToggleButtonGroup, Typography} from "@mui/material";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import TimelineIcon from "@mui/icons-material/Timeline";
-import {formatEuro, formatLargeNumber, getNiceStep} from "../../../services/formatService.ts";
+import {formatCurrency, formatLargeNumber, getNiceStep} from "../../../services/formatService.ts";
 import {Area, AreaChart, Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis} from "recharts";
+import {CurrencyTypeDisplay} from "../../../model/CurrencyType.ts";
 
 interface StockHoldingChartProps {
     portfolioData: UserPortfolio[];
+    currencyPreference?: string;
 }
 
-export function StockHoldingChart({portfolioData}: Readonly<StockHoldingChartProps>) {
+export function StockHoldingChart({portfolioData, currencyPreference}: Readonly<StockHoldingChartProps>) {
     const [selectedStock, setSelectedStock] = useState<string | null>(null);
     const [chartType, setChartType] = useState<'shares' | 'value'>('shares');
     const [viewType, setViewType] = useState<'line' | 'bar'>('line');
+    const currencyLabel = currencyPreference
+        ? CurrencyTypeDisplay[currencyPreference] || currencyPreference
+        : "€";
 
     const availableStocks = useMemo(() => {
         const stockSet = new Set<string>();
@@ -45,7 +50,7 @@ export function StockHoldingChart({portfolioData}: Readonly<StockHoldingChartPro
 
             return {
                 date: portfolio.date,
-                shares: holding?.totalSharesOwned || 0,
+                shares: holding?.totalSharesOwned ?? 0,
                 value: holding ? holding.totalSharesOwned * holding.price : 0,
                 // Track if there was a transaction on this day
                 hasTransaction: Object.values(portfolio.sharesBought)
@@ -115,7 +120,7 @@ export function StockHoldingChart({portfolioData}: Readonly<StockHoldingChartPro
                         onChange={handleChartTypeChange}
                     >
                         <ToggleButton value="shares">Shares</ToggleButton>
-                        <ToggleButton value="value">Value (€)</ToggleButton>
+                        <ToggleButton value="value">Value ({currencyLabel})</ToggleButton>
                     </ToggleButtonGroup>
 
                     <ToggleButtonGroup
@@ -161,7 +166,7 @@ export function StockHoldingChart({portfolioData}: Readonly<StockHoldingChartPro
                                 formatter={(value: number) =>
                                     chartType === 'shares'
                                         ? [value.toLocaleString(), 'Shares']
-                                        : [formatEuro(value), 'Value']
+                                        : [formatCurrency(value, currencyPreference), `Value (${currencyLabel})`]
                                 }
                                 labelFormatter={(label) => `Date: ${label}`}
                             />
@@ -209,7 +214,7 @@ export function StockHoldingChart({portfolioData}: Readonly<StockHoldingChartPro
                                 formatter={(value: number) =>
                                     chartType === 'shares'
                                         ? [value.toLocaleString(), 'Shares']
-                                        : [formatEuro(value), 'Value']
+                                        : [formatCurrency(value, currencyPreference), `Value (${currencyLabel})`]
                                 }
                                 labelFormatter={(label) => `Date: ${label}`}
                             />

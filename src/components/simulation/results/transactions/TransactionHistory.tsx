@@ -8,12 +8,14 @@ interface TransactionHistoryProps {
     portfolioData: UserPortfolio[];
     showOnlyTradesDays: boolean;
     onToggleFilter: (event: ChangeEvent<HTMLInputElement>) => void;
+    currencyPreference?: string;
 }
 
 export function TransactionHistory({
                                        portfolioData,
                                        showOnlyTradesDays,
-                                       onToggleFilter
+                                       onToggleFilter,
+                                       currencyPreference
                                    }: Readonly<TransactionHistoryProps>) {
     const [page, setPage] = useState(1);
     const [rowsPerPage, setRowsPerPage] = useState(50);
@@ -99,6 +101,7 @@ export function TransactionHistory({
                         data={paginatedData}
                         expandedId={expandedId}
                         setExpandedId={setExpandedId}
+                        currencyPreference={currencyPreference}
                     />
                     <Box sx={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 2}}>
                         <Select

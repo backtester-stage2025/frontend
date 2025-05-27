@@ -2,9 +2,15 @@ import {UserPortfolio} from "../../../../model/simulation/UserPortfolio.ts";
 import {useMemo} from "react";
 import {Box, Typography} from "@mui/material";
 import {Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis} from "recharts";
-import {formatEuro, formatLargeNumber, getNiceStep} from "../../../../services/formatService.ts";
+import {formatCurrency, formatLargeNumber, getNiceStep} from "../../../../services/formatService.ts";
 
-export function ProfitChart({portfolioData}: Readonly<{ portfolioData: UserPortfolio[] }>) {
+interface ProfitChartProps {
+    portfolioData: UserPortfolio[];
+    currencyLabel?: string;
+    currencyPreference?: string;
+}
+
+export function ProfitChart({portfolioData, currencyLabel, currencyPreference}: Readonly<ProfitChartProps>) {
     const chartData = useMemo(() => {
         if (!portfolioData || portfolioData.length === 0) return [];
 
@@ -52,7 +58,7 @@ export function ProfitChart({portfolioData}: Readonly<{ portfolioData: UserPortf
                         tickCount={8}
                     />
                     <Tooltip
-                        formatter={(value: number) => [formatEuro(value), 'Profit']}
+                        formatter={(value: number) => [formatCurrency(value, currencyPreference), `Profit (${currencyLabel})`]}
                         labelFormatter={(label) => `Date: ${label}`}
                     />
                     <Area

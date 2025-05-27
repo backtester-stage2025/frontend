@@ -3,7 +3,7 @@ import {Box, Card, Grid, Typography} from "@mui/material";
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import TrendingDownIcon from '@mui/icons-material/TrendingDown';
 import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
-import {formatEuro} from "../../../../services/formatService.ts";
+import {formatCurrency} from "../../../../services/formatService.ts";
 
 interface PortfolioSummaryCardsProps {
     portfolio: UserPortfolio;
@@ -11,15 +11,17 @@ interface PortfolioSummaryCardsProps {
     totalBought: number;
     totalSold: number;
     hasActivity: boolean;
+    currencyPreference?: string;
 }
 
 export function PortfolioSummaryCards({
-                                          portfolio,
-                                          totalPositions,
-                                          totalBought,
-                                          totalSold,
-                                          hasActivity
-                                      }: Readonly<PortfolioSummaryCardsProps>
+    portfolio,
+    totalPositions,
+    totalBought,
+    totalSold,
+    hasActivity,
+    currencyPreference
+}: Readonly<PortfolioSummaryCardsProps>
 ) {
 
     const totalShares = Object.values(portfolio.shareHoldings).reduce((sum, sh) => sum + sh.totalSharesOwned, 0);
@@ -32,9 +34,9 @@ export function PortfolioSummaryCards({
                         <Typography variant="subtitle2" color="text.secondary">Total Value</Typography>
                         <AccountBalanceIcon color="primary" fontSize="small"/>
                     </Box>
-                    <Typography variant="h6">{formatEuro(portfolio.totalPortfolioValue)}</Typography>
+                    <Typography variant="h6">{formatCurrency(portfolio.totalPortfolioValue, currencyPreference)}</Typography>
                     <Typography variant="caption" color="text.secondary">
-                        Cash: {formatEuro(portfolio.cashBalance)}
+                        Cash: {formatCurrency(portfolio.cashBalance, currencyPreference)}
                     </Typography>
                 </Card>
             </Grid>

@@ -1,16 +1,17 @@
 import {Accordion, AccordionSummary, Box, Chip, Grid, Typography} from "@mui/material";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import {UserPortfolio} from "../../../../model/simulation/UserPortfolio.ts";
-import {formatEuro} from "../../../../services/formatService.ts";
+import {formatCurrency} from "../../../../services/formatService.ts";
 import {PortfolioDetails} from "../portfolio/PortfolioDetails.tsx";
 
 interface RowProps {
     portfolio: UserPortfolio;
     expanded: boolean;
     onToggle: () => void;
+    currencyPreference?: string;
 }
 
-export function TransactionHistoryRow({portfolio, expanded, onToggle}: Readonly<RowProps>) {
+export function TransactionHistoryRow({portfolio, expanded, onToggle, currencyPreference}: Readonly<RowProps>) {
     const hasTradesOnDay = Object.values(portfolio.sharesBought).some(st => st.totalSharesBought !== 0);
 
     return (
@@ -46,7 +47,7 @@ export function TransactionHistoryRow({portfolio, expanded, onToggle}: Readonly<
                     </Grid>
                     <Grid size={{xs: 4, sm: 3}}>
                         <Typography variant="body2">
-                            Cash: {formatEuro(portfolio.cashBalance)}
+                            Cash: {formatCurrency(portfolio.cashBalance, currencyPreference)}
                         </Typography>
                     </Grid>
                     <Grid size={{xs: 4, sm: 3}}>
@@ -54,7 +55,7 @@ export function TransactionHistoryRow({portfolio, expanded, onToggle}: Readonly<
                             variant="body2"
                             fontWeight="bold"
                         >
-                            Total: {formatEuro(portfolio.totalPortfolioValue)}
+                            Total: {formatCurrency(portfolio.totalPortfolioValue, currencyPreference)}
                         </Typography>
                     </Grid>
                     <Grid size={{xs: 12, sm: 3}} sx={{display: {xs: 'none', sm: 'block'}}}>
@@ -89,7 +90,7 @@ export function TransactionHistoryRow({portfolio, expanded, onToggle}: Readonly<
                     </Grid>
                 </Grid>
             </AccordionSummary>
-            <PortfolioDetails portfolio={portfolio}/>
+            <PortfolioDetails portfolio={portfolio} currencyPreference={currencyPreference}/>
         </Accordion>
     );
 }

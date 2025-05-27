@@ -7,9 +7,10 @@ import {CashFlowSummary} from "./CashFlowSummary";
 
 interface PortfolioDetailsProps {
     portfolio: UserPortfolio;
+    currencyPreference?: string;
 }
 
-export function PortfolioDetails({portfolio}: Readonly<PortfolioDetailsProps>) {
+export function PortfolioDetails({portfolio, currencyPreference}: Readonly<PortfolioDetailsProps>) {
     const totalPositions = Object.values(portfolio.shareHoldings).filter(sh => sh.totalSharesOwned > 0).length;
     const totalBought = Object.values(portfolio.sharesBought).filter(st => st.totalSharesBought > 0).reduce((sum, st) => sum + st.totalSharesBought, 0);
     const totalSold = Object.values(portfolio.sharesBought).filter(st => st.totalSharesBought < 0).reduce((sum, st) => sum + Math.abs(st.totalSharesBought), 0);
@@ -25,12 +26,13 @@ export function PortfolioDetails({portfolio}: Readonly<PortfolioDetailsProps>) {
                     totalBought={totalBought}
                     totalSold={totalSold}
                     hasActivity={hasActivity}
+                    currencyPreference={currencyPreference}
                 />
             </Box>
             <Divider sx={{my: 2}}/>
             <Grid container spacing={3}>
                 <Grid size={{xs: 12, md: 6}}>
-                    <ShareHoldingsTable portfolio={portfolio} totalPositions={totalPositions}/>
+                    <ShareHoldingsTable portfolio={portfolio} totalPositions={totalPositions} currencyPreference={currencyPreference}/>
                 </Grid>
                 <Grid size={{xs: 12, md: 6}}>
                     <TradingActivityTable portfolio={portfolio} hasActivity={hasActivity}/>
@@ -39,6 +41,7 @@ export function PortfolioDetails({portfolio}: Readonly<PortfolioDetailsProps>) {
                             totalBought={totalBought}
                             totalSold={totalSold}
                             totalTransactionFees={totalTransactionFees}
+                            currencyPreference={currencyPreference}
                         />
                     )}
                 </Grid>

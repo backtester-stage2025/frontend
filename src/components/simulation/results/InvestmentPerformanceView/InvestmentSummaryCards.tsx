@@ -1,7 +1,7 @@
 import {Grid, Paper, Stack, Typography} from "@mui/material";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import TrendingDownIcon from "@mui/icons-material/TrendingDown";
-import {formatEuro} from "../../../../services/formatService.ts";
+import {formatCurrency} from "../../../../services/formatService.ts";
 import MoneyOffIcon from "@mui/icons-material/MoneyOff";
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 
@@ -15,9 +15,11 @@ interface InvestmentSummaryCardsProps {
         initialValue: number;
         totalTradeCount: number;
     };
+    currencyPreference?: string;
+    currencyLabel?: string;
 }
 
-export function InvestmentSummaryCards({summaryData}: Readonly<InvestmentSummaryCardsProps>) {
+export function InvestmentSummaryCards({summaryData, currencyPreference}: Readonly<InvestmentSummaryCardsProps>) {
     return (
         <Grid container spacing={3} sx={{mb: 3}}>
             {/* Total Profit */}
@@ -39,7 +41,7 @@ export function InvestmentSummaryCards({summaryData}: Readonly<InvestmentSummary
                         <Typography variant="body2" fontWeight="medium">Total Profit</Typography>
                     </Stack>
                     <Typography variant="h6" fontWeight="bold">
-                        {formatEuro(summaryData.totalProfit)}
+                        {formatCurrency(summaryData.totalProfit, currencyPreference)}
                     </Typography>
                     <Typography variant="caption" sx={{opacity: 0.9}}>
                         {summaryData.percentProfit.toFixed(2)}% from initial
@@ -63,7 +65,7 @@ export function InvestmentSummaryCards({summaryData}: Readonly<InvestmentSummary
                         <Typography variant="body2" fontWeight="medium">Transaction Fees</Typography>
                     </Stack>
                     <Typography variant="h6" fontWeight="bold">
-                        {formatEuro(summaryData.totalTransactionFees)}
+                        {formatCurrency(summaryData.totalTransactionFees, currencyPreference)}
                     </Typography>
                     {summaryData.totalProfit > 0 && (
                         <Typography variant="caption" sx={{opacity: 0.9}}>
@@ -89,10 +91,10 @@ export function InvestmentSummaryCards({summaryData}: Readonly<InvestmentSummary
                         <Typography variant="body2" fontWeight="medium">Final Value</Typography>
                     </Stack>
                     <Typography variant="h6" fontWeight="bold">
-                        {formatEuro(summaryData.finalValue)}
+                        {formatCurrency(summaryData.finalValue, currencyPreference)}
                     </Typography>
                     <Typography variant="caption" sx={{opacity: 0.9}}>
-                        From {formatEuro(summaryData.initialValue)}
+                        From {formatCurrency(summaryData.initialValue, currencyPreference)}
                     </Typography>
                 </Paper>
             </Grid>
@@ -117,7 +119,7 @@ export function InvestmentSummaryCards({summaryData}: Readonly<InvestmentSummary
                     </Typography>
                     <Typography variant="caption" sx={{opacity: 0.9}}>
                         Avg
-                        fee: {formatEuro(summaryData.totalTransactionFees / summaryData.totalTradeCount)}
+                        fee: {formatCurrency(summaryData.totalTransactionFees / summaryData.totalTradeCount, currencyPreference)}
                     </Typography>
                 </Paper>
             </Grid>
