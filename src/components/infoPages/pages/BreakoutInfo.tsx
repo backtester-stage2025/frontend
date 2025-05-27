@@ -118,7 +118,7 @@ export function BreakoutInfo() {
 
                     <Box>
                         <img
-                            src="/src/assets/breakout-example.jpg"
+                            src="/assets/breakout-example.jpg"
                             alt="Price Breakout Example"
                             style={{maxWidth: '100%', borderRadius: '8px'}}
                         />
