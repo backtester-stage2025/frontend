@@ -1,5 +1,5 @@
-import {SimulationResult} from "../model/simulation/SimulationResult.ts";
 import {StockDetails} from "../model/StockDetails.ts";
+import {SimulationSummary} from "../model/simulation/SimulationSummary.ts";
 
 export function formatDateToLocalDateString(date: Date): string {
     return date.toISOString().split('T')[0];
@@ -44,14 +44,13 @@ export function getNiceStep(r: number) {
 }
 
 
-export function calculateReturnPercentage(simulation: SimulationResult) {
+export function calculateReturnPercentage(simulation: SimulationSummary) {
     const startCapital = simulation.stockSimulationRequest.startCapital;
-    const finalPortfolio = simulation.userPortfolios[simulation.userPortfolios.length - 1];
-    const endValue = finalPortfolio?.totalPortfolioValue || 0;
+    const endValue = simulation.latestPortfolioValue || 0;
 
     return ((endValue - startCapital) / startCapital * 100).toFixed(2);
 }
 
-export function getFieldNameStockDetails (sd: StockDetails) {
+export function getFieldNameStockDetails(sd: StockDetails) {
     return `${sd.companyName} (${sd.officialName})`
 }

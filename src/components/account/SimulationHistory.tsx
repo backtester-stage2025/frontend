@@ -1,25 +1,25 @@
 import {Alert, Box, CircularProgress, Grid, Paper, Typography} from "@mui/material";
 import HistoryIcon from "@mui/icons-material/History";
 import {useSimulationHistory} from "../../hooks/useSimulationHistory.ts";
-import {SimulationResult} from "../../model/simulation/SimulationResult.ts";
 import {useNavigate} from "react-router-dom";
 import {SimulationCard} from "./SimulationCard.tsx";
+import {SimulationSummary} from "../../model/simulation/SimulationSummary.ts";
 
 export function SimulationHistory() {
     const {isLoading, isError, simulationHistory} = useSimulationHistory();
 
     const navigate = useNavigate();
 
-    const viewSimulationDetails = (simulationResult: SimulationResult) => {
+    const viewSimulationDetails = (simulationResult: SimulationSummary) => {
         navigate("/strategy-tester", {
             state: {
+                simulationId: simulationResult.simulationId,
                 isDialogInitialOpen: false,
-                results: simulationResult.userPortfolios,
-                request: {
+                /*request: {
                     ...simulationResult.stockSimulationRequest,
                     startDate: new Date(simulationResult.stockSimulationRequest.startDate),
                     endDate: new Date(simulationResult.stockSimulationRequest.endDate)
-                }
+                }*/
             }
         });
     };

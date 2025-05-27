@@ -15,10 +15,12 @@ import {useLocation} from "react-router-dom";
 
 export function Simulation() {
     const location = useLocation();
-    const {isDialogInitialOpen = true, results = [], request = null} = location.state ?? {};
+    const {simulationId = null, isDialogInitialOpen = true, request = null} = location.state ?? {};
+
+    const {simulationValues} = (simulationId);
 
     const [isDialogOpen, setIsDialogOpen] = useState(isDialogInitialOpen);
-    const [result, setResult] = useState<UserPortfolio[]>(results);
+    const [result, setResult] = useState<UserPortfolio[]>([]);
     const [tabValue, setTabValue] = useState(0);
     const [showOnlyTradesDays, setShowOnlyTradesDays] = useState(true);
     const [stockReportRequest, setStockReportRequest] = useState<StockReportRequest | null>(request);

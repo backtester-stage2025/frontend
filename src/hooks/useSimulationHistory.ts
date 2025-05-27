@@ -1,5 +1,5 @@
 import {useQuery} from "@tanstack/react-query";
-import {getSimulationHistory} from "../services/backtestService.ts";
+import {getSimulationById, getSimulationHistory} from "../services/SimulationHistoryService.ts";
 
 export function useSimulationHistory() {
     const {isLoading, isError, data: simulationHistory} = useQuery({
@@ -10,5 +10,18 @@ export function useSimulationHistory() {
         isLoading,
         isError,
         simulationHistory
+    }
+}
+
+export function useGetSimulationById(id: string) {
+    const {isLoading, isError, data: simulation} = useQuery({
+        queryKey: ['simulation', id],
+        queryFn: () => getSimulationById(id)
+    })
+
+    return {
+        isLoading,
+        isError,
+        simulation
     }
 }

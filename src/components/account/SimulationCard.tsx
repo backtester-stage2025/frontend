@@ -8,19 +8,20 @@ import DateRangeIcon from "@mui/icons-material/DateRange";
 import ArrowRightAltIcon from "@mui/icons-material/ArrowRightAlt";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import {calculateReturnPercentage} from "../../services/formatService.ts";
-import {SimulationResult} from "../../model/simulation/SimulationResult.ts";
+import {SimulationSummary} from "../../model/simulation/SimulationSummary.ts";
 
 interface SimulationCardProps {
-    simulation: SimulationResult;
-    viewSimulationDetails: (simulation: SimulationResult) => void;
+    simulation: SimulationSummary;
+    viewSimulationDetails: (simulation: SimulationSummary) => void;
 }
 
 export function SimulationCard({simulation, viewSimulationDetails}: Readonly<SimulationCardProps>) {
 
     const returnPercentage = calculateReturnPercentage(simulation);
-    const finalValue = simulation.userPortfolios[simulation.userPortfolios.length - 1]?.totalPortfolioValue || 0;
+    const finalValue = simulation.latestPortfolioValue || 0;
     const startCapital = simulation.stockSimulationRequest.startCapital;
     const isPositiveReturn = parseFloat(returnPercentage) >= 0;
+
     const absoluteGain = Math.abs(finalValue - startCapital).toFixed(2);
 
     return (
@@ -144,7 +145,7 @@ export function SimulationCard({simulation, viewSimulationDetails}: Readonly<Sim
                         </Box>
                         <Typography variant="caption" color="text.secondary"
                                     sx={{display: 'block'}}>
-                            {simulation.userPortfolios.length} days simulated
+                            {simulation.totalPortfolioCount} days simulated
                         </Typography>
                     </Box>
                     <Button
