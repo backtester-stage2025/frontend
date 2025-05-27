@@ -13,6 +13,7 @@ import {StockMetricsContent} from "./results/metrics/StockMetricsContent.tsx";
 import {InvestmentPerformanceView} from "./results/InvestmentPerformanceView/InvestmentPerformanceView.tsx";
 import {useLocation} from "react-router-dom";
 import {useGetSimulationById} from "../../hooks/useSimulationHistory.ts";
+import {SimulationConfigurationView} from "./results/SimulationConfigurationView.tsx";
 
 export function Simulation() {
     const location = useLocation();
@@ -135,6 +136,7 @@ export function Simulation() {
                             <Tab label="Overview"/>
                             <Tab label="Holdings"/>
                             <Tab label="Transactions"/>
+                            <Tab label="Configuration"/>
                             <Tab label="Stock Metrics"/>
                         </Tabs>
                     </Box>
@@ -178,8 +180,21 @@ export function Simulation() {
                         </Box>
                     )}
 
+                    {/* Configuration Tab */}
+                    {tabValue === 3 && (
+                        <Box>
+                            {lastSimulationRequest ? (
+                                <SimulationConfigurationView simulationRequest={lastSimulationRequest}/>
+                            ) : (
+                                <Typography variant="body1" color="text.secondary">
+                                    No simulation configuration available
+                                </Typography>
+                            )}
+                        </Box>
+                    )}
+
                     {/* Stock Metrics Tab */}
-                    {tabValue === 3 && simulationReport && (
+                    {tabValue === 4 && simulationReport && (
                         <Box>
                             {simulationReport.map((report) => (
                                 <StockMetricsContent
