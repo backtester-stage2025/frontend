@@ -1,10 +1,12 @@
 import {useLocation} from "react-router-dom";
 import {Grid, Typography} from "@mui/material";
-import {SimulationResult} from "../../model/simulation/SimulationResult.ts";
 import {MetricsComparison} from "./MetricsComparison.tsx";
 import {ComparisonBarCharts} from "./ComparisonBarCharts.tsx";
 import {NormalizedPortfolioValues} from "./ComparisonNormalizedPortfolioGraph.tsx";
-
+import {SimulationSummary} from "../../model/simulation/SimulationSummary.ts";
+import {useGetSimulationsByIds} from "../../hooks/useSimulationHistory.ts";
+import {Loader} from "../util/Loader.tsx";
+import {ErrorAlert} from "../util/Alerts.tsx";
 
 const canvasColors = [
     "#1f77b4", // Blue – Simulation 1
@@ -15,13 +17,23 @@ const canvasColors = [
 ];
 
 interface CompareSimulationsProps {
-    results: SimulationResult[]
+    results: SimulationSummary[]
 }
 
 export function CompareSimulations() {
     const location = useLocation();
     const inputState = location.state as CompareSimulationsProps;
     const results = inputState.results;
+
+    const {isLoading, isError, simulations} = useGetSimulationsByIds(results.map(r => r.id));
+
+    if (isLoading) {
+        return <Loader message="Loading all simulations"/>
+    }
+
+    if (isError || !simulations) {
+        return <ErrorAlert message="Error while fetching simulations"/>;
+    }
 
     return (
         <Grid container spacing={2} padding={2}>
@@ -31,9 +43,9 @@ export function CompareSimulations() {
                 </Typography>
             </Grid>
 
-            <MetricsComparison results={results} colors={canvasColors}/>
-            <NormalizedPortfolioValues results={results} colors={canvasColors}/>
-            <ComparisonBarCharts results={results} colors={canvasColors}/>
+            <MetricsComparison results={simulations} colors={canvasColors}/>
+            <NormalizedPortfolioValues results={simulations} colors={canvasColors}/>
+            <ComparisonBarCharts results={simulations} colors={canvasColors}/>
         </Grid>
     );
 }

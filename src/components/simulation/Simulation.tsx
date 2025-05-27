@@ -47,15 +47,13 @@ export function Simulation() {
             setResult(simulation.userPortfolios);
             setStockReportRequest(simulation.stockSimulationRequest);
             setLastSimulationRequest(simulation.stockSimulationRequest);
-            refetchSimulationReport();
         }
     }, [simulation]);
 
     const {
         isLoading: isLoadingReport,
-        simulationReport,
-        refetch: refetchSimulationReport,
-    } = useSimulationReport(stockReportRequest ?? null);
+        simulationReport
+    } = useSimulationReport(stockReportRequest);
 
     const sendAndProcessRequest = (request: SimulationRequest) => {
         setLastSimulationRequest(request);

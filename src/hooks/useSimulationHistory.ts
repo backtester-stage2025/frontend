@@ -29,6 +29,25 @@ export function useGetSimulationById(id: UUID | null) {
     }
 }
 
+export function useGetSimulationsByIds(ids: UUID[] | null) {
+    const enabled = Array.isArray(ids) && ids.length > 0;
+
+    const { isLoading, isError, data: simulations } = useQuery({
+        queryKey: ['simulations', ids],
+        queryFn: async () => {
+            if (!ids) return [];
+            return Promise.all(ids.map(id => getSimulationById(id as string)));
+        },
+        enabled
+    });
+
+    return {
+        isLoading,
+        isError,
+        simulations
+    };
+}
+
 export function useShareSimulation() {
     const {mutate: sendRequest, isPending: isRunning, isError, error} = useMutation({
         mutationFn: (simulationId: string) => shareSimulation(simulationId)

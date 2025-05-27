@@ -5,7 +5,7 @@ import {SimulationResult} from "../model/simulation/SimulationResult.ts";
 
 export async function getSimulationHistory(): Promise<SimulationSummary[]> {
     return safeApiCall(async () => {
-        const {data} = await axios.get<SimulationSummary[]>(`/api/simulation-history/history`);
+        const {data} = await axios.get<SimulationSummary[]>(`/api/simulation-history/all`);
         return data;
     });
 }

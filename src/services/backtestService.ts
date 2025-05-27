@@ -22,12 +22,12 @@ export async function runSimulation(request: SimulationRequest): Promise<Simulat
 export async function getSimulationReport(request: StockReportRequest): Promise<SimulationReport[]> {
     const payload = {
         ...request,
-        startDate: formatDateToLocalDateString(request.startDate),
-        endDate: formatDateToLocalDateString(request.endDate)
+        startDate: new Date(request.startDate),
+        endDate: new Date(request.endDate)
     }
 
     return safeApiCall(async () => {
-        const {data} = await axios.post(`api/backtest/report`, payload);
+        const {data} = await axios.post(`/api/backtest/report`, payload);
         return data;
     });
 }
