@@ -16,3 +16,10 @@ export async function getSimulationById(id: string): Promise<SimulationResult> {
         return data;
     });
 }
+
+export function shareSimulation(simulationId: string) {
+    return safeApiCall(async () => {
+        const {data} = await axios.put(`api/simulation-history/${simulationId}/share`)
+        return data;
+    })
+}

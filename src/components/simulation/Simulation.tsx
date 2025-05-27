@@ -1,7 +1,8 @@
 import {ChangeEvent, SyntheticEvent, useEffect, useState} from "react";
 import {useSimulationReport} from "../../hooks/useSimulationReport.ts";
 import {StockReportRequest} from "../../model/request/StockReportRequest.ts";
-import {Alert, Box, Button, Snackbar, Tab, Tabs, Toolbar, Typography} from "@mui/material";
+import {Alert, Box, Button, IconButton, Snackbar, Tab, Tabs, Toolbar, Tooltip, Typography} from "@mui/material";
+import {Share as ShareIcon} from "@mui/icons-material";
 import {Loader} from "../util/Loader.tsx";
 import {UserPortfolio} from "../../model/simulation/UserPortfolio.ts";
 import {useStartSimulation} from "../../hooks/useStartSimulation.ts";
@@ -12,17 +13,26 @@ import {StockHoldingChart} from "./results/StockHoldingChart.tsx";
 import {StockMetricsContent} from "./results/metrics/StockMetricsContent.tsx";
 import {InvestmentPerformanceView} from "./results/InvestmentPerformanceView/InvestmentPerformanceView.tsx";
 import {useSearchParams} from "react-router-dom";
-import {useGetSimulationById} from "../../hooks/useSimulationHistory.ts";
+import {useGetSimulationById, useShareSimulation} from "../../hooks/useSimulationHistory.ts";
 import {SimulationConfigurationView} from "./results/SimulationConfigurationView.tsx";
 
 export function Simulation() {
     const [searchParams] = useSearchParams();
 
-    const simulationId = searchParams.get("simulationId")
+    let simulationId = searchParams.get("simulationId")
     const allowOpenFormParam = searchParams.get("allowOpenForm");
     const allowOpenForm = allowOpenFormParam === null ? true : allowOpenFormParam !== "false";
 
-    const {isLoading: isLoadingSimulation, simulation} = useGetSimulationById(simulationId);
+    const {
+        isLoading: isLoadingSimulation,
+        simulation,
+    } = useGetSimulationById(simulationId);
+    const {
+        sendRequest: shareSimulation,
+        isRunning: isSharing,
+        error: sharingError
+    } = useShareSimulation();
+    const {sendRequest, isRunning, isError, error} = useStartSimulation();
 
     const [isDialogOpen, setIsDialogOpen] = useState(simulationId == null);
     const [result, setResult] = useState<UserPortfolio[]>(simulation?.userPortfolios ?? []);
@@ -35,7 +45,6 @@ export function Simulation() {
     const [snackbarMessage, setSnackbarMessage] = useState("");
     const [snackbarSeverity, setSnackbarSeverity] = useState<"success" | "error">("success");
 
-    const {sendRequest, isRunning, isError, error} = useStartSimulation();
 
     useEffect(() => {
         if (simulation) {
@@ -65,9 +74,10 @@ export function Simulation() {
                 setSnackbarSeverity(saveSuccessful ? "success" : "error");
                 setSnackbarOpen(true);
 
-
                 setResult(portfolios);
                 setIsDialogOpen(false);
+
+                simulationId = data.simulationId;
 
                 if (portfolios?.length) {
                     const firstDate = new Date(portfolios[0].date);
@@ -94,6 +104,23 @@ export function Simulation() {
         });
     };
 
+    const handleShareSimulation = () => {
+        if (!simulationId) return;
+
+        shareSimulation(simulationId, {
+            onSuccess: () => {
+                setSnackbarMessage("Simulation shared successfully! Share link copied to clipboard.");
+                setSnackbarSeverity("success");
+                setSnackbarOpen(true);
+            },
+            onError: () => {
+                setSnackbarMessage(sharingError?.message ?? "Failed to share simulation. Please try again.");
+                setSnackbarSeverity("error");
+                setSnackbarOpen(true);
+            }
+        });
+    };
+
     const handleTabChange = (_event: SyntheticEvent, newValue: number) => {
         setTabValue(newValue);
     };
@@ -113,13 +140,27 @@ export function Simulation() {
                 <>
                     <Box sx={{mb: 4, display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
                         <Typography variant="h4" component="h1" fontWeight="500">Portfolio Simulation</Typography>
-                        <Button
-                            onClick={() => setIsDialogOpen(true)}
-                            variant="contained"
-                            size="large"
-                        >
-                            Configure Simulation
-                        </Button>
+                        <Box sx={{display: 'flex', gap: 2, alignItems: 'center'}}>
+                            {simulationId && (
+                                <Tooltip title="Share this simulation">
+                                    <IconButton
+                                        onClick={handleShareSimulation}
+                                        disabled={isSharing}
+                                        color="primary"
+                                        size="large"
+                                    >
+                                        <ShareIcon/>
+                                    </IconButton>
+                                </Tooltip>
+                            )}
+                            <Button
+                                onClick={() => setIsDialogOpen(true)}
+                                variant="contained"
+                                size="large"
+                            >
+                                Configure Simulation
+                            </Button>
+                        </Box>
                     </Box>
 
                     <SimulationDialog
