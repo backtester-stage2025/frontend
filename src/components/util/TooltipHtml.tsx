@@ -14,7 +14,8 @@ export function TooltipHtml({title, description, link, children}: Readonly<Toolt
             title={
                 <div>
                     {link ? (
-                        <Link href={link} target="_blank" rel="noopener" sx={{fontSize: '0.8rem', fontWeight: 'bold', color: 'inherit'}}>
+                        <Link href={link} target="_blank" rel="noopener"
+                              sx={{fontSize: '0.8rem', fontWeight: 'bold', color: 'inherit'}}>
                             {title}
                         </Link>
                     ) : (
@@ -24,8 +25,8 @@ export function TooltipHtml({title, description, link, children}: Readonly<Toolt
                     )}
                     <Typography
                         variant="body2"
-                        sx={{ fontSize: '0.75rem' }}
-                        dangerouslySetInnerHTML={{ __html: description }}
+                        sx={{fontSize: '0.75rem'}}
+                        dangerouslySetInnerHTML={{__html: description}}
                     />
                 </div>
             }

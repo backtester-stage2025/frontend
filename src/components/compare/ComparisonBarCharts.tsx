@@ -37,7 +37,7 @@ interface BarChartProps {
 }
 
 function BarChart({label, values, colors}: Readonly<BarChartProps>) {
-    if (values.every(v=>v===0)) {
+    if (values.every(v => v === 0)) {
         return null;
     }
 

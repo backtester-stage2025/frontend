@@ -1,47 +1,47 @@
 import {Alert, Box, Button, CircularProgress, Grid, Paper, Typography} from "@mui/material";
 import HistoryIcon from "@mui/icons-material/History";
 import {useSimulationHistory} from "../../hooks/useSimulationHistory.ts";
-import {SimulationResult} from "../../model/simulation/SimulationResult.ts";
 import {useNavigate} from "react-router-dom";
 import {SimulationCard} from "./SimulationCard.tsx";
+import {SimulationSummary} from "../../model/simulation/SimulationSummary.ts";
 import {useState} from "react";
 import CompareArrowsIcon from '@mui/icons-material/CompareArrows';
+import {UUID} from "../../model/UUID.ts";
+import {ShareSimulationDialog} from "../simulation/ShareSimulationDialog.tsx";
+
+const MAX_SELECT_LENGTH = 5;
+const MIN_SELECT_LENGTH = 2;
 
 export function SimulationHistory() {
     const {isLoading, isError, simulationHistory} = useSimulationHistory();
 
     const navigate = useNavigate();
 
-    const MAX_SELECT_LENGTH = 5;
-    const MIN_SELECT_LENGTH = 2;
+    const [selectedSimulationsForComparison, setSelectedSimulationsForComparison] = useState<SimulationSummary[]>([]);
+    const [shareDialogOpen, setShareDialogOpen] = useState(false);
+    const [simulationIdForShare, setSimulationIdForShare] = useState<string | null>(null)
 
-    const [selectedSimulationsForComparison, setSelectedSimulationsForComparison] = useState<SimulationResult[]>([]);
+    const handleShareSimulation = (simulationId: UUID) => {
+        if (!simulationId) return;
+        setSimulationIdForShare(simulationId);
+        setShareDialogOpen(true);
+    };
 
-    const selectSimulationForComparison = (simulation: SimulationResult) => {
+    const selectSimulationForComparison = (simulation: SimulationSummary) => {
         if (selectedSimulationsForComparison.length < MAX_SELECT_LENGTH) {
             setSelectedSimulationsForComparison(prev => [...prev, simulation]);
         }
     }
 
-    const unselectSimulationForComparison = (simulation: SimulationResult) => {
+    const unselectSimulationForComparison = (simulation: SimulationSummary) => {
         setSelectedSimulationsForComparison(prev => prev.filter(s => s.id !== simulation.id));
     }
 
-    const viewSimulationDetails = (simulationResult: SimulationResult) => {
-        navigate("/strategy-tester", {
-            state: {
-                isDialogInitialOpen: false,
-                results: simulationResult.userPortfolios,
-                request: {
-                    ...simulationResult.stockSimulationRequest,
-                    startDate: new Date(simulationResult.stockSimulationRequest.startDate),
-                    endDate: new Date(simulationResult.stockSimulationRequest.endDate)
-                }
-            }
-        });
+    const viewSimulationDetails = (simulationResult: SimulationSummary) => {
+        navigate(`/strategy-tester?id=${simulationResult.id}&allowOpenForm=false`, {});
     };
 
-    const compareSimulations = (simulationResults: SimulationResult[]) => {
+    const compareSimulations = (simulationResults: SimulationSummary[]) => {
         navigate("/compare", {
             state: {
                 results: simulationResults
@@ -86,6 +86,7 @@ export function SimulationHistory() {
                         addSimulation={selectSimulationForComparison}
                         removeSimulation={unselectSimulationForComparison}
                         disableSelection={selectedSimulationsForComparison.length === MAX_SELECT_LENGTH && !selectedSimulationsForComparison.find(s => s.id === simulation.id)}
+                        shareSimulation={handleShareSimulation}
                     />
                 )}
                 {selectedSimulationsForComparison.length >= MIN_SELECT_LENGTH && (
@@ -94,14 +95,17 @@ export function SimulationHistory() {
                             variant="contained"
                             color="secondary"
                             onClick={() => compareSimulations(selectedSimulationsForComparison)}
-                            startIcon={<CompareArrowsIcon />}
-                            size = {"large"}
+                            startIcon={<CompareArrowsIcon/>}
+                            size={"large"}
                         >
                             Compare Simulations
                         </Button>
                     </Box>
                 )}
             </Paper>
+
+            <ShareSimulationDialog shareDialogOpen={shareDialogOpen} setShareDialogOpen={setShareDialogOpen}
+                                   simulationId={simulationIdForShare}/>
         </Grid>
     )
 }
