@@ -7,6 +7,7 @@ interface AuthContextType {
     userId?: string;
     picture?: string
     currencyPreference?: string;
+    setCurrencyPreference: (currency: string) => void;
     setAuthState: (isAuthenticated: boolean, username?: string, email?: string, userId?: string,
                    picture?: string, currencyPreference?: string) => void;
     clearAuthState: () => void;
@@ -48,6 +49,7 @@ export const AuthProvider = ({children}: { children: ReactNode }) => {
         userId,
         picture,
         currencyPreference,
+        setCurrencyPreference,
         setAuthState,
         clearAuthState,
     }), [isAuthenticated, username, email, userId, picture, currencyPreference]);
