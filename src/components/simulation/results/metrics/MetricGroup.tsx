@@ -18,7 +18,8 @@ export function MetricGroup({title, properties, tooltip}: Readonly<MetricGroupPr
     return (
         <Grid size={{xs: 12, md: 6}} sx={{p: 2, boxShadow: '5px'}}>
             <Paper elevation={1} sx={{p: 2, height: '100%', borderRadius: 2}}>
-                <Box sx={{display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', mb: 4}}>
+                <Box
+                    sx={{display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', mb: 4}}>
                     <Typography variant="subtitle2" color="text.secondary" sx={{lineHeight: 1}}>
                         {title}
                     </Typography>
@@ -26,7 +27,7 @@ export function MetricGroup({title, properties, tooltip}: Readonly<MetricGroupPr
                         <Box sx={{position: 'absolute', right: 0, top: '50%', transform: 'translateY(-50%)'}}>
                             <TooltipHtml title={tooltip.title} description={tooltip.description} link={tooltip.link}>
                                 <IconButton sx={{color: 'rgba(0, 0, 0, 0.3)', padding: 0}}>
-                                    <InfoIcon sx={{fontSize: '1.2rem'}} />
+                                    <InfoIcon sx={{fontSize: '1.2rem'}}/>
                                 </IconButton>
                             </TooltipHtml>
                         </Box>

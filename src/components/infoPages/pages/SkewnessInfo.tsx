@@ -1,4 +1,17 @@
-import { Container, Typography, CardContent, Divider, Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from "@mui/material";
+import {
+    Box,
+    CardContent,
+    Container,
+    Divider,
+    Paper,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Typography
+} from "@mui/material";
 
 export function SkewnessInfo() {
     return (
@@ -7,9 +20,12 @@ export function SkewnessInfo() {
                 <Typography variant="h4" gutterBottom align="left">
                     Skewness
                 </Typography>
-                <Divider sx={{ borderColor: "primary.main" }} />
-                <Typography variant="body1" sx={{ mt: 2 }} align="left">
-                    Skewness is a statistical measure that describes the asymmetry of the distribution of returns. It helps investors understand whether the returns are more likely to be positive or negative. A positive skew indicates a higher probability of positive returns, while a negative skew suggests a higher probability of negative returns.
+                <Divider sx={{borderColor: "primary.main"}}/>
+                <Typography variant="body1" sx={{mt: 2}} align="left">
+                    Skewness is a statistical measure that describes the asymmetry of the distribution of returns. It
+                    helps investors understand whether the returns are more likely to be positive or negative. A
+                    positive skew indicates a higher probability of positive returns, while a negative skew suggests a
+                    higher probability of negative returns.
                 </Typography>
                 <Box>
                     <img
@@ -18,23 +34,28 @@ export function SkewnessInfo() {
                         style={{maxWidth: '100%', borderRadius: '8px'}}
                     />
                 </Box>
-                <Box sx={{ mt: 3 }}>
+                <Box sx={{mt: 3}}>
                     <Typography variant="h6" gutterBottom align="left">
                         Understanding Skewness
                     </Typography>
-                    <Typography variant="body1" align="left" sx={{ mb: 2 }}>
+                    <Typography variant="body1" align="left" sx={{mb: 2}}>
                         Skewness is calculated using the formula:
                     </Typography>
-                    <Typography variant="body1" align="left" sx={{ fontFamily: "monospace", mb: 2 }}>
+                    <Typography variant="body1" align="left" sx={{fontFamily: "monospace", mb: 2}}>
                         skewness = [n / (n - 1)(n - 2)] * Σ[(xᵢ - mean)³] / std³
                     </Typography>
-                    <Typography variant="body1" align="left" sx={{ mb: 2 }}>
-                        Here, <strong>n</strong> is the number of values, <strong>mean</strong> is the average of the daily returns, and <strong>std</strong> is the standard deviation of the daily returns. This calculation is performed on the daily returns from the start date to the current date of the simulation.
+                    <Typography variant="body1" align="left" sx={{mb: 2}}>
+                        Here, <strong>n</strong> is the number of values, <strong>mean</strong> is the average of the
+                        daily returns, and <strong>std</strong> is the standard deviation of the daily returns. This
+                        calculation is performed on the daily returns from the start date to the current date of the
+                        simulation.
                     </Typography>
-                    <Typography variant="body1" align="left" sx={{ mb: 2 }}>
-                        A skewness value close to zero indicates a symmetric distribution, while positive or negative values indicate asymmetry. Understanding skewness can help investors assess the likelihood of extreme positive or negative returns.
+                    <Typography variant="body1" align="left" sx={{mb: 2}}>
+                        A skewness value close to zero indicates a symmetric distribution, while positive or negative
+                        values indicate asymmetry. Understanding skewness can help investors assess the likelihood of
+                        extreme positive or negative returns.
                     </Typography>
-                    <TableContainer component={Paper} sx={{ maxWidth: 600, mt: 2 }}>
+                    <TableContainer component={Paper} sx={{maxWidth: 600, mt: 2}}>
                         <Table>
                             <TableHead>
                                 <TableRow>

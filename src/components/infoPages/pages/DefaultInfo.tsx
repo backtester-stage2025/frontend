@@ -26,8 +26,8 @@ export function DefaultInfo() {
                         description="Tooltips provide additional information about specific terms and concepts throughout the app."
                         link="/infopages"
                     >
-                        <IconButton sx={{ marginRight: 1, color: 'rgba(0, 0, 0, 0.3)'}}>
-                            <InfoIcon sx={{ fontSize: '1.4rem' }} />
+                        <IconButton sx={{marginRight: 1, color: 'rgba(0, 0, 0, 0.3)'}}>
+                            <InfoIcon sx={{fontSize: '1.4rem'}}/>
                         </IconButton>
                     </TooltipHtml>
                 </Typography>

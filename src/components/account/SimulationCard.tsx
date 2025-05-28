@@ -1,16 +1,4 @@
-import {
-    Box,
-    Button,
-    Card,
-    CardContent,
-    Checkbox,
-    Chip,
-    Divider,
-    FormControlLabel,
-    Grid,
-    Stack,
-    Typography
-} from "@mui/material";
+import {Box, Button, Card, CardContent, Chip, Divider, Grid, Stack, Typography} from "@mui/material";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import {format} from "date-fns";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
@@ -20,64 +8,19 @@ import DateRangeIcon from "@mui/icons-material/DateRange";
 import ArrowRightAltIcon from "@mui/icons-material/ArrowRightAlt";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import {calculateReturnPercentage} from "../../services/formatService.ts";
-import {SimulationResult} from "../../model/simulation/SimulationResult.ts";
-import {ChangeEvent} from "react";
+import {SimulationSummary} from "../../model/simulation/SimulationSummary.ts";
+import {UUID} from "../../model/UUID.ts";
+import ShareIcon from '@mui/icons-material/Share';
+import {CompareCheckbox} from "./CompareCheckbox.tsx";
 
 interface SimulationCardProps {
-    simulation: SimulationResult;
-    viewSimulationDetails: (simulation: SimulationResult) => void;
+    simulation: SimulationSummary;
+    viewSimulationDetails: (simulation: SimulationSummary) => void;
     isSelected: boolean;
-    addSimulation: (result: SimulationResult) => void;
-    removeSimulation: (result: SimulationResult) => void;
+    addSimulation: (result: SimulationSummary) => void;
+    removeSimulation: (result: SimulationSummary) => void;
     disableSelection: boolean;
-}
-
-interface CompareCheckboxProps {
-    disabled: boolean;
-    checked: boolean;
-    onSelect: () => void;
-    onUnselect: () => void;
-}
-
-function CompareCheckbox(props: Readonly<CompareCheckboxProps>) {
-    return <FormControlLabel
-        control={
-            <Checkbox
-                size="small"
-                disabled={props.disabled}
-                checked={props.checked}
-                onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                    if (e.target.checked) {
-                        props.onSelect()
-                    } else {
-                        props.onUnselect()
-                    }
-                }}
-                sx={{
-                    p: 0.5,
-                    mr: 0.5,
-                }}
-            />
-        }
-        label={
-            <Typography
-                variant="caption"
-                sx={{
-                    fontWeight: "normal",
-                    mr: 1,
-                    fontSize: "1.1rem",
-                    color: props.disabled ? "text.disabled" : "text.secondary",
-                }}
-            >
-                Compare
-            </Typography>
-        }
-        sx={{
-            mb: 1,
-            ml: 0.5,
-        }}
-        labelPlacement={"start"}
-    />;
+    shareSimulation: (id: UUID) => void;
 }
 
 export function SimulationCard({
@@ -86,14 +29,14 @@ export function SimulationCard({
                                    isSelected,
                                    addSimulation,
                                    removeSimulation,
-                                   disableSelection
-                               }
-                                   : Readonly<SimulationCardProps>) {
-
+                                   disableSelection,
+                                   shareSimulation
+                               }: Readonly<SimulationCardProps>) {
     const returnPercentage = calculateReturnPercentage(simulation);
-    const finalValue = simulation.userPortfolios[simulation.userPortfolios.length - 1]?.totalPortfolioValue || 0;
+    const finalValue = simulation.latestPortfolioValue || 0;
     const startCapital = simulation.stockSimulationRequest.startCapital;
     const isPositiveReturn = parseFloat(returnPercentage) >= 0;
+
     const absoluteGain = Math.abs(finalValue - startCapital).toFixed(2);
 
     return (
@@ -226,19 +169,31 @@ export function SimulationCard({
                         </Box>
                         <Typography variant="caption" color="text.secondary"
                                     sx={{display: 'block'}}>
-                            {simulation.userPortfolios.length} days simulated
+                            {simulation.totalPortfolioCount} days simulated
                         </Typography>
                     </Box>
-                    <Button
-                        size="small"
-                        variant="contained"
-                        color={isPositiveReturn ? "success" : "primary"}
-                        startIcon={<TrendingUpIcon/>}
-                        onClick={() => viewSimulationDetails(simulation)}
-                        sx={{fontWeight: 'medium'}}
-                    >
-                        View Details
-                    </Button>
+                    <Stack direction="row" spacing={1}>
+                        <Button
+                            size="small"
+                            variant="contained"
+                            color={isPositiveReturn ? "success" : "primary"}
+                            startIcon={<TrendingUpIcon/>}
+                            onClick={() => viewSimulationDetails(simulation)}
+                            sx={{fontWeight: 'medium'}}
+                        >
+                            View Details
+                        </Button>
+                        <Button
+                            size="small"
+                            variant="outlined"
+                            color="secondary"
+                            startIcon={<ShareIcon/>}
+                            onClick={() => shareSimulation(simulation.id)}
+                            sx={{fontWeight: 'medium'}}
+                        >
+                            Share
+                        </Button>
+                    </Stack>
                 </Box>
             </CardContent>
         </Card>

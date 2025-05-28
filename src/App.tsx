@@ -55,7 +55,7 @@ function App() {
                             <Route path="/" element={<StockList/>}/>
                             <Route path="/stock-list" element={<StockList/>}/>
                             <Route path="/stock-overview" element={<StockOverview/>}/>
-                            <Route path="/strategy-tester" element={<ProtectedRoute element={<Simulation/>}/>}/>
+                            <Route path="/strategy-tester" element={<Simulation/>}/>
                             <Route path="*" element={<NotFound/>}/>
                             <Route path="/account" element={<ProtectedRoute element={<Account/>}/>}/>
                             <Route path="/compare" element={<ProtectedRoute element={<CompareSimulations/>}/>}/>

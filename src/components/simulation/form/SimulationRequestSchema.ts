@@ -41,7 +41,7 @@ export const simulationRequestSchema = z.object({
             message: "Select at least one week day",
         }),
     transactionBufferPercentage: coerceNumber("Transaction Buffer Percentage")
-        .refine(percentage=> percentage < 100 && percentage >=0, {
+        .refine(percentage => percentage < 100 && percentage >= 0, {
             message: `Transaction buffer must be between 0% and 100%`,
         }),
 }).strict()

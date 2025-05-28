@@ -3,7 +3,7 @@ import {IndicatorType} from "../../model/request/IndicatorType.ts";
 import {SimulationTypes} from "../../model/request/SimulationTypes.ts";
 import {SimulationResult} from "../../model/simulation/SimulationResult.ts";
 
-export function extractRequestDetails(result: SimulationResult) : Record<string, string> {
+export function extractRequestDetails(result: SimulationResult): Record<string, string> {
     const {startDate, endDate, brokerName, stockNames, startCapital, indicators} = result.stockSimulationRequest;
 
     return {
@@ -33,7 +33,7 @@ export function extractResults(result: SimulationResult): Record<string, string>
     let transactionCount = 0;
     let totalFees = 0;
     portfolios.forEach(p => {
-        transactionCount += p.sharesBought.filter(tr=>tr.totalSharesBought != 0).length;
+        transactionCount += p.sharesBought.filter(tr => tr.totalSharesBought != 0).length;
         totalFees += p.sharesBought.reduce((sum, tx) => sum + tx.transactionFee, 0);
     });
 
