@@ -1,18 +1,12 @@
-import {Loader} from "../../../util/Loader.tsx";
 import {StockMetricsView} from "./StockMetricsView.tsx";
 import {Box, Typography} from "@mui/material";
 import {SimulationReport} from "../../../../model/simulation/SimulationReport.ts";
 
 interface StockMetricsContentProps {
-    isLoadingReport: boolean;
     simulationReport: SimulationReport | undefined;
 }
 
-export function StockMetricsContent({isLoadingReport, simulationReport}: Readonly<StockMetricsContentProps>) {
-
-    if (isLoadingReport)
-        return <Loader/>
-
+export function StockMetricsContent({simulationReport}: Readonly<StockMetricsContentProps>) {
     if (simulationReport) {
         return <StockMetricsView stockMetrics={simulationReport.stockMetrics} stockName={simulationReport.stockName}/>
     } else {
