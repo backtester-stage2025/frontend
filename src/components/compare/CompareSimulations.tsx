@@ -25,7 +25,7 @@ export function CompareSimulations() {
     const inputState = location.state as CompareSimulationsProps;
     const results = inputState.results;
 
-    const {isLoading, isError, simulations} = useGetSimulationsByIds(results.map(r => r.id));
+    const {isLoading, isError, simulations} = useGetSimulationsByIds(results?.map(r => r.id));
 
     if (isLoading) {
         return <Loader message="Loading all simulations"/>
