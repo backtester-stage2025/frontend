@@ -2,11 +2,11 @@ import CanvasJSReact from '@canvasjs/react-stockcharts';
 import {useStockQuotes} from '../../hooks/useStockQuotes';
 import {StockQuote} from "../../model/StockQuote";
 import {Loader} from "../util/Loader.tsx";
-import {useMovingAverage} from "../../hooks/useMovingAverage.ts";
+import {useMacd, useMovingAverage, useSignal} from "../../hooks/useStockAnalysis.ts";
 import {useEffect, useState} from 'react';
 import {Paper, Typography} from '@mui/material';
 import {ShowChart} from '@mui/icons-material';
-import {MovingAverageControls} from './MovingAverageControls';
+import {PeriodControls} from './PeriodControls.tsx';
 import {ErrorAlert, WarningAlert} from "../util/Alerts.tsx";
 
 const CanvasJSStockChart = CanvasJSReact.CanvasJSStockChart;
@@ -45,6 +45,19 @@ export function StockChart({stockName}: Readonly<StockChartProps>) {
         movingAverage: movingAverageLong
     } = useMovingAverage(stockName, dateRange.startDate, dateRange.endDate, periods.longPeriod);
 
+    const {
+        isLoading: isLoadingMacd,
+        isError: isErrorMacd,
+        macd
+    } = useMacd(stockName, dateRange.startDate, dateRange.endDate, periods.shortPeriod, periods.longPeriod);
+
+    const {
+        isLoading: isLoadingSignal,
+        isError: isErrorSignal,
+        signal
+    } = useSignal(stockName, dateRange.startDate, dateRange.endDate, periods.shortPeriod, periods.longPeriod);
+
+
     const handlePeriodsChange = (shortPeriod: number, longPeriod: number) => {
         setPeriods({
             shortPeriod,
@@ -69,10 +82,10 @@ export function StockChart({stockName}: Readonly<StockChartProps>) {
         }
     }, [stockQuotes, periods.longPeriod, periods.shortPeriod]);
 
-    if (isLoadingStockQuotes || isLoadingMovingAverageShort || isLoadingMovingAverageLong)
+    if (isLoadingStockQuotes || isLoadingMovingAverageShort || isLoadingMovingAverageLong || isLoadingMacd || isLoadingSignal)
         return <Loader message={`Loading stock quotes for ${stockName}`}/>;
 
-    if (isErrorStockQuotes || isErrorMovingAverageShort || isErrorMovingAverageLong)
+    if (isErrorStockQuotes || isErrorMovingAverageShort || isErrorMovingAverageLong || isErrorMacd || isErrorSignal)
         return <ErrorAlert message={`Error loading stock quotes for ${stockName}: ${error?.message}`}/>;
 
     if (!stockQuotes || stockQuotes.length === 0)
@@ -209,7 +222,7 @@ export function StockChart({stockName}: Readonly<StockChartProps>) {
                 <ShowChart sx={{mr: 1}}/> {stockName} Moving Average Analysis
             </Typography>
 
-            <MovingAverageControls
+            <PeriodControls
                 initialShortPeriod={periods.shortPeriod}
                 initialLongPeriod={periods.longPeriod}
                 onPeriodsChange={handlePeriodsChange}

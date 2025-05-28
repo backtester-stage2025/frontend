@@ -19,7 +19,7 @@ interface PeriodErrors {
     longPeriod: string;
 }
 
-export function MovingAverageControls({
+export function PeriodControls({
                                           initialShortPeriod,
                                           initialLongPeriod,
                                           onPeriodsChange
