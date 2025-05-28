@@ -21,14 +21,14 @@ interface SimulationTabsProps {
 }
 
 export function SimulationTabs({
-                                          isRunning,
-                                          result,
-                                          showOnlyTradesDays,
-                                          handleToggleFilter,
-                                          simulationReport,
-                                          lastSimulationRequest,
-                                          isLoadingReport
-                                      }: Readonly<SimulationTabsProps>) {
+                                   isRunning,
+                                   result,
+                                   showOnlyTradesDays,
+                                   handleToggleFilter,
+                                   simulationReport,
+                                   lastSimulationRequest,
+                                   isLoadingReport
+                               }: Readonly<SimulationTabsProps>) {
     const [tabValue, setTabValue] = useState(0);
 
     const handleTabChange = (_event: SyntheticEvent, newValue: number) => {

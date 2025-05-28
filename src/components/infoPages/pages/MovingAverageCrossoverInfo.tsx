@@ -8,7 +8,7 @@ export function MovingAverageCrossoverInfo() {
                     <Typography variant="h4" gutterBottom align="left">
                         Moving Average Crossover
                     </Typography>
-                    <Divider sx={{ borderColor: 'primary.main' }} />
+                    <Divider sx={{borderColor: 'primary.main'}}/>
 
                     <Typography variant="subtitle1" sx={{mt: 2}} align="left">
                         A <strong>Moving Average Crossover</strong> is a simple method that traders use to figure out

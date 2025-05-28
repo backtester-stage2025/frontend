@@ -104,7 +104,8 @@ export function SimulationHistory() {
                 )}
             </Paper>
 
-            <ShareSimulationDialog shareDialogOpen={shareDialogOpen} setShareDialogOpen={setShareDialogOpen} simulationId={simulationIdForShare}/>
+            <ShareSimulationDialog shareDialogOpen={shareDialogOpen} setShareDialogOpen={setShareDialogOpen}
+                                   simulationId={simulationIdForShare}/>
         </Grid>
     )
 }

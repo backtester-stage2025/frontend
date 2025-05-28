@@ -1,6 +1,6 @@
-import { ExpandMore, ExpandLess } from "@mui/icons-material";
-import { ListItem, ListItemButton, ListItemIcon, ListItemText, IconButton } from "@mui/material";
-import { ReactNode } from "react";
+import {ExpandLess, ExpandMore} from "@mui/icons-material";
+import {IconButton, ListItem, ListItemButton, ListItemIcon, ListItemText} from "@mui/material";
+import {ReactNode} from "react";
 
 interface TopLevelListItemProps {
     icon: ReactNode;
@@ -34,8 +34,8 @@ export function TopLevelListItem({
                 />
             </ListItemButton>
             {expandable && (
-                <IconButton onClick={onToggleDropdown} sx={{ marginRight: "4px" }}>
-                    {expanded ? <ExpandLess /> : <ExpandMore />}
+                <IconButton onClick={onToggleDropdown} sx={{marginRight: "4px"}}>
+                    {expanded ? <ExpandLess/> : <ExpandMore/>}
                 </IconButton>
             )}
         </ListItem>

@@ -32,7 +32,7 @@ export function useGetSimulationById(id: UUID | null) {
 export function useGetSimulationsByIds(ids: UUID[] | null) {
     const enabled = Array.isArray(ids) && ids.length > 0;
 
-    const { isLoading, isError, data: simulations } = useQuery({
+    const {isLoading, isError, data: simulations} = useQuery({
         queryKey: ['simulations', ids],
         queryFn: async () => {
             if (!ids) return [];

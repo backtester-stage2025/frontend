@@ -32,7 +32,8 @@ export function IndicatorInfo() {
                     </Box>
                     <Box component="li" sx={{display: 'flex', alignItems: 'center'}}>
                         <LabelImportantOutlinedIcon sx={{color: 'primary.main', mr: 1}}/>
-                        <Typography variant="body1" align="left">Manage risk by understanding market conditions.</Typography>
+                        <Typography variant="body1" align="left">Manage risk by understanding market
+                            conditions.</Typography>
                     </Box>
                 </Box>
 
