@@ -1,17 +1,12 @@
+import { Outlet } from "react-router-dom";
 import {useAuth} from "../context/AuthContext.tsx";
 import {LoginRequired} from "./LoginRequired.tsx";
-import {ReactNode} from "react";
 
-type ProtectedRouteProps = {
-    element: ReactNode;
-};
-
-export function ProtectedRoute({element}: Readonly<ProtectedRouteProps>) {
+export function ProtectedRoute() {
     const {isAuthenticated} = useAuth();
 
     if (!isAuthenticated) {
         return <LoginRequired/>;
     }
-
-    return <>{element}</>;
+    return <Outlet/>;
 }

@@ -12,9 +12,12 @@ import {StockOverview} from "./components/stock/StockOverview.tsx";
 import {NotFound} from "./components/NotFound.tsx";
 import {AuthProvider} from "./context/AuthContext.tsx";
 import {Account} from "./components/account/Account.tsx";
-import {ProtectedRoute} from "./components/ProtectedRoute.tsx";
 import {CompareSimulations} from "./components/compare/CompareSimulations.tsx";
 import {InfoPage} from "./components/infoPages/InfoPage.tsx";
+import {ProtectedRoute} from "./components/ProtectedRoute.tsx";
+import {RouteLayout} from "./components/RouteLayout.tsx";
+
+
 
 function App() {
     axios.defaults.baseURL = import.meta.env.VITE_BACKEND_URL;
@@ -52,14 +55,18 @@ function App() {
                         <Header onOpenDrawer={() => setDrawerOpen(!drawerOpen)}/>
                         <Navigation isOpen={drawerOpen} onClose={() => setDrawerOpen(false)}/>
                         <Routes>
-                            <Route path="/" element={<StockList/>}/>
-                            <Route path="/stock-list" element={<StockList/>}/>
-                            <Route path="/stock-overview" element={<StockOverview/>}/>
-                            <Route path="/strategy-tester" element={<Simulation/>}/>
-                            <Route path="*" element={<NotFound/>}/>
-                            <Route path="/account" element={<ProtectedRoute element={<Account/>}/>}/>
-                            <Route path="/compare" element={<ProtectedRoute element={<CompareSimulations/>}/>}/>
-                            <Route path="/infopages" element={<InfoPage/>}></Route>
+                            <Route element={<RouteLayout/>}>
+                                <Route path="/" element={<StockList/>}/>
+                                <Route path="*" element={<NotFound/>}/>
+                                <Route path="/stock-list" element={<StockList/>}/>
+                                <Route path="/stock-overview" element={<StockOverview/>}/>
+                                <Route path="/infopages" element={<InfoPage/>}></Route>
+                                <Route path="/strategy-tester" element={<Simulation/>}/>
+                                <Route element={<ProtectedRoute/>}>
+                                    <Route path="/account" element={<Account/>}/>
+                                    <Route path="/compare" element={<CompareSimulations/>}/>
+                                </Route>
+                            </Route>
                         </Routes>
                     </BrowserRouter>
                 </QueryClientProvider>
