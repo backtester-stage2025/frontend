@@ -18,6 +18,7 @@ interface SimulationTabsProps {
     simulationReport: SimulationReport[] | undefined;
     lastSimulationRequest: SimulationRequest | null;
     isLoadingReport: boolean;
+    currencyType?: string;
 }
 
 export function SimulationTabs({
@@ -27,7 +28,8 @@ export function SimulationTabs({
                                    handleToggleFilter,
                                    simulationReport,
                                    lastSimulationRequest,
-                                   isLoadingReport
+                                   isLoadingReport,
+                                   currencyType
                                }: Readonly<SimulationTabsProps>) {
     const [tabValue, setTabValue] = useState(0);
 
@@ -52,7 +54,7 @@ export function SimulationTabs({
                     {isRunning ? (
                         <Loader/>
                     ) : (
-                        result && <InvestmentPerformanceView portfolioData={result}/>
+                        result && <InvestmentPerformanceView portfolioData={result} currencyPreference={currencyType}/>
                     )}
                 </Box>
             )}
@@ -63,7 +65,7 @@ export function SimulationTabs({
                     {isRunning ? (
                         <Loader/>
                     ) : (
-                        result && <StockHoldingChart portfolioData={result}/>
+                        result && <StockHoldingChart portfolioData={result} currencyPreference={currencyType}/>
                     )}
                 </Box>
             )}
@@ -79,6 +81,7 @@ export function SimulationTabs({
                                 portfolioData={result}
                                 showOnlyTradesDays={showOnlyTradesDays}
                                 onToggleFilter={handleToggleFilter}
+                                currencyPreference={currencyType}
                             />
                         )
                     )}

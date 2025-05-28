@@ -48,6 +48,7 @@ export function Simulation() {
             setResult(simulation.userPortfolios);
             setStockReportRequest(simulation.stockSimulationRequest);
             setLastSimulationRequest(simulation.stockSimulationRequest);
+            setCurrencyType(simulation.currencyType);
         }
     }, [simulation]);
 
@@ -163,7 +164,7 @@ export function Simulation() {
                                 handleToggleFilter={handleToggleFilter} simulationReport={simulationReport}
                                 lastSimulationRequest={lastSimulationRequest}
                                 isLoadingReport={isLoadingReport}
-                                currencyPreference={currencyType}/>
+                                currencyType={currencyType}/>
             )}
 
             <Snackbar

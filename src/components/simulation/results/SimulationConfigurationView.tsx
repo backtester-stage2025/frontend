@@ -1,8 +1,8 @@
 import {Box, Card, CardContent, Chip, Divider, Grid, List, ListItem, ListItemText, Typography} from "@mui/material";
 import {SimulationRequest} from "../../../model/request/SimulationRequest.ts";
 import {
+    formatCurrency,
     formatDateToLocalDateString,
-    formatEuro,
     getIndicatorTypeLabel,
     getSimulationTypeLabel,
     getWeekdayLabel
@@ -39,7 +39,7 @@ export function SimulationConfigurationView({simulationRequest}: Readonly<Simula
                                 <ListItem>
                                     <ListItemText
                                         primary="Start Capital"
-                                        secondary={formatEuro(simulationRequest.startCapital)}
+                                        secondary={formatCurrency(simulationRequest.startCapital)}
                                     />
                                 </ListItem>
                                 {simulationRequest.riskTolerance !== undefined && (

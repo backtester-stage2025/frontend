@@ -7,4 +7,5 @@ export interface SimulationResult {
     stockSimulationRequest: SimulationRequest;
     userPortfolios: UserPortfolio[];
     id: UUID;
+    currencyType: string;
 }
