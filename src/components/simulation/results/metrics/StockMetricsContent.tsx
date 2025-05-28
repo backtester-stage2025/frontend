@@ -8,7 +8,7 @@ interface StockMetricsContentProps {
 
 export function StockMetricsContent({simulationReport}: Readonly<StockMetricsContentProps>) {
     if (simulationReport) {
-        return <StockMetricsView stockMetrics={simulationReport.stockMetrics} stockName={simulationReport.stockName}/>
+        return <StockMetricsView simulationReport={simulationReport}/>
     } else {
         return (
             <Box sx={{p: 3, textAlign: 'center'}}>

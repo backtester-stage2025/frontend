@@ -101,7 +101,7 @@ export function SimulationTabs({
                 <Box>
                     {simulationReports.map((report) => (
                         <StockMetricsContent
-                            key={JSON.stringify(report.stockMetrics)}
+                            key={JSON.stringify(report)}
                             simulationReport={report}
                         />
                     ))}
