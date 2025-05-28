@@ -19,7 +19,7 @@ export async function uploadCsv(file: File, exchange: string, ticker: string, co
 
 export async function deleteCsv(officialName: string): Promise<CsvUploadResponse> {
     return safeApiCall(async () => {
-        const {data} = await axios.delete<CsvUploadResponse>(`/api/user-csv/delete/${officialName}`);
+        const {data} = await axios.delete<CsvUploadResponse>(`/api/user-csv/${officialName}`);
         return data;
     });
 }
