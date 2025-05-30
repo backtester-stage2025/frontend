@@ -329,8 +329,15 @@ export function CsvUploadDialog({open, onClose}: Readonly<CsvUploadDialogProps>)
                 onClose={handleCloseError}
                 anchorOrigin={{vertical: 'top', horizontal: 'center'}}
             >
-                <Alert onClose={handleCloseError} severity="error" sx={{width: '100%', mt: 6}}>
-                    Error uploading CSV: {error?.message ?? "Unknown error"}
+                <Alert
+                    onClose={handleCloseError}
+                    severity="error"
+                    sx={{width: '100%', mt: 6}}
+                >
+                    {/* Split lines */}
+                    {(error?.message ?? "Unknown error").split('\n').map((line) => (
+                        <span key={line}>{line}<br/></span>
+                    ))}
                 </Alert>
             </Snackbar>
         </>
