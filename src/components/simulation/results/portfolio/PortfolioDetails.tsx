@@ -32,7 +32,8 @@ export function PortfolioDetails({portfolio, currencyPreference}: Readonly<Portf
             <Divider sx={{my: 2}}/>
             <Grid container spacing={3}>
                 <Grid size={{xs: 12, md: 6}}>
-                    <ShareHoldingsTable portfolio={portfolio} totalPositions={totalPositions} currencyPreference={currencyPreference}/>
+                    <ShareHoldingsTable portfolio={portfolio} totalPositions={totalPositions}
+                                        currencyPreference={currencyPreference}/>
                 </Grid>
                 <Grid size={{xs: 12, md: 6}}>
                     <TradingActivityTable portfolio={portfolio} hasActivity={hasActivity}/>

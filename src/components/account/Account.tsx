@@ -25,14 +25,14 @@ export function Account() {
 
             <Grid container spacing={4}>
                 <Grid size={4}>
-                    <UserProfile />
+                    <UserProfile/>
                     <Box mt={4}>
-                        <UserSettings />
+                        <UserSettings/>
                     </Box>
                 </Grid>
 
                 <Grid size={8}>
-                    <SimulationHistory />
+                    <SimulationHistory/>
                 </Grid>
             </Grid>
         </Box>

@@ -13,7 +13,10 @@ interface SimulationConfigurationViewProps {
     currencyPreference?: string;
 }
 
-export function SimulationConfigurationView({simulationRequest, currencyPreference}: Readonly<SimulationConfigurationViewProps>) {
+export function SimulationConfigurationView({
+                                                simulationRequest,
+                                                currencyPreference
+                                            }: Readonly<SimulationConfigurationViewProps>) {
     return (
         <Box sx={{p: 2}}>
             <Grid container spacing={3}>

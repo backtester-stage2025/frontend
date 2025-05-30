@@ -49,7 +49,8 @@ export function ShareHoldingsTable({portfolio, totalPositions, currencyPreferenc
                                     <TableCell sx={{fontWeight: 500}}>{sh.stockName}</TableCell>
                                     <TableCell align="right">{sh.totalSharesOwned.toLocaleString()}</TableCell>
                                     <TableCell align="right">{formatCurrency(sh.price, currencyPreference)}</TableCell>
-                                    <TableCell align="right">{formatCurrency(sh.price * sh.totalSharesOwned, currencyPreference)}</TableCell>
+                                    <TableCell
+                                        align="right">{formatCurrency(sh.price * sh.totalSharesOwned, currencyPreference)}</TableCell>
                                 </TableRow>
                             ))}
                     </TableBody>

@@ -8,7 +8,12 @@ interface CashFlowSummaryProps {
     currencyPreference?: string;
 }
 
-export function CashFlowSummary({totalBought, totalSold, totalTransactionFees, currencyPreference}: Readonly<CashFlowSummaryProps>) {
+export function CashFlowSummary({
+                                    totalBought,
+                                    totalSold,
+                                    totalTransactionFees,
+                                    currencyPreference
+                                }: Readonly<CashFlowSummaryProps>) {
     return (
         <Box sx={{
             mt: 2,

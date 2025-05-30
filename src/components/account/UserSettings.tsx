@@ -1,4 +1,14 @@
-import {Card, CardContent, CardHeader, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, Typography} from "@mui/material";
+import {
+    Card,
+    CardContent,
+    CardHeader,
+    FormControl,
+    InputLabel,
+    MenuItem,
+    Select,
+    SelectChangeEvent,
+    Typography
+} from "@mui/material";
 import {useAuth} from "../../context/AuthContext";
 import {CurrencyType, CurrencyTypeDisplay} from "../../model/CurrencyType";
 import {useUpdateUserCurrencyType} from "../../hooks/useAppUser";

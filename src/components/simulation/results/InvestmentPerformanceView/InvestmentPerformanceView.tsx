@@ -4,14 +4,17 @@ import {useMemo} from "react";
 import {UserPortfolio} from "../../../../model/simulation/UserPortfolio.ts";
 import {ProfitChart} from "./ProfitChart.tsx";
 import {InvestmentSummaryCards} from "./InvestmentSummaryCards.tsx";
-import { CurrencyTypeDisplay } from "../../../../model/CurrencyType.ts";
+import {CurrencyTypeDisplay} from "../../../../model/CurrencyType.ts";
 
 interface InvestmentPerformanceViewProps {
     portfolioData: UserPortfolio[];
     currencyPreference?: string;
 }
 
-export function InvestmentPerformanceView({ portfolioData, currencyPreference }: Readonly<InvestmentPerformanceViewProps>) {
+export function InvestmentPerformanceView({
+                                              portfolioData,
+                                              currencyPreference
+                                          }: Readonly<InvestmentPerformanceViewProps>) {
     const summaryData = useMemo(() => {
         if (!portfolioData || portfolioData.length === 0) return null;
 
@@ -77,7 +80,8 @@ export function InvestmentPerformanceView({ portfolioData, currencyPreference }:
                 </Box>
             }
 
-            <ProfitChart portfolioData={portfolioData} currencyLabel={currencyLabel} currencyPreference={currencyPreference}/>
+            <ProfitChart portfolioData={portfolioData} currencyLabel={currencyLabel}
+                         currencyPreference={currencyPreference}/>
         </Paper>
     )
 }

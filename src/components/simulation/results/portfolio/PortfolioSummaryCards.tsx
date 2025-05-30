@@ -15,13 +15,13 @@ interface PortfolioSummaryCardsProps {
 }
 
 export function PortfolioSummaryCards({
-    portfolio,
-    totalPositions,
-    totalBought,
-    totalSold,
-    hasActivity,
-    currencyPreference
-}: Readonly<PortfolioSummaryCardsProps>
+                                          portfolio,
+                                          totalPositions,
+                                          totalBought,
+                                          totalSold,
+                                          hasActivity,
+                                          currencyPreference
+                                      }: Readonly<PortfolioSummaryCardsProps>
 ) {
 
     const totalShares = Object.values(portfolio.shareHoldings).reduce((sum, sh) => sum + sh.totalSharesOwned, 0);
@@ -34,7 +34,8 @@ export function PortfolioSummaryCards({
                         <Typography variant="subtitle2" color="text.secondary">Total Value</Typography>
                         <AccountBalanceIcon color="primary" fontSize="small"/>
                     </Box>
-                    <Typography variant="h6">{formatCurrency(portfolio.totalPortfolioValue, currencyPreference)}</Typography>
+                    <Typography
+                        variant="h6">{formatCurrency(portfolio.totalPortfolioValue, currencyPreference)}</Typography>
                     <Typography variant="caption" color="text.secondary">
                         Cash: {formatCurrency(portfolio.cashBalance, currencyPreference)}
                     </Typography>

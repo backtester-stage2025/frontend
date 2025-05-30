@@ -2,7 +2,7 @@ import {IndicatorDetails, SimulationRequest} from "../../model/request/Simulatio
 import {IndicatorType} from "../../model/request/IndicatorType.ts";
 import {SimulationTypes} from "../../model/request/SimulationTypes.ts";
 import {SimulationResult} from "../../model/simulation/SimulationResult.ts";
-import { formatCurrency } from "../formatService.ts";
+import {formatCurrency} from "../formatService.ts";
 
 export function extractRequestDetails(result: SimulationResult): Record<string, string> {
     const {startDate, endDate, brokerName, stockNames, startCapital, indicators} = result.stockSimulationRequest;
