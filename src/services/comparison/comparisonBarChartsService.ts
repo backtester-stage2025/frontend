@@ -1,4 +1,5 @@
 import {SimulationResult} from "../../model/simulation/SimulationResult.ts";
+import {countDaysSimulated} from "./dayCountService.ts";
 
 
 export function getSingleMetricChartOptions(label: string, values: number[], colors: string[], formatter: (x: number) => string): SimulationResult {
@@ -44,10 +45,7 @@ export function getMetricsForBarCharts(results: SimulationResult[]) {
     return [
         {
             label: "Simulation Length (days)",
-            values: results.map(r => countDaysBetween(
-                r.stockSimulationRequest.startDate,
-                r.stockSimulationRequest.endDate
-            )),
+            values: results.map(countDaysSimulated),
             formatter: (x: number) => x.toFixed() + " days"
         },
         {
@@ -71,10 +69,6 @@ export function getMetricsForBarCharts(results: SimulationResult[]) {
             formatter: (x: number) => "$" + x.toFixed(2)
         }
     ];
-}
-
-function countDaysBetween(start: Date, end: Date) {
-    return Math.floor((new Date(end).getTime() - new Date(start).getTime()) / (1000 * 3600 * 24));
 }
 
 function getProfitMargin(result: SimulationResult): number {

@@ -1,11 +1,14 @@
 import {SimulationResult} from "../../model/simulation/SimulationResult.ts";
 import {UserPortfolio} from "../../model/simulation/UserPortfolio.ts";
+import {countDaysBetween} from "./dayCountService.ts";
 
 export function getNormalizedComparisonChartOptions(results: SimulationResult[], colors: string[]) {
     const normalize = (portfolios: UserPortfolio[]) => {
         const startValue = portfolios[0]?.totalPortfolioValue || 1;
-        return portfolios.map((portfolio, relativeDay) => ({
-            x: relativeDay,
+        const day1 = new Date(portfolios[0].date)
+
+        return portfolios.map((portfolio) => ({
+            x: countDaysBetween(day1, new Date(portfolio.date)),
             y: (portfolio.totalPortfolioValue / startValue) * 100,
         }));
     };
