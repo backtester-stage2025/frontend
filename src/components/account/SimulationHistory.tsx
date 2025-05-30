@@ -13,7 +13,7 @@ const MAX_SELECT_LENGTH = 5;
 const MIN_SELECT_LENGTH = 2;
 
 export function SimulationHistory() {
-    const {isLoading, isError, simulationHistory} = useSimulationHistory();
+    const {isLoading, isError, simulationHistory, refetch} = useSimulationHistory();
 
     const navigate = useNavigate();
 
@@ -87,6 +87,7 @@ export function SimulationHistory() {
                         removeSimulation={unselectSimulationForComparison}
                         disableSelection={selectedSimulationsForComparison.length === MAX_SELECT_LENGTH && !selectedSimulationsForComparison.find(s => s.id === simulation.id)}
                         shareSimulation={handleShareSimulation}
+                        onDelete={() => refetch()}
                     />
                 )}
                 {selectedSimulationsForComparison.length >= MIN_SELECT_LENGTH && (
