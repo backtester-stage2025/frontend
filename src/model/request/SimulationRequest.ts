@@ -20,4 +20,6 @@ export interface IndicatorDetails {
     movingAverageShortDays?: number;
     movingAverageLongDays?: number;
     breakoutDays?: number;
+    macdShortDays?: number;
+    macdLongDays?: number;
 }
