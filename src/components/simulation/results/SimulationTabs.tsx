@@ -15,9 +15,8 @@ interface SimulationTabsProps {
     result: UserPortfolio[];
     showOnlyTradesDays: boolean;
     handleToggleFilter: (event: ChangeEvent<HTMLInputElement>) => void;
-    simulationReport: SimulationReport[] | undefined;
+    simulationReports: SimulationReport[] | undefined;
     lastSimulationRequest: SimulationRequest | null;
-    isLoadingReport: boolean;
     currencyType?: string;
 }
 
@@ -26,9 +25,8 @@ export function SimulationTabs({
                                    result,
                                    showOnlyTradesDays,
                                    handleToggleFilter,
-                                   simulationReport,
+                                   simulationReports,
                                    lastSimulationRequest,
-                                   isLoadingReport,
                                    currencyType
                                }: Readonly<SimulationTabsProps>) {
     const [tabValue, setTabValue] = useState(0);
@@ -102,12 +100,11 @@ export function SimulationTabs({
             )}
 
             {/* Stock Metrics Tab */}
-            {tabValue === 4 && simulationReport && (
+            {tabValue === 4 && simulationReports && (
                 <Box>
-                    {simulationReport.map((report) => (
+                    {simulationReports.map((report) => (
                         <StockMetricsContent
-                            key={JSON.stringify(report.stockMetrics)}
-                            isLoadingReport={isLoadingReport}
+                            key={JSON.stringify(report)}
                             simulationReport={report}
                         />
                     ))}
