@@ -1,13 +1,12 @@
 import {SimulationResult} from "../../model/simulation/SimulationResult.ts";
-import {countDaysSimulated} from "./dayCountService.ts";
+import {countDaysBetween} from "./dayCountService.ts";
 
-
-export function getSingleMetricChartOptions(label: string, values: number[], colors: string[], formatter: (x: number) => string): SimulationResult {
+export function getSingleMetricChartOptions(label: string, values: number[], colors: string[], formatter: (x: number) => string) {
     const minVal = Math.min(...values);
     const maxVal = Math.max(...values);
 
     const chartMin = minVal < 0 ? minVal * 1.5 : 0;
-    const chartMax = maxVal > 0 ? maxVal * 1.5 : minVal * -1;
+    const chartMax = maxVal > 0 ? maxVal * 1.5 : minVal * -0.1;
 
     return {
         animationEnabled: true,
@@ -45,12 +44,20 @@ export function getMetricsForBarCharts(results: SimulationResult[]) {
     return [
         {
             label: "Simulation Length (days)",
-            values: results.map(countDaysSimulated),
+            values: results.map(r => countDaysBetween(
+                r.stockSimulationRequest.startDate,
+                r.stockSimulationRequest.endDate
+            )),
             formatter: (x: number) => x.toFixed() + " days"
         },
         {
-            label: "Total Profit Margin (%)",
-            values: results.map(getProfitMargin),
+            label: "Total Profit Margins (%)",
+            values: results.map(getProfitMarginPercentage),
+            formatter: (x: number) => x.toFixed(1) + "%"
+        },
+        {
+            label: "Profit margins without fees (%)",
+            values: results.map(getProfitMarginPercentageIgnoreFees),
             formatter: (x: number) => x.toFixed(1) + "%"
         },
         {
@@ -62,16 +69,11 @@ export function getMetricsForBarCharts(results: SimulationResult[]) {
             label: "Total Transactions",
             values: results.map(getTransactionCount),
             formatter: (x: number) => x.toFixed() + " transactions"
-        },
-        {
-            label: "Total Fees",
-            values: results.map(getTotalFees),
-            formatter: (x: number) => "$" + x.toFixed(2)
         }
     ];
 }
 
-function getProfitMargin(result: SimulationResult): number {
+function getProfitMarginPercentage(result: SimulationResult): number {
     const start = result.stockSimulationRequest.startCapital;
     const end = result.userPortfolios[result.userPortfolios.length - 1]?.totalPortfolioValue ?? start;
     return ((end - start) / start) * 100;
@@ -88,6 +90,11 @@ function getTransactionCount(result: SimulationResult): number {
     return result.userPortfolios.reduce((sum, p) => sum + p.sharesBought.filter(st => st.totalSharesBought != 0).length, 0);
 }
 
-function getTotalFees(result: SimulationResult): number {
-    return result.userPortfolios.flatMap(p => p.sharesBought).reduce((sum, tx) => sum + tx.transactionFee, 0);
+function getProfitMarginPercentageIgnoreFees(result: SimulationResult): number {
+    const totalFee = result.userPortfolios.flatMap(p => p.sharesBought)
+        .reduce((sum, tx) => sum + tx.transactionFee, 0);
+    const start = result.stockSimulationRequest.startCapital;
+    const end = result.userPortfolios[result.userPortfolios.length - 1]?.totalPortfolioValue ?? start;
+    const totalProfits = end + totalFee - start;
+    return totalProfits / start * 100;
 }
