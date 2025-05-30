@@ -1,7 +1,7 @@
 import {SimulationResult} from "../../model/simulation/SimulationResult.ts";
 
 
-export function getSingleMetricChartOptions(label: string, values: number[], colors: string[]) {
+export function getSingleMetricChartOptions(label: string, values: number[], colors: string[], formatter: (x: number) => string): SimulationResult {
     const minVal = Math.min(...values);
     const maxVal = Math.max(...values);
 
@@ -32,7 +32,8 @@ export function getSingleMetricChartOptions(label: string, values: number[], col
                 dataPoints: values.map((value, index) => ({
                     label: `Simulation ${index + 1}`,
                     y: value,
-                    color: colors[index % colors.length]
+                    color: colors[index % colors.length],
+                    toolTipContent: `Simulation ${index + 1}: ${formatter(value)}`
                 }))
             }
         ]
@@ -47,22 +48,27 @@ export function getMetricsForBarCharts(results: SimulationResult[]) {
                 r.stockSimulationRequest.startDate,
                 r.stockSimulationRequest.endDate
             )),
+            formatter: (x: number) => x.toFixed() + " days"
         },
         {
             label: "Total Profit Margin (%)",
-            values: results.map(getProfitMargin)
+            values: results.map(getProfitMargin),
+            formatter: (x: number) => x.toFixed(1) + "%"
         },
         {
             label: "Avg Daily Growth (%)",
-            values: results.map(getAverageDailyGrowth)
+            values: results.map(getAverageDailyGrowth),
+            formatter: (x: number) => x.toFixed(3) + "%"
         },
         {
             label: "Total Transactions",
-            values: results.map(getTransactionCount)
+            values: results.map(getTransactionCount),
+            formatter: (x: number) => x.toFixed() + " transactions"
         },
         {
             label: "Total Fees",
-            values: results.map(getTotalFees)
+            values: results.map(getTotalFees),
+            formatter: (x: number) => "$" + x.toFixed(2)
         }
     ];
 }
