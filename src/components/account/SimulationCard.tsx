@@ -12,6 +12,7 @@ import {SimulationSummary} from "../../model/simulation/SimulationSummary.ts";
 import {UUID} from "../../model/UUID.ts";
 import ShareIcon from '@mui/icons-material/Share';
 import {CompareCheckbox} from "./CompareCheckbox.tsx";
+import {simulationTypeOptions} from "../../model/request/SimulationTypes.ts";
 
 interface SimulationCardProps {
     simulation: SimulationSummary;
@@ -123,7 +124,9 @@ export function SimulationCard({
                                     fontSize="small"
                                     sx={{mr: 1, color: 'secondary.main'}}/>
                                 <Typography variant="body2">
-                                    {simulation.stockSimulationRequest.simulationType}
+                                    {simulationTypeOptions.find(
+                                        s=>s.value === simulation.stockSimulationRequest.simulationType
+                                    )?.label ?? "Unknown simulation type"}
                                 </Typography>
                             </Box>
 
@@ -167,10 +170,6 @@ export function SimulationCard({
                                 {isPositiveReturn ? "+" : "-"} ${absoluteGain.toLocaleString()}
                             </Typography>
                         </Box>
-                        <Typography variant="caption" color="text.secondary"
-                                    sx={{display: 'block'}}>
-                            {simulation.totalPortfolioCount} days simulated
-                        </Typography>
                     </Box>
                     <Stack direction="row" spacing={1}>
                         <Button
