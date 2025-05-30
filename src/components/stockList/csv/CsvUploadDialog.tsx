@@ -173,7 +173,7 @@ export function CsvUploadDialog({open, onClose}: Readonly<CsvUploadDialogProps>)
                     onClose();
                 },
                 onError: (error) => {
-                    if (error?.message.includes("already exists. Please use a different name.")) {
+                    if (error?.message.includes("continue")) {
                         setShowOverwriteDialog(true);
                     } else {
                         setShowError(true);
@@ -270,7 +270,7 @@ export function CsvUploadDialog({open, onClose}: Readonly<CsvUploadDialogProps>)
                                 value={form.currencyType}
                                 onChange={handleCurrencyChange}
                                 disabled={isRunning}
-                            >
+                                variant={"outlined"}>
                                 {Object.values(CurrencyType).map((currency) => (
                                     <MenuItem key={currency} value={currency}>
                                         {currency}
