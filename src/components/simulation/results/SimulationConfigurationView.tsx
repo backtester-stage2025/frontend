@@ -130,6 +130,16 @@ export function SimulationConfigurationView({
                                                         Breakout Period: {indicator.breakoutDays} days
                                                     </Typography>
                                                 )}
+                                                {indicator.macdShortDays && (
+                                                    <Typography variant="body2" color="text.secondary">
+                                                        Short MACD: {indicator.macdShortDays} days
+                                                    </Typography>
+                                                )}
+                                                {indicator.macdLongDays && (
+                                                    <Typography variant="body2" color="text.secondary">
+                                                        Long MACD: {indicator.macdLongDays} days
+                                                    </Typography>
+                                                )}
                                             </Box>
                                             {index < simulationRequest.indicators.length - 1 && (
                                                 <Divider sx={{mt: 1}}/>

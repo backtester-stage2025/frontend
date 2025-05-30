@@ -53,9 +53,11 @@ export function extractResults(result: SimulationResult): Record<string, string>
 function indicatorDescription(details: IndicatorDetails) {
     switch (details.indicator) {
         case IndicatorType.MOVING_AVERAGE_CROSSOVER:
-            return `Moving average crossover\n( ${details.movingAverageShortDays} and ${details.movingAverageLongDays} days)`;
+            return `Moving average crossover\n(${details.movingAverageShortDays} and ${details.movingAverageLongDays} days)`;
         case IndicatorType.BREAKOUT:
             return `Breakout rule\n(${details.breakoutDays} days)`;
+        case  IndicatorType.MACD:
+            return `MACD\n(${details.macdShortDays} and ${details.macdLongDays} days)`;
     }
 }
 
