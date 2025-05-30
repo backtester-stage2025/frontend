@@ -90,7 +90,10 @@ export function SimulationTabs({
             {tabValue === 3 && (
                 <Box>
                     {lastSimulationRequest ? (
-                        <SimulationConfigurationView simulationRequest={lastSimulationRequest}/>
+                        <SimulationConfigurationView
+                            simulationRequest={lastSimulationRequest}
+                            currencyPreference={currencyType}
+                        />
                     ) : (
                         <Typography variant="body1" color="text.secondary">
                             No simulation configuration available
