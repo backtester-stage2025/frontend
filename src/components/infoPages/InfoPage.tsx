@@ -1,4 +1,4 @@
-import {Box, CssBaseline, List, Paper, Toolbar} from "@mui/material";
+import {Box, CssBaseline, List, Paper} from "@mui/material";
 import QueryStatsIcon from "@mui/icons-material/QueryStats";
 import FindInPageIcon from '@mui/icons-material/FindInPage';
 import CircleIcon from '@mui/icons-material/Circle';
@@ -157,7 +157,6 @@ export function InfoPage() {
                     marginLeft: `${panelWidth + 20}px`,
                 }}
             >
-                <Toolbar/>
                 {activeTab ? tabComponents[activeTab] : <DefaultInfo/>}
             </Box>
         </Box>
