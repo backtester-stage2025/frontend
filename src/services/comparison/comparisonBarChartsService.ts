@@ -5,6 +5,9 @@ export function getSingleMetricChartOptions(label: string, values: number[], col
     const minVal = Math.min(...values);
     const maxVal = Math.max(...values);
 
+    const chartMin = minVal < 0 ? minVal * 1.5 : 0;
+    const chartMax = maxVal > 0 ? maxVal * 1.5 : minVal * -1;
+
     return {
         animationEnabled: true,
         theme: "light2",
@@ -13,8 +16,8 @@ export function getSingleMetricChartOptions(label: string, values: number[], col
         },
         axisY: {
             title: label,
-            minimum: minVal < 0 ? minVal * 1.5 : 0,
-            maximum: maxVal > 0 ? maxVal * 1.5 : minVal * -0.2
+            minimum: chartMin,
+            maximum: chartMax
         },
         axisX: {
             title: "",
