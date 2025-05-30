@@ -86,7 +86,7 @@ export function StockChart({stockName}: Readonly<StockChartProps>) {
     return (
         <Paper elevation={3} sx={{p: 3, borderRadius: 2}}>
             {/* Header */}
-            <Box sx={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3}}>
+            <Box sx={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3, width: '75vw'}}>
                 <Typography variant="h5" component="h2" sx={{display: 'flex', alignItems: 'center'}}>
                     <ShowChart sx={{mr: 1}}/> {stockName} Technical Analysis
                 </Typography>
@@ -128,7 +128,7 @@ export function StockChart({stockName}: Readonly<StockChartProps>) {
                 </Box>
             </Box>
 
-            {/* Price Chart */}
+            {/* Price Chart with moving averages*/}
             <Box sx={{mb: settings.showMacd ? 3 : 0}}>
                 <MovingAverageChart stockName={stockName} stockQuotes={stockQuotes} dateRange={dateRange}
                                     settings={settings}/>
