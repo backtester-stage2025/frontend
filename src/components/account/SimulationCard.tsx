@@ -13,6 +13,9 @@ import {UUID} from "../../model/UUID.ts";
 import ShareIcon from '@mui/icons-material/Share';
 import {CompareCheckbox} from "./CompareCheckbox.tsx";
 import {simulationTypeOptions} from "../../model/request/SimulationTypes.ts";
+import DeleteIcon from "@mui/icons-material/Delete";
+import IconButton from "@mui/material/IconButton";
+import {useDeleteSimulation} from "../../hooks/useSimulationHistory";
 
 interface SimulationCardProps {
     simulation: SimulationSummary;
@@ -22,6 +25,7 @@ interface SimulationCardProps {
     removeSimulation: (result: SimulationSummary) => void;
     disableSelection: boolean;
     shareSimulation: (id: UUID) => void;
+    onDelete?: (id: UUID) => void;
 }
 
 export function SimulationCard({
@@ -31,7 +35,8 @@ export function SimulationCard({
                                    addSimulation,
                                    removeSimulation,
                                    disableSelection,
-                                   shareSimulation
+                                   shareSimulation,
+                                   onDelete
                                }: Readonly<SimulationCardProps>) {
     const returnPercentage = calculateReturnPercentage(simulation);
     const finalValue = simulation.latestPortfolioValue || 0;
@@ -40,6 +45,16 @@ export function SimulationCard({
     const currencyType = simulation.currencyType ?? "EUR";
 
     const absoluteGain = Math.abs(finalValue - startCapital);
+
+    const {sendRequest: deleteSimulation, isRunning: isDeleting} = useDeleteSimulation();
+
+    const handleDelete = () => {
+        deleteSimulation(simulation.id, {
+            onSuccess: () => {
+                if (onDelete) onDelete(simulation.id);
+            }
+        });
+    };
 
     return (
         <Card
@@ -187,6 +202,15 @@ export function SimulationCard({
                         >
                             Share
                         </Button>
+                        <IconButton
+                            aria-label="delete"
+                            color="error"
+                            onClick={handleDelete}
+                            disabled={isDeleting}
+                            sx={{ml: 0.5}}
+                        >
+                            <DeleteIcon/>
+                        </IconButton>
                     </Stack>
                 </Box>
             </CardContent>

@@ -1,16 +1,17 @@
 import {useMutation, useQuery} from "@tanstack/react-query";
-import {getSimulationById, getSimulationHistory, shareSimulation} from "../services/SimulationHistoryService.ts";
+import {getSimulationById, getSimulationHistory, shareSimulation, deleteSimulation} from "../services/SimulationHistoryService.ts";
 import {UUID} from "../model/UUID.ts";
 
 export function useSimulationHistory() {
-    const {isLoading, isError, data: simulationHistory} = useQuery({
+    const {isLoading, isError, data: simulationHistory, refetch} = useQuery({
         queryKey: ['simulationHistory'],
         queryFn: () => getSimulationHistory()
     });
     return {
         isLoading,
         isError,
-        simulationHistory
+        simulationHistory,
+        refetch
     }
 }
 
@@ -51,6 +52,19 @@ export function useGetSimulationsByIds(ids: UUID[] | null) {
 export function useShareSimulation() {
     const {mutate: sendRequest, isPending: isRunning, isError, error} = useMutation({
         mutationFn: (simulationId: string) => shareSimulation(simulationId)
+    });
+
+    return {
+        sendRequest,
+        isRunning,
+        isError,
+        error
+    }
+}
+
+export function useDeleteSimulation() {
+    const {mutate: sendRequest, isPending: isRunning, isError, error} = useMutation({
+        mutationFn: (simulationId: string) => deleteSimulation(simulationId)
     });
 
     return {

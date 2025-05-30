@@ -23,3 +23,9 @@ export function shareSimulation(simulationId: string) {
         return data;
     })
 }
+
+export async function deleteSimulation(simulationId: string) {
+    return safeApiCall(async () => {
+        await axios.delete(`/api/simulation-history/${simulationId}`);
+    });
+}
