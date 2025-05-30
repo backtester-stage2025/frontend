@@ -1,13 +1,19 @@
 import {Box, Grid, Typography} from "@mui/material";
-import {formatEuro} from "../../../../services/formatService.ts";
+import {formatCurrency} from "../../../../services/formatService.ts";
 
 interface CashFlowSummaryProps {
     totalBought: number;
     totalSold: number;
     totalTransactionFees: number;
+    currencyPreference?: string;
 }
 
-export function CashFlowSummary({totalBought, totalSold, totalTransactionFees}: Readonly<CashFlowSummaryProps>) {
+export function CashFlowSummary({
+                                    totalBought,
+                                    totalSold,
+                                    totalTransactionFees,
+                                    currencyPreference
+                                }: Readonly<CashFlowSummaryProps>) {
     return (
         <Box sx={{
             mt: 2,
@@ -29,7 +35,9 @@ export function CashFlowSummary({totalBought, totalSold, totalTransactionFees}: 
                 <Grid size={{xs: 6}} sx={{textAlign: 'right'}}>
                     <Typography variant="body2" color="success.main">{totalBought} shares</Typography>
                     <Typography variant="body2" color="error.main">{totalSold} shares</Typography>
-                    <Typography variant="body2" color="warning.main">{formatEuro(totalTransactionFees)}</Typography>
+                    <Typography variant="body2" color="warning.main">
+                        {formatCurrency(totalTransactionFees, currencyPreference)}
+                    </Typography>
                 </Grid>
             </Grid>
         </Box>

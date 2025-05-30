@@ -15,7 +15,6 @@ import {CloseButton} from "../../util/CloseButton.tsx";
 import {useBrokers} from "../../../hooks/useBrokers.ts";
 import {Loader} from "../../util/Loader.tsx";
 import {ErrorAlert} from "../../util/Alerts.tsx";
-
 import {Broker} from "../../../model/Broker.ts";
 import {FormField} from "./FormField.tsx";
 import {TradingIndicatorsSection} from "./TradingIndicatorsSection.tsx";
@@ -25,6 +24,8 @@ import {Weekday} from "../../../model/Weekday.ts";
 import {StockDetails} from "../../../model/StockDetails.ts";
 import {getFieldNameStockDetails} from "../../../services/formatService.ts";
 import {TOOLTIP_MESSAGES} from "../../../constants/tooltipMessages.ts";
+import {useAuth} from "../../../context/AuthContext.tsx";
+import {CurrencyTypeDisplay} from "../../../model/CurrencyType.ts";
 
 interface BuyAndHoldSimulationProps {
     isOpen: boolean;
@@ -44,6 +45,7 @@ export function SimulationDialog({
                                  }: Readonly<BuyAndHoldSimulationProps>) {
     const {isLoading: isLoadingStockDate, isError: isErrorLoadingStockData, stockData} = useStockData();
     const {isLoading: isLoadingBrokers, isError: isErrorLoadingBrokers, brokers} = useBrokers();
+    const {currencyPreference} = useAuth();
 
     const [error, setError] = useState<Error | null>(serverError ?? null);
     const [showErrorOverlay, setShowErrorOverlay] = useState<boolean>(!!serverError);
@@ -84,8 +86,16 @@ export function SimulationDialog({
 
     const fieldConfigs: FormField<SimulationRequest>[] = [
         {
-            name: "brokerName", type: "autocomplete", placeholder: "Broker", required: true,
-            options: brokers?.map((b: Broker) => `${b.name} (Fee: ${b.transactionFee.toFixed(2)}€)`),
+            name: "brokerName",
+            type: "autocomplete",
+            placeholder: "Broker",
+            required: true,
+            options: brokers?.map((b: Broker) => {
+                const currencySymbol = currencyPreference
+                    ? CurrencyTypeDisplay[currencyPreference] || currencyPreference
+                    : "€";
+                return `${b.name} (Fee: ${b.transactionFee.toFixed(2)}${currencySymbol})`;
+            }),
             tooltip: {
                 title: TOOLTIP_MESSAGES.simulation.brokerTitle,
                 description: TOOLTIP_MESSAGES.simulation.brokerInfo
@@ -97,7 +107,19 @@ export function SimulationDialog({
         },
         {name: "startDate", type: "date", placeholder: "Start Date", required: true},
         {name: "endDate", type: "date", placeholder: "End Date", required: true},
-        {name: "startCapital", type: "number", placeholder: "Start Capital", required: true},
+        {
+            name: "startCapital",
+            type: "number",
+            placeholder: (() => {
+                let placeholder = "Start Capital";
+                if (currencyPreference) {
+                    const display = CurrencyTypeDisplay[currencyPreference] || currencyPreference;
+                    placeholder += " (" + display + ")";
+                }
+                return placeholder;
+            })(),
+            required: true,
+        },
         {
             name: "simulationType", type: "select", placeholder: "Position Adjustment", required: true,
             options: simulationTypeOptions,

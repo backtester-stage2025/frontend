@@ -58,7 +58,7 @@ export function getMetricsForBarCharts(results: SimulationResult[]) {
             values: results.map(getTransactionCount)
         },
         {
-            label: "Total Fees ($)",
+            label: "Total Fees",
             values: results.map(getTotalFees)
         }
     ];

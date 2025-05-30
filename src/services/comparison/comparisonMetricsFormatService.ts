@@ -2,6 +2,7 @@ import {IndicatorDetails, SimulationRequest} from "../../model/request/Simulatio
 import {IndicatorType} from "../../model/request/IndicatorType.ts";
 import {SimulationTypes} from "../../model/request/SimulationTypes.ts";
 import {SimulationResult} from "../../model/simulation/SimulationResult.ts";
+import {formatCurrency} from "../formatService.ts";
 
 export function extractRequestDetails(result: SimulationResult): Record<string, string> {
     const {startDate, endDate, brokerName, stockNames, startCapital, indicators} = result.stockSimulationRequest;
@@ -10,7 +11,7 @@ export function extractRequestDetails(result: SimulationResult): Record<string, 
         "Strategy": positionAdjustment(result.stockSimulationRequest),
         "Indicators used": indicatorDescriptions(indicators),
         "Stocks Used": stockNames.join("\n"),
-        "Start Capital": `$${startCapital.toFixed(2)}`,
+        "Start Capital": formatCurrency(startCapital, result.currencyType),
         "Broker Name": brokerName,
         "Start Date": startDate.toString(),
         "End Date": endDate.toString()
@@ -39,11 +40,11 @@ export function extractResults(result: SimulationResult): Record<string, string>
 
     return {
         "Simulation Length": `${days} days`,
-        "Final Portfolio Value": `$${finalValue.toFixed(2)}`,
+        "Final Portfolio Value": formatCurrency(finalValue, result.currencyType),
         "Profit Margin": `${profitMargin.toFixed(2)}%`,
         "Avg Daily Growth": `${avgGrowth.toFixed(2)}%`,
         "Total Transactions": transactionCount.toString(),
-        "Total Transaction Fees": `$${totalFees.toFixed(2)}`
+        "Total Transaction Fees": formatCurrency(totalFees, result.currencyType)
     };
 }
 

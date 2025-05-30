@@ -30,6 +30,7 @@ export function Simulation() {
     const {sendRequest, isRunning, isError, error} = useStartSimulation();
 
     const [isDialogOpen, setIsDialogOpen] = useState(simulationId == null);
+    const [currencyType, setCurrencyType] = useState<string | undefined>("EUR");
     const [result, setResult] = useState<UserPortfolio[]>(simulation?.userPortfolios ?? []);
     const [showOnlyTradesDays, setShowOnlyTradesDays] = useState(true);
     const [simulationReports, setSimulationReports] = useState<SimulationReport[]>(simulation?.simulationReports ?? []);
@@ -46,6 +47,7 @@ export function Simulation() {
             setResult(simulation.userPortfolios);
             setSimulationReports(simulation.simulationReports);
             setLastSimulationRequest(simulation.stockSimulationRequest);
+            setCurrencyType(simulation.currencyType);
         }
     }, [simulation]);
 
@@ -55,6 +57,7 @@ export function Simulation() {
             onSuccess: (data) => {
                 const portfolios = data.userPortfolios;
                 const saveSuccessful = data.saveSuccessful;
+                const currencyType = data.currencyType;
 
                 setSnackbarMessage(saveSuccessful
                     ? "Simulation successfully saved!"
@@ -62,6 +65,7 @@ export function Simulation() {
                 setSnackbarSeverity(saveSuccessful ? "success" : "error");
                 setSnackbarOpen(true);
 
+                setCurrencyType(currencyType);
                 setResult(portfolios);
                 setIsDialogOpen(false);
 
@@ -130,7 +134,9 @@ export function Simulation() {
                 <SimulationTabs isRunning={isRunning} result={result}
                                 showOnlyTradesDays={showOnlyTradesDays}
                                 handleToggleFilter={handleToggleFilter} simulationReports={simulationReports}
-                                lastSimulationRequest={lastSimulationRequest}/>
+                                lastSimulationRequest={lastSimulationRequest}
+                                currencyType={currencyType}
+                />
             )}
 
             <Snackbar

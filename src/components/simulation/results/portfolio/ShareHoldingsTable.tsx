@@ -11,14 +11,15 @@ import {
     TableRow,
     Typography
 } from "@mui/material";
-import {formatEuro} from "../../../../services/formatService.ts";
+import {formatCurrency} from "../../../../services/formatService.ts";
 
 interface ShareHoldingsTableProps {
     portfolio: UserPortfolio;
     totalPositions: number;
+    currencyPreference?: string;
 }
 
-export function ShareHoldingsTable({portfolio, totalPositions}: Readonly<ShareHoldingsTableProps>) {
+export function ShareHoldingsTable({portfolio, totalPositions, currencyPreference}: Readonly<ShareHoldingsTableProps>) {
     return (
         <>
             <Box sx={{mb: 2}}>
@@ -47,8 +48,9 @@ export function ShareHoldingsTable({portfolio, totalPositions}: Readonly<ShareHo
                                           sx={{'&:nth-of-type(odd)': {bgcolor: 'rgba(0, 0, 0, 0.02)'}}}>
                                     <TableCell sx={{fontWeight: 500}}>{sh.stockName}</TableCell>
                                     <TableCell align="right">{sh.totalSharesOwned.toLocaleString()}</TableCell>
-                                    <TableCell align="right">{formatEuro(sh.price)}</TableCell>
-                                    <TableCell align="right">{formatEuro(sh.price * sh.totalSharesOwned)}</TableCell>
+                                    <TableCell align="right">{formatCurrency(sh.price, currencyPreference)}</TableCell>
+                                    <TableCell
+                                        align="right">{formatCurrency(sh.price * sh.totalSharesOwned, currencyPreference)}</TableCell>
                                 </TableRow>
                             ))}
                     </TableBody>

@@ -16,9 +16,9 @@ import {
 } from "@mui/material";
 import {ChangeEvent, FocusEvent, useState} from "react";
 import {useUploadCsv} from "../../../hooks/useCsvMutations.ts";
-import {CurrencyType} from "../../../model/StockDetails.ts";
 import {SelectChangeEvent} from "@mui/material/Select";
 import {OverwriteTableDialog} from "./OverwriteTableDialog.tsx";
+import {CurrencyType} from "../../../model/CurrencyType.ts";
 
 type CsvUploadDialogProps = {
     open: boolean;

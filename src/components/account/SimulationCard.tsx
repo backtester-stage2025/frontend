@@ -7,7 +7,7 @@ import InsightsIcon from "@mui/icons-material/Insights";
 import DateRangeIcon from "@mui/icons-material/DateRange";
 import ArrowRightAltIcon from "@mui/icons-material/ArrowRightAlt";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
-import {calculateReturnPercentage} from "../../services/formatService.ts";
+import {calculateReturnPercentage, formatCurrency} from "../../services/formatService.ts";
 import {SimulationSummary} from "../../model/simulation/SimulationSummary.ts";
 import {UUID} from "../../model/UUID.ts";
 import ShareIcon from '@mui/icons-material/Share';
@@ -36,8 +36,9 @@ export function SimulationCard({
     const finalValue = simulation.latestPortfolioValue || 0;
     const startCapital = simulation.stockSimulationRequest.startCapital;
     const isPositiveReturn = parseFloat(returnPercentage) >= 0;
+    const currencyType = simulation.currencyType ?? "EUR";
 
-    const absoluteGain = Math.abs(finalValue - startCapital).toFixed(2);
+    const absoluteGain = Math.abs(finalValue - startCapital);
 
     return (
         <Card
@@ -94,10 +95,7 @@ export function SimulationCard({
                                 <AttachMoneyIcon fontSize="small"
                                                  sx={{mr: 1, color: 'info.main'}}/>
                                 <Typography variant="body2">
-                                    Initial: ${startCapital.toLocaleString(undefined, {
-                                    minimumFractionDigits: 2,
-                                    maximumFractionDigits: 2
-                                })}
+                                    Initial: {formatCurrency(startCapital, currencyType)}
                                 </Typography>
                             </Box>
 
@@ -107,10 +105,7 @@ export function SimulationCard({
                                     color: isPositiveReturn ? 'success.main' : 'error.main'
                                 }}/>
                                 <Typography variant="body2" fontWeight="medium">
-                                    Final: ${finalValue.toLocaleString(undefined, {
-                                    minimumFractionDigits: 2,
-                                    maximumFractionDigits: 2
-                                })}
+                                    Final: {formatCurrency(finalValue, currencyType)}
                                 </Typography>
                             </Box>
                         </Stack>
@@ -164,7 +159,7 @@ export function SimulationCard({
                             </Typography>
                             <Typography variant="body1" fontWeight="medium"
                                         color={isPositiveReturn ? "success.dark" : "error.dark"}>
-                                {isPositiveReturn ? "+" : "-"} ${absoluteGain.toLocaleString()}
+                                {isPositiveReturn ? "+" : "-"} {formatCurrency(absoluteGain, currencyType)}
                             </Typography>
                         </Box>
                         <Typography variant="caption" color="text.secondary"

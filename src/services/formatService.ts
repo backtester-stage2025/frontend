@@ -12,8 +12,8 @@ export function formatPercent(value: number) {
     return `${value.toFixed(2)}%`;
 }
 
-export function formatEuro(value: number) {
-    return new Intl.NumberFormat('de-DE', {style: 'currency', currency: 'EUR'}).format(value);
+export function formatCurrency(value: number, currency: string = 'EUR'): string {
+    return new Intl.NumberFormat('de-DE', {style: 'currency', currency: currency}).format(value);
 }
 
 export function formatLargeNumber(value: number): string {
