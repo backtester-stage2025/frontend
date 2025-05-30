@@ -1,10 +1,10 @@
-import {StockMetrics} from "../StockMetrics.ts";
-
 export interface SimulationReport {
     stockName: string,
-    startDate: Date,
-    endDate: Date,
-    startCapital: number,
-    endCapital: number,
-    stockMetrics: StockMetrics
+    averageDailyReturn: number,
+    averageAnnualReturn: number,
+    dailyRisk: number,
+    annualRisk: number,
+    averageDrawdownPercentage: number,
+    maxDrawdownPercentage: number,
+    skewness: number
 }

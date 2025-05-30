@@ -1,6 +1,4 @@
 import {ChangeEvent, useEffect, useState} from "react";
-import {useSimulationReport} from "../../hooks/useSimulationReport.ts";
-import {StockReportRequest} from "../../model/request/StockReportRequest.ts";
 import {Alert, Box, Button, IconButton, Snackbar, Toolbar, Tooltip, Typography} from "@mui/material";
 import {Share as ShareIcon} from "@mui/icons-material";
 import {Loader} from "../util/Loader.tsx";
@@ -14,6 +12,7 @@ import {UUID} from "../../model/UUID.ts";
 import {useAuth} from "../../context/AuthContext.tsx";
 import {ShareSimulationDialog} from "./ShareSimulationDialog.tsx";
 import {SimulationTabs} from "./results/SimulationTabs.tsx";
+import {SimulationReport} from "../../model/simulation/SimulationReport.ts";
 
 export function Simulation() {
     const [searchParams] = useSearchParams();
@@ -33,7 +32,7 @@ export function Simulation() {
     const [isDialogOpen, setIsDialogOpen] = useState(simulationId == null);
     const [result, setResult] = useState<UserPortfolio[]>(simulation?.userPortfolios ?? []);
     const [showOnlyTradesDays, setShowOnlyTradesDays] = useState(true);
-    const [stockReportRequest, setStockReportRequest] = useState<StockReportRequest | null>(simulation?.stockSimulationRequest ?? null);
+    const [simulationReports, setSimulationReports] = useState<SimulationReport[]>(simulation?.simulationReports ?? []);
     const [lastSimulationRequest, setLastSimulationRequest] = useState<SimulationRequest | null>(simulation?.stockSimulationRequest ?? null);
 
     const [snackbarOpen, setSnackbarOpen] = useState(false);
@@ -45,15 +44,10 @@ export function Simulation() {
     useEffect(() => {
         if (simulation) {
             setResult(simulation.userPortfolios);
-            setStockReportRequest(simulation.stockSimulationRequest);
+            setSimulationReports(simulation.simulationReports);
             setLastSimulationRequest(simulation.stockSimulationRequest);
         }
     }, [simulation]);
-
-    const {
-        isLoading: isLoadingReport,
-        simulationReport
-    } = useSimulationReport(stockReportRequest);
 
     const sendAndProcessRequest = (request: SimulationRequest) => {
         setLastSimulationRequest(request);
@@ -72,28 +66,6 @@ export function Simulation() {
                 setIsDialogOpen(false);
 
                 setSimulationId(data.simulationId);
-
-                if (portfolios?.length) {
-                    const firstDate = new Date(portfolios[0].date);
-                    const lastDate = new Date(portfolios[portfolios.length - 1].date);
-                    const firstPortfolioWithShares = portfolios.find(
-                        portfolio => Object.keys(portfolio.sharesBought).length > 0
-                    );
-
-                    const stockNames = firstPortfolioWithShares
-                        ? Object.values(firstPortfolioWithShares.sharesBought).map(share => share.stockName)
-                        : undefined;
-
-                    if (stockNames && stockNames.length > 0) {
-                        const reportRequest: StockReportRequest = {
-                            stockNames,
-                            startCapital: portfolios[0].totalPortfolioValue,
-                            startDate: firstDate,
-                            endDate: lastDate
-                        };
-                        setStockReportRequest(reportRequest);
-                    }
-                }
             }
         });
     };
@@ -154,12 +126,11 @@ export function Simulation() {
             <ShareSimulationDialog shareDialogOpen={shareDialogOpen} setShareDialogOpen={setShareDialogOpen}
                                    simulationId={simulationId as string}/>
 
-            {(result || isRunning || isLoadingReport || isLoadingSimulation) && (
+            {(result || isRunning || isLoadingSimulation) && (
                 <SimulationTabs isRunning={isRunning} result={result}
                                 showOnlyTradesDays={showOnlyTradesDays}
-                                handleToggleFilter={handleToggleFilter} simulationReport={simulationReport}
-                                lastSimulationRequest={lastSimulationRequest}
-                                isLoadingReport={isLoadingReport}/>
+                                handleToggleFilter={handleToggleFilter} simulationReports={simulationReports}
+                                lastSimulationRequest={lastSimulationRequest}/>
             )}
 
             <Snackbar
