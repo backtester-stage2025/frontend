@@ -1,4 +1,4 @@
-import {Alert, Box, Button, CircularProgress, Grid, Paper, Typography} from "@mui/material";
+import {Alert, Box, Button, CircularProgress, Paper, Typography} from "@mui/material";
 import HistoryIcon from "@mui/icons-material/History";
 import {useSimulationHistory} from "../../hooks/useSimulationHistory.ts";
 import {useNavigate} from "react-router-dom";
@@ -50,7 +50,7 @@ export function SimulationHistory() {
     }
 
     return (
-        <Grid size={{xs: 12, md: 8}}>
+        <>
             <Paper elevation={3} sx={{p: 3, borderRadius: 2}}>
                 <Box display="flex" alignItems="center" mb={3}>
                     <HistoryIcon sx={{mr: 1, color: 'primary.main'}}/>
@@ -107,6 +107,6 @@ export function SimulationHistory() {
 
             <ShareSimulationDialog shareDialogOpen={shareDialogOpen} setShareDialogOpen={setShareDialogOpen}
                                    simulationId={simulationIdForShare}/>
-        </Grid>
+        </>
     )
 }

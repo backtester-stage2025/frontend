@@ -3,6 +3,7 @@ import {Box, Grid, Typography} from "@mui/material";
 import {Login} from "../Login";
 import {UserProfile} from "./UserProfile.tsx";
 import {SimulationHistory} from "./SimulationHistory.tsx";
+import {UserSettings} from "./UserSettings.tsx";
 
 
 export function Account() {
@@ -23,9 +24,16 @@ export function Account() {
             </Typography>
 
             <Grid container spacing={4}>
-                <UserProfile/>
+                <Grid size={4}>
+                    <UserProfile/>
+                    <Box mt={4}>
+                        <UserSettings/>
+                    </Box>
+                </Grid>
 
-                <SimulationHistory/>
+                <Grid size={8}>
+                    <SimulationHistory/>
+                </Grid>
             </Grid>
         </Box>
     );

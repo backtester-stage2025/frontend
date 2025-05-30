@@ -1,8 +1,8 @@
 import {Box, Card, CardContent, Chip, Divider, Grid, List, ListItem, ListItemText, Typography} from "@mui/material";
 import {SimulationRequest} from "../../../model/request/SimulationRequest.ts";
 import {
+    formatCurrency,
     formatDateToLocalDateString,
-    formatEuro,
     getIndicatorTypeLabel,
     getSimulationTypeLabel,
     getWeekdayLabel
@@ -10,9 +10,13 @@ import {
 
 interface SimulationConfigurationViewProps {
     simulationRequest: SimulationRequest;
+    currencyPreference?: string;
 }
 
-export function SimulationConfigurationView({simulationRequest}: Readonly<SimulationConfigurationViewProps>) {
+export function SimulationConfigurationView({
+                                                simulationRequest,
+                                                currencyPreference
+                                            }: Readonly<SimulationConfigurationViewProps>) {
     return (
         <Box sx={{p: 2}}>
             <Grid container spacing={3}>
@@ -39,7 +43,7 @@ export function SimulationConfigurationView({simulationRequest}: Readonly<Simula
                                 <ListItem>
                                     <ListItemText
                                         primary="Start Capital"
-                                        secondary={formatEuro(simulationRequest.startCapital)}
+                                        secondary={formatCurrency(simulationRequest.startCapital, currencyPreference)}
                                     />
                                 </ListItem>
                                 {simulationRequest.riskTolerance !== undefined && (

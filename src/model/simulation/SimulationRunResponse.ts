@@ -7,4 +7,5 @@ export interface SimulationRunResponse {
     userPortfolios: UserPortfolio[];
     simulationReports: SimulationReport[];
     saveSuccessful: boolean
+    currencyType: string;
 }

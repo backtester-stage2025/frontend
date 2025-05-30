@@ -9,4 +9,5 @@ export interface SimulationResult {
     userPortfolios: UserPortfolio[];
     simulationReports: SimulationReport[];
     id: UUID;
+    currencyType: string;
 }

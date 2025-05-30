@@ -11,7 +11,8 @@ export const useGoogleAuth = () => {
             try {
                 const userInfo = await authenticateUser(codeResponse.code);
                 addAccessTokenToAuthHeader(userInfo.token);
-                setAuthState(true, userInfo.name, userInfo.email, userInfo.id, userInfo.picture);
+                setAuthState(true, userInfo.name, userInfo.email, userInfo.id, userInfo.picture,
+                    userInfo.currencyType);
             } catch (error) {
                 removeAccessTokenFromAuthHeader();
                 console.error("Authentication failed:", error);

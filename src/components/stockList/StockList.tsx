@@ -1,5 +1,5 @@
 import {useStockData} from "../../hooks/useStockData.ts";
-import {Box, Button, Grid, Tab, Tabs, TextField, Toolbar, Typography} from "@mui/material";
+import {Box, Button, Grid, Tab, Tabs, TextField, Typography} from "@mui/material";
 import {useEffect, useState} from "react";
 import {Loader} from "../util/Loader.tsx";
 import {StockCard} from "./StockCard.tsx";
@@ -101,7 +101,6 @@ export function StockList() {
 
     return (
         <>
-            <Toolbar/>
             <Box sx={{textAlign: 'center', mb: 4}}>
                 <Typography variant="h4" component="h1" sx={{fontWeight: 'bold', mb: 1}}>
                     Available Stocks
@@ -152,8 +151,8 @@ export function StockList() {
             ) : (
                 <Box sx={{width: '95%', maxWidth: 1200, mx: 'auto'}}>
                     <Grid container spacing={2} justifyContent="center">
-                        {filteredStocks.map((stockDetails: StockDetails, index) => (
-                            <Grid size={{xs: 12, sm: 6, md: 4}} key={index}>
+                        {filteredStocks.map((stockDetails: StockDetails) => (
+                            <Grid size={{xs: 12, sm: 6, md: 4}} key={stockDetails.officialName}>
                                 <StockCard
                                     details={stockDetails}
                                     onDelete={!stockDetails.publiclyAvailable ? handleDeleteConfirm : undefined}

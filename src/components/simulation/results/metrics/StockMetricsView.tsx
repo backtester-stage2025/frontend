@@ -60,7 +60,11 @@ export function StockMetricsView({simulationReport}: Readonly<StockMetricsViewPr
         {
             title: "Distribution",
             properties: [
-                {name: "Skewness", value: simulationReport.skewness.toFixed(2), isPositive: simulationReport.skewness > 0}
+                {
+                    name: "Skewness",
+                    value: simulationReport.skewness.toFixed(2),
+                    isPositive: simulationReport.skewness > 0
+                }
             ],
             color: "info.main",
             tooltip: {

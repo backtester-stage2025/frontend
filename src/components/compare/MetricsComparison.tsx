@@ -17,12 +17,12 @@ export function MetricsComparison({results, colors}: Readonly<MetricsComparisonP
         <Grid size={{xs: 12}}>
             <MetricsCard
                 name={"Details"}
-                contents={results.map(extractRequestDetails)}
+                contents={results.map(r => extractRequestDetails(r))}
                 colors={colors}
             />
             <MetricsCard
                 name={"Results"}
-                contents={results.map(extractResults)}
+                contents={results.map(r => extractResults(r))}
                 colors={colors}
             />
         </Grid>

@@ -6,4 +6,5 @@ export interface SimulationSummary {
     stockSimulationRequest: SimulationRequest;
     latestPortfolioValue: number;
     totalPortfolioCount: number;
+    currencyType: string;
 }

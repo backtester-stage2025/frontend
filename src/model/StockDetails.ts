@@ -1,3 +1,5 @@
+import {CurrencyType} from "./CurrencyType.ts";
+
 export interface StockDetails {
     exchange: string;
     ticker: string;
@@ -5,9 +7,4 @@ export interface StockDetails {
     currencyType: CurrencyType;
     officialName: string;
     publiclyAvailable: boolean;
-}
-
-export enum CurrencyType {
-    EUR = "EUR",
-    USD = "USD"
 }
