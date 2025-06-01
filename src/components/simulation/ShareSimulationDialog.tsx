@@ -7,12 +7,9 @@ import {
     DialogContent,
     DialogContentText,
     DialogTitle,
-    IconButton,
     Snackbar,
-    TextField,
-    Tooltip
+    TextField
 } from "@mui/material";
-import {ContentCopy as ContentCopyIcon} from "@mui/icons-material";
 import {useState} from "react";
 import {useShareSimulation} from "../../hooks/useSimulationHistory.ts";
 
@@ -68,13 +65,6 @@ export function ShareSimulationDialog({
         });
     };
 
-    const copyToClipboard = async () => {
-        await navigator.clipboard.writeText(shareUrl);
-        setSnackbarMessage("URL copied to clipboard!");
-        setSnackbarSeverity("success");
-        setSnackbarOpen(true)
-    };
-
     return (
         <>
             <Dialog
@@ -112,15 +102,6 @@ export function ShareSimulationDialog({
                                     variant="outlined"
                                     size="small"
                                 />
-                                <Tooltip title="Copy to clipboard">
-                                    <IconButton
-                                        onClick={copyToClipboard}
-                                        color="primary"
-                                        size="small"
-                                    >
-                                        <ContentCopyIcon/>
-                                    </IconButton>
-                                </Tooltip>
                             </Box>
                         </>
                     )}
