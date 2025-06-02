@@ -18,21 +18,14 @@ export function ComparisonBarCharts({results, colors}: Readonly<ComparisonBarCha
 
     return (
         <Grid size={{xs: 12}} container spacing={2}>
-            {metrics.map(({label, values}) => (
-                label === "Total Fees"
-                    ? <BarChart
-                        key={label}
-                        label={label}
-                        values={values}
-                        colors={colors}
-                        currencies={results.map(r => r.currencyType)}
-                    />
-                    : <BarChart
-                        key={label}
-                        label={label}
-                        values={values}
-                        colors={colors}
-                    />
+            {metrics.map(({label, values, formatter}) => (
+                <BarChart
+                    key={label}
+                    label={label}
+                    values={values}
+                    colors={colors}
+                    formatter={formatter}
+                />
             ))}
         </Grid>
     )
@@ -42,45 +35,18 @@ interface BarChartProps {
     values: number[];
     label: string;
     colors: string[];
-    currency?: string;
-    currencies?: string[];
+    formatter: (x: number) => string;
 }
 
-function BarChart({label, values, colors, currencies}: Readonly<BarChartProps>) {
+function BarChart({label, values, colors, formatter}: Readonly<BarChartProps>) {
     if (values.every(v => v === 0)) {
         return null;
     }
 
-    const dataPoints = label === "Total Fees"
-        ? values.map((value, index) => {
-            let barLabel = "Simulation " + (index + 1);
-            if (currencies?.[index]) {
-                barLabel += " (" + currencies[index] + ")";
-            }
-            return {
-                label: barLabel,
-                y: value,
-                color: colors[index % colors.length]
-            };
-        })
-        : values.map((value, index) => ({
-            label: `Simulation ${index + 1}`,
-            y: value,
-            color: colors[index % colors.length]
-        }));
-
     return (
         <Grid size={{xs: 12, md: 6, xl: 4}}>
             <Paper elevation={3} sx={{padding: 2}}>
-                <CanvasJSChart options={{
-                    ...getSingleMetricChartOptions(label, values, colors),
-                    data: [
-                        {
-                            type: "column",
-                            dataPoints
-                        }
-                    ]
-                }}/>
+                <CanvasJSChart options={getSingleMetricChartOptions(label, values, colors, formatter)}/>
             </Paper>
         </Grid>
     )

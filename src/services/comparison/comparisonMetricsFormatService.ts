@@ -3,15 +3,18 @@ import {IndicatorType} from "../../model/request/IndicatorType.ts";
 import {SimulationTypes} from "../../model/request/SimulationTypes.ts";
 import {SimulationResult} from "../../model/simulation/SimulationResult.ts";
 import {formatCurrency} from "../formatService.ts";
+import {countDaysSimulated} from "./dayCountService.ts";
 
 export function extractRequestDetails(result: SimulationResult): Record<string, string> {
-    const {startDate, endDate, brokerName, stockNames, startCapital, indicators} = result.stockSimulationRequest;
+    const {startDate, endDate, brokerName, stockNames, startCapital, indicators,
+        tradingWeekdays} = result.stockSimulationRequest;
 
     return {
         "Strategy": positionAdjustment(result.stockSimulationRequest),
         "Indicators used": indicatorDescriptions(indicators),
         "Stocks Used": stockNames.join("\n"),
         "Start Capital": formatCurrency(startCapital, result.currencyType),
+        "Trading Week Days": tradingWeekdays.join("\n"),
         "Broker Name": brokerName,
         "Start Date": startDate.toString(),
         "End Date": endDate.toString()
@@ -19,11 +22,8 @@ export function extractRequestDetails(result: SimulationResult): Record<string, 
 }
 
 export function extractResults(result: SimulationResult): Record<string, string> {
-    const {startDate, endDate, startCapital} = result.stockSimulationRequest;
+    const {startCapital} = result.stockSimulationRequest;
     const portfolios = result.userPortfolios;
-    const start = new Date(startDate);
-    const end = new Date(endDate);
-    const days = Math.ceil((+end - +start) / (1000 * 60 * 60 * 24));
     const finalValue = portfolios[portfolios.length - 1]?.totalPortfolioValue || 0;
     const profitMargin = ((finalValue - startCapital) / startCapital) * 100;
 
@@ -37,6 +37,8 @@ export function extractResults(result: SimulationResult): Record<string, string>
         transactionCount += p.sharesBought.filter(tr => tr.totalSharesBought != 0).length;
         totalFees += p.sharesBought.reduce((sum, tx) => sum + tx.transactionFee, 0);
     });
+
+    const days = countDaysSimulated(result);
 
     return {
         "Simulation Length": `${days} days`,

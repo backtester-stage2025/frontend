@@ -13,7 +13,7 @@ export function formatPercent(value: number) {
 }
 
 export function formatCurrency(value: number, currency: string = 'EUR'): string {
-    return new Intl.NumberFormat('de-DE', {style: 'currency', currency: currency}).format(value);
+    return new Intl.NumberFormat('nl-BE', {style: 'currency', currency: currency}).format(value);
 }
 
 export function formatLargeNumber(value: number): string {

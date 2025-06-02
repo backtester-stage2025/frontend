@@ -2,6 +2,7 @@ import {UserPortfolio} from "./UserPortfolio.ts";
 import {SimulationRequest} from "../request/SimulationRequest.ts";
 import {UUID} from "../UUID.ts";
 import {SimulationReport} from "./SimulationReport.ts";
+import {CurrencyType} from "../CurrencyType.ts";
 
 export interface SimulationResult {
     simulationDate: Date;
@@ -9,5 +10,5 @@ export interface SimulationResult {
     userPortfolios: UserPortfolio[];
     simulationReports: SimulationReport[];
     id: UUID;
-    currencyType: string;
+    currencyType: CurrencyType;
 }

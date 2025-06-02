@@ -1,9 +1,12 @@
 import {SimulationResult} from "../../model/simulation/SimulationResult.ts";
+import {countDaysBetween} from "./dayCountService.ts";
 
-
-export function getSingleMetricChartOptions(label: string, values: number[], colors: string[]) {
+export function getSingleMetricChartOptions(label: string, values: number[], colors: string[], formatter: (x: number) => string) {
     const minVal = Math.min(...values);
     const maxVal = Math.max(...values);
+
+    const chartMin = minVal < 0 ? minVal * 1.5 : 0;
+    const chartMax = maxVal > 0 ? maxVal * 1.5 : minVal * -0.1;
 
     return {
         animationEnabled: true,
@@ -13,8 +16,8 @@ export function getSingleMetricChartOptions(label: string, values: number[], col
         },
         axisY: {
             title: label,
-            minimum: minVal < 0 ? minVal * 1.5 : 0,
-            maximum: maxVal > 0 ? maxVal * 1.5 : minVal * -0.2
+            minimum: chartMin,
+            maximum: chartMax
         },
         axisX: {
             title: "",
@@ -29,7 +32,8 @@ export function getSingleMetricChartOptions(label: string, values: number[], col
                 dataPoints: values.map((value, index) => ({
                     label: `Simulation ${index + 1}`,
                     y: value,
-                    color: colors[index % colors.length]
+                    color: colors[index % colors.length],
+                    toolTipContent: `Simulation ${index + 1}: ${formatter(value)}`
                 }))
             }
         ]
@@ -44,31 +48,32 @@ export function getMetricsForBarCharts(results: SimulationResult[]) {
                 r.stockSimulationRequest.startDate,
                 r.stockSimulationRequest.endDate
             )),
+            formatter: (x: number) => x.toFixed() + " days"
         },
         {
-            label: "Total Profit Margin (%)",
-            values: results.map(getProfitMargin)
+            label: "Total Profit Margins (%)",
+            values: results.map(getProfitMarginPercentage),
+            formatter: (x: number) => x.toFixed(1) + "%"
+        },
+        {
+            label: "Profit margins without fees (%)",
+            values: results.map(getProfitMarginPercentageIgnoreFees),
+            formatter: (x: number) => x.toFixed(1) + "%"
         },
         {
             label: "Avg Daily Growth (%)",
-            values: results.map(getAverageDailyGrowth)
+            values: results.map(getAverageDailyGrowth),
+            formatter: (x: number) => x.toFixed(3) + "%"
         },
         {
             label: "Total Transactions",
-            values: results.map(getTransactionCount)
-        },
-        {
-            label: "Total Fees",
-            values: results.map(getTotalFees)
+            values: results.map(getTransactionCount),
+            formatter: (x: number) => x.toFixed() + " transactions"
         }
     ];
 }
 
-function countDaysBetween(start: Date, end: Date) {
-    return Math.floor((new Date(end).getTime() - new Date(start).getTime()) / (1000 * 3600 * 24));
-}
-
-function getProfitMargin(result: SimulationResult): number {
+function getProfitMarginPercentage(result: SimulationResult): number {
     const start = result.stockSimulationRequest.startCapital;
     const end = result.userPortfolios[result.userPortfolios.length - 1]?.totalPortfolioValue ?? start;
     return ((end - start) / start) * 100;
@@ -85,6 +90,11 @@ function getTransactionCount(result: SimulationResult): number {
     return result.userPortfolios.reduce((sum, p) => sum + p.sharesBought.filter(st => st.totalSharesBought != 0).length, 0);
 }
 
-function getTotalFees(result: SimulationResult): number {
-    return result.userPortfolios.flatMap(p => p.sharesBought).reduce((sum, tx) => sum + tx.transactionFee, 0);
+function getProfitMarginPercentageIgnoreFees(result: SimulationResult): number {
+    const totalFee = result.userPortfolios.flatMap(p => p.sharesBought)
+        .reduce((sum, tx) => sum + tx.transactionFee, 0);
+    const start = result.stockSimulationRequest.startCapital;
+    const end = result.userPortfolios[result.userPortfolios.length - 1]?.totalPortfolioValue ?? start;
+    const totalProfits = end + totalFee - start;
+    return totalProfits / start * 100;
 }
