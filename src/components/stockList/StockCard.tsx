@@ -63,7 +63,7 @@ export function StockCard({details, onDelete}: Readonly<StockCardProps>) {
                             sx={{ml: 1}}
                             aria-label="delete stock"
                         >
-                            <DeleteIcon fontSize="small"/>
+                            <DeleteIcon/>
                         </IconButton>
                     )}
                 </Box>
