@@ -5,7 +5,7 @@ const HEADER_HEIGHT = 8;
 
 export function RouteLayout() {
     return (
-        <Box sx={{ mt: HEADER_HEIGHT }}>
+        <Box sx={{ mt: HEADER_HEIGHT, minWidth: "80%" }}>
             <Outlet />
         </Box>
     );
