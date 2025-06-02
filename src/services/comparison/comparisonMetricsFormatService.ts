@@ -7,7 +7,7 @@ import {countDaysSimulated} from "./dayCountService.ts";
 
 export function extractRequestDetails(result: SimulationResult): Record<string, string> {
     const {startDate, endDate, brokerName, stockNames, startCapital, indicators,
-        tradingWeekdays, transactionBufferPercentage} = result.stockSimulationRequest;
+        tradingWeekdays} = result.stockSimulationRequest;
 
     return {
         "Strategy": positionAdjustment(result.stockSimulationRequest),
@@ -15,7 +15,6 @@ export function extractRequestDetails(result: SimulationResult): Record<string, 
         "Stocks Used": stockNames.join("\n"),
         "Start Capital": formatCurrency(startCapital, result.currencyType),
         "Trading Week Days": tradingWeekdays.join("\n"),
-        "Transaction buffer percentage": transactionBufferPercentage.toFixed() + "%",
         "Broker Name": brokerName,
         "Start Date": startDate.toString(),
         "End Date": endDate.toString()
