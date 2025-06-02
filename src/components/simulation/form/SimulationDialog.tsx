@@ -84,6 +84,9 @@ export function SimulationDialog({
     if (isErrorLoadingBrokers) return <ErrorAlert message="Error loading brokers"/>;
     if (isErrorLoadingStockData) return <ErrorAlert message="Error loading stock data"/>;
 
+    const shouldRenderTransactionBuffer = simType === SimulationTypes.RISK_BASED;
+    const shouldRenderRiskTolerance = simType === SimulationTypes.RISK_BASED || simType === SimulationTypes.STATIC;
+
     const fieldConfigs: FormField<SimulationRequest>[] = [
         {
             name: "brokerName",
@@ -130,7 +133,7 @@ export function SimulationDialog({
         },
         {
             name: "riskTolerance", type: "number", placeholder: "Risk Tolerance (%)", required: false,
-            shouldRender: simType === SimulationTypes.RISK_BASED || simType === SimulationTypes.STATIC,
+            shouldRender: shouldRenderRiskTolerance,
             tooltip: {
                 title: TOOLTIP_MESSAGES.simulation.riskToleranceTitle,
                 description: TOOLTIP_MESSAGES.simulation.riskToleranceInfo
@@ -138,6 +141,7 @@ export function SimulationDialog({
         },
         {
             name: "transactionBufferPercentage", type: "number", placeholder: "Transaction Buffer (%)", required: true,
+            shouldRender: shouldRenderTransactionBuffer,
             tooltip: {
                 description: TOOLTIP_MESSAGES.simulation.transactionBufferInfo
             }
