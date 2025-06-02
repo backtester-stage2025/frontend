@@ -20,7 +20,8 @@ export function MacdInfo() {
                         How MACD is Calculated
                     </Typography>
                     <Typography variant="body1" align="left">
-                        MACD is based on the difference between two <strong>Exponential Moving Averages (EMAs)</strong>:
+                        MACD is git based on the difference between two <strong>Exponential Moving Averages
+                        (EMAs)</strong>:
                     </Typography>
                     <Box component="ul" sx={{listStyleType: 'none', pl: 0}}>
                         <Box component="li" sx={{mb: 1}}>
@@ -40,8 +41,8 @@ export function MacdInfo() {
                         </Box>
                     </Box>
 
-                    <Typography variant="body2" sx={{mt: 1}} align="left">
-                        These periods (12 and 26 days) are commonly used, but they can be customized to suit different
+                    <Typography variant="body1" align="left" sx={{fontStyle: 'italic', color: 'primary.main', mt: 1}}>
+                        Note: These periods (12 and 26 days) are commonly used, but they can be customized to suit different
                         trading strategies.
                     </Typography>
 
