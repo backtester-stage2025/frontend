@@ -135,7 +135,7 @@ export function SimulationCard({
                                     sx={{mr: 1, color: 'secondary.main'}}/>
                                 <Typography variant="body2">
                                     {simulationTypeOptions.find(
-                                        s=>s.value === simulation.stockSimulationRequest.simulationType
+                                        s => s.value === simulation.stockSimulationRequest.simulationType
                                     )?.label ?? "Unknown simulation type"}
                                 </Typography>
                             </Box>
