@@ -24,8 +24,8 @@ const indicatorSchema = z.object({
     movingAverageShortDays: coerceNumber("Short moving average day count").optional(),
     movingAverageLongDays: coerceNumber("Long moving average day count").optional(),
     breakoutDays: coerceNumber("Breakout day count").optional(),
-    macdShortDays: coerceNumber("Macd short day count").optional(),
-    macdLongDays: coerceNumber("Macd long day count").optional(),
+    macdShortDays: coerceNumber("MACD short day count").optional(),
+    macdLongDays: coerceNumber("MACD long day count").optional(),
 });
 
 

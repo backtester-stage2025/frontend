@@ -113,7 +113,7 @@ export function InfoPage() {
                                 />
                                 <SubListItem
                                     icon={<CircleIcon sx={{fontSize: '0.5rem'}}/>}
-                                    text="Macd"
+                                    text="MACD"
                                     onClick={() => handleSelectTab("macd")}
                                 />
                             </List>
