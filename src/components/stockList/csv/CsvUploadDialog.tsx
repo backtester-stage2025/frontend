@@ -79,7 +79,7 @@ export function CsvUploadDialog({open, onClose}: Readonly<CsvUploadDialogProps>)
                 if (!value) return "Company name is required";
                 if (typeof value == "string") {
                     if (value.length < 2) return "Company name is too short";
-                    if (value.length > 100) return "Company name is too long";
+                    if (value.length > 40) return "Company name is too long";
                 }
                 return "";
 
