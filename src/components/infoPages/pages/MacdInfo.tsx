@@ -40,6 +40,17 @@ export function MacdInfo() {
                         </Box>
                     </Box>
 
+                    <Typography variant="body2" sx={{ mt: 1 }} align="left">
+                        These periods (12 and 26 days) are commonly used, but they can be customized to suit different trading strategies.
+                    </Typography>
+
+                    <Typography variant="h6" gutterBottom sx={{ mt: 2 }} align="left">
+                        What is an Exponential Moving Average (EMA)?
+                    </Typography>
+                    <Typography variant="body1" align="left">
+                        An <strong>EMA</strong> is a type of moving average that gives more weight to recent prices, making it more responsive to new information than a simple moving average (SMA). This responsiveness helps traders better capture short-term trends.
+                    </Typography>
+
                     <Typography variant="body1" sx={{ mt: 2 }} align="left">
                         A <strong>9-day EMA</strong> of the MACD Line is then calculated. This is called the{" "}
                         <strong>Signal Line</strong> and is used to generate buy and sell signals.
