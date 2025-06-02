@@ -18,7 +18,6 @@ import {ProtectedRoute} from "./components/ProtectedRoute.tsx";
 import {RouteLayout} from "./components/RouteLayout.tsx";
 
 
-
 function App() {
     axios.defaults.baseURL = import.meta.env.VITE_BACKEND_URL;
     const queryClient = new QueryClient()

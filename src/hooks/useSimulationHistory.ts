@@ -1,5 +1,10 @@
 import {useMutation, useQuery} from "@tanstack/react-query";
-import {getSimulationById, getSimulationHistory, shareSimulation, deleteSimulation} from "../services/SimulationHistoryService.ts";
+import {
+    deleteSimulation,
+    getSimulationById,
+    getSimulationHistory,
+    shareSimulation
+} from "../services/SimulationHistoryService.ts";
 import {UUID} from "../model/UUID.ts";
 
 export function useSimulationHistory() {
