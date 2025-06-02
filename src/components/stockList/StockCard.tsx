@@ -31,6 +31,8 @@ export function StockCard({details, onDelete}: Readonly<StockCardProps>) {
                 m: 1,
                 minWidth: '280px',
                 maxWidth: '350px',
+                minHeight: '150px',
+                maxHeight: '150px',
                 boxShadow: 3,
                 transition: '0.3s',
                 cursor: 'pointer',
@@ -61,7 +63,7 @@ export function StockCard({details, onDelete}: Readonly<StockCardProps>) {
                             sx={{ml: 1}}
                             aria-label="delete stock"
                         >
-                            <DeleteIcon/>
+                            <DeleteIcon fontSize="small"/>
                         </IconButton>
                     )}
                 </Box>
