@@ -1,15 +1,20 @@
-import CanvasJSReact from '@canvasjs/react-stockcharts';
 import {useStockQuotes} from '../../hooks/useStockQuotes';
-import {StockQuote} from "../../model/StockQuote";
 import {Loader} from "../util/Loader.tsx";
-import {useMovingAverage} from "../../hooks/useMovingAverage.ts";
 import {useEffect, useState} from 'react';
-import {Paper, Typography} from '@mui/material';
-import {ShowChart} from '@mui/icons-material';
-import {MovingAverageControls} from './MovingAverageControls';
+import {Box, Chip, IconButton, Paper, Stack, Tooltip, Typography} from '@mui/material';
+import {Analytics, Settings, ShowChart} from '@mui/icons-material';
 import {ErrorAlert, WarningAlert} from "../util/Alerts.tsx";
+import {MovingAverageChart} from "./MovingAverageChart.tsx";
+import {MacdChart} from "./MacdChart.tsx";
+import {ConfigurationDialog} from "./ConfigurationDialog.tsx";
 
-const CanvasJSStockChart = CanvasJSReact.CanvasJSStockChart;
+
+export interface ChartSettings {
+    showMovingAverages: boolean;
+    showMacd: boolean;
+    shortPeriod: number;
+    longPeriod: number;
+}
 
 interface StockChartProps {
     stockName: string;
@@ -23,38 +28,27 @@ export function StockChart({stockName}: Readonly<StockChartProps>) {
         error
     } = useStockQuotes(stockName);
 
-    const [dateRange, setDateRange] = useState({
+    const [dateRange, setDateRange] = useState<{
+        startDate: string;
+        endDate: string;
+    }>({
         startDate: "",
         endDate: ""
     });
 
-    const [periods, setPeriods] = useState({
-        shortPeriod: 20,
-        longPeriod: 50
+    const [settings, setSettings] = useState<ChartSettings>({
+        showMovingAverages: true,
+        showMacd: false,
+        shortPeriod: 12,
+        longPeriod: 26
     });
 
-    const {
-        isLoading: isLoadingMovingAverageShort,
-        isError: isErrorMovingAverageShort,
-        movingAverage: movingAverageShort
-    } = useMovingAverage(stockName, dateRange.startDate, dateRange.endDate, periods.shortPeriod);
-
-    const {
-        isLoading: isLoadingMovingAverageLong,
-        isError: isErrorMovingAverageLong,
-        movingAverage: movingAverageLong
-    } = useMovingAverage(stockName, dateRange.startDate, dateRange.endDate, periods.longPeriod);
-
-    const handlePeriodsChange = (shortPeriod: number, longPeriod: number) => {
-        setPeriods({
-            shortPeriod,
-            longPeriod
-        });
-    };
+    const [configDialogOpen, setConfigDialogOpen] = useState(false);
+    const [tempSettings, setTempSettings] = useState<ChartSettings>(settings);
 
     useEffect(() => {
         if (stockQuotes && stockQuotes.length > 0) {
-            const longPeriodPadding = Math.max(periods.shortPeriod, periods.longPeriod) + 10;
+            const longPeriodPadding = Math.max(settings.shortPeriod, settings.longPeriod) + 10;
 
             const firstDate = new Date(stockQuotes[0].dateTime);
             const paddedStartDate = new Date(firstDate);
@@ -67,158 +61,102 @@ export function StockChart({stockName}: Readonly<StockChartProps>) {
                 endDate: lastDate.toISOString().split('T')[0],
             });
         }
-    }, [stockQuotes, periods.longPeriod, periods.shortPeriod]);
+    }, [stockQuotes, settings.shortPeriod, settings.longPeriod]);
 
-    if (isLoadingStockQuotes || isLoadingMovingAverageShort || isLoadingMovingAverageLong)
-        return <Loader message={`Loading stock quotes for ${stockName}`}/>;
+    if (isLoadingStockQuotes)
+        return <Loader message={`Loading stock analysis for ${stockName}`}/>;
 
-    if (isErrorStockQuotes || isErrorMovingAverageShort || isErrorMovingAverageLong)
-        return <ErrorAlert message={`Error loading stock quotes for ${stockName}: ${error?.message}`}/>;
+    if (isErrorStockQuotes)
+        return <ErrorAlert message={`Error loading stock data for ${stockName}: ${error?.message}`}/>;
 
     if (!stockQuotes || stockQuotes.length === 0)
         return <WarningAlert message={`No stock quotes available for ${stockName}. Please try a different stock.`}/>
 
-
-    const dataPoints = stockQuotes?.map((quote: StockQuote) => ({
-        x: new Date(quote.dateTime),
-        y: quote.price,
-    }));
-
-    const movingAverageShortDataPoints = movingAverageShort ?
-        Object.entries(movingAverageShort).map(([dateStr, value]) => ({
-            x: new Date(dateStr),
-            y: value
-        })) : [];
-
-    const movingAverageLongDataPoints = movingAverageLong ?
-        Object.entries(movingAverageLong).map(([dateStr, value]) => ({
-            x: new Date(dateStr),
-            y: value
-        })) : [];
-
-    const options = {
-        theme: "light2",
-        title: {
-            text: `Stock Quotes for ${stockName}`,
-            fontFamily: "Roboto, sans-serif",
-            fontSize: 24,
-        },
-        subtitles: [
-            {
-                text: `(${new Date(stockQuotes[0].dateTime).toLocaleDateString()} - ${new Date(stockQuotes[stockQuotes.length - 1].dateTime).toLocaleDateString()})`,
-                fontColor: "gray",
-                fontFamily: "Roboto, sans-serif",
-            },
-        ],
-        animationEnabled: false,
-        charts: [
-            {
-                axisX: {
-                    title: "Date",
-                    valueFormatString: "MMM DD, YYYY",
-                    crosshair: {
-                        enabled: true,
-                        snapToDataPoint: true,
-                    },
-                },
-                axisY: {
-                    title: "Value",
-                    crosshair: {
-                        enabled: true,
-                    },
-                },
-                data: [
-                    {
-                        type: "spline",
-                        name: "Stock Price",
-                        showInLegend: true,
-                        dataPoints: dataPoints,
-                    },
-                    {
-                        type: "line",
-                        name: `${periods.shortPeriod}-Day MA`,
-                        showInLegend: true,
-                        color: "#ff7300",
-                        lineThickness: 2,
-                        dataPoints: movingAverageShortDataPoints,
-                    },
-                    {
-                        type: "line",
-                        name: `${periods.longPeriod}-Day MA`,
-                        showInLegend: true,
-                        color: "#0077ff",
-                        lineThickness: 2,
-                        dataPoints: movingAverageLongDataPoints,
-                    },
-                ],
-                legend: {
-                    cursor: "pointer",
-                    verticalAlign: "top",
-                    horizontalAlign: "center",
-                    dockInsidePlotArea: false,
-                    fontFamily: "Roboto, sans-serif",
-                },
-            },
-        ],
-        rangeSelector: {
-            inputFields: {
-                startValue: new Date(stockQuotes[0].dateTime),
-                endValue: new Date(stockQuotes[stockQuotes.length - 1].dateTime),
-                valueFormatString: "MMM DD, YYYY",
-            },
-            buttons: [
-                {
-                    label: "1M",
-                    range: 1,
-                    rangeType: "month",
-                },
-                {
-                    label: "3M",
-                    range: 3,
-                    rangeType: "month",
-                },
-                {
-                    label: "6M",
-                    range: 6,
-                    rangeType: "month",
-                },
-                {
-                    label: "All",
-                    rangeType: "all",
-                },
-            ],
-        },
-        navigator: {
-            enabled: true,
-            slider: {
-                minimum: new Date(stockQuotes[0].dateTime),
-                maximum: new Date(stockQuotes[stockQuotes.length - 1].dateTime)
-            }
+    const getActiveIndicators = () => {
+        const indicators = [];
+        if (settings.showMovingAverages) {
+            indicators.push(`MA (${settings.shortPeriod}/${settings.longPeriod})`);
         }
-    };
-
-    const containerProps = {
-        width: "90vh",
-        height: "50vh",
-        margin: "auto",
+        if (settings.showMacd) {
+            indicators.push(`MACD (${settings.shortPeriod}/${settings.longPeriod})`);
+        }
+        return indicators;
     };
 
     return (
-        <Paper elevation={3} sx={{p: 3, borderRadius: 2}}>
-            <Typography variant="h5" component="h2" gutterBottom sx={{display: 'flex', alignItems: 'center'}}>
-                <ShowChart sx={{mr: 1}}/> {stockName} Moving Average Analysis
-            </Typography>
+        <Paper elevation={3} sx={{p: 3, borderRadius: 2, mt: 14, mb: 2}}>
+            {/* Header */}
+            <Box sx={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3, width: '75vw'}}>
+                <Typography variant="h5" component="h2" sx={{display: 'flex', alignItems: 'center'}}>
+                    <ShowChart sx={{mr: 1}}/> {stockName} Technical Analysis
+                </Typography>
 
-            <MovingAverageControls
-                initialShortPeriod={periods.shortPeriod}
-                initialLongPeriod={periods.longPeriod}
-                onPeriodsChange={handlePeriodsChange}
-            />
+                <Box sx={{display: 'flex', alignItems: 'center', gap: 2}}>
+                    <Stack direction="row" spacing={1}>
+                        {getActiveIndicators().map((indicator, index) => (
+                            <Chip
+                                key={index}
+                                label={indicator}
+                                size="small"
+                                color="primary"
+                                variant="outlined"
+                            />
+                        ))}
+                        {getActiveIndicators().length === 0 && (
+                            <Chip
+                                label="No indicators active"
+                                size="small"
+                                color="default"
+                                variant="outlined"
+                            />
+                        )}
+                    </Stack>
 
-            <CanvasJSStockChart
-                containerProps={containerProps}
-                options={options}
-            />
+                    <Tooltip title="Configure Chart Settings">
+                        <IconButton
+                            onClick={() => setConfigDialogOpen(true)}
+                            color="primary"
+                            sx={{
+                                bgcolor: 'primary.light',
+                                color: 'primary.contrastText',
+                                '&:hover': {bgcolor: 'primary.main'}
+                            }}
+                        >
+                            <Settings/>
+                        </IconButton>
+                    </Tooltip>
+                </Box>
+            </Box>
+
+            {/* Price Chart with moving averages*/}
+            <Box sx={{mb: settings.showMacd ? 3 : 0}}>
+                <MovingAverageChart stockName={stockName} stockQuotes={stockQuotes} dateRange={dateRange}
+                                    settings={settings}/>
+            </Box>
+
+            {/* MACD Chart */}
+            {settings.showMacd && (
+                <Box sx={{
+                    border: '1px solid #E0E0E0',
+                    borderRadius: 1,
+                    p: 2,
+                    bgcolor: '#FAFAFA'
+                }}>
+                    <Typography variant="h6" sx={{display: 'flex', alignItems: 'center', mb: 2}}>
+                        <Analytics sx={{mr: 1, color: 'primary.main'}}/>
+                        MACD Indicator
+                    </Typography>
+                    <MacdChart stockName={stockName} stockQuotes={stockQuotes} dateRange={dateRange}
+                               settings={settings}/>
+
+                </Box>
+            )}
+
+            {/* Configuration Dialog */}
+            <ConfigurationDialog configDialogOpen={configDialogOpen} setConfigDialogOpen={setConfigDialogOpen}
+                                 settings={settings} setSettings={setSettings} tempSettings={tempSettings}
+                                 setTempSettings={setTempSettings}/>
+
         </Paper>
     );
 }

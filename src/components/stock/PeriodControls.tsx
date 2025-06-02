@@ -19,11 +19,11 @@ interface PeriodErrors {
     longPeriod: string;
 }
 
-export function MovingAverageControls({
-                                          initialShortPeriod,
-                                          initialLongPeriod,
-                                          onPeriodsChange
-                                      }: Readonly<MovingAverageControlsProps>) {
+export function PeriodControls({
+                                   initialShortPeriod,
+                                   initialLongPeriod,
+                                   onPeriodsChange
+                               }: Readonly<MovingAverageControlsProps>) {
     const [inputPeriods, setInputPeriods] = useState({
         shortPeriod: initialShortPeriod,
         longPeriod: initialLongPeriod

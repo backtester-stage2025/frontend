@@ -21,7 +21,9 @@ export function TradingIndicatorsSection({control, errors}: Readonly<TradingIndi
             indicator: IndicatorType.BREAKOUT,
             movingAverageShortDays: 20,
             movingAverageLongDays: 50,
-            breakoutDays: 30
+            breakoutDays: 30,
+            macdShortDays: 12,
+            macdLongDays: 26
         });
 
     return (

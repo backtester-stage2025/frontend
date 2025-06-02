@@ -16,6 +16,7 @@ import {useSearchParams} from "react-router-dom";
 import {TopLevelListItem} from "./TopLevelListItem";
 import {SubListItem} from "./SubListItem";
 import BarChartIcon from "@mui/icons-material/BarChart";
+import {MacdInfo} from "./pages/MacdInfo.tsx";
 
 
 const panelWidth = 240;
@@ -31,7 +32,7 @@ export function InfoPage() {
         if (section) {
             setActiveTab(section);
 
-            if (["moving-average-crossover", "breakout", "indicator-types"].includes(section)) {
+            if (["moving-average-crossover", "breakout", "indicator-types", "macd"].includes(section)) {
                 setOpenIndicators(true);
             } else if (["returns", "risk", "drawdown", "skewness", "stock-metrics"].includes(section)) {
                 setOpenStockMetrics(true);
@@ -54,6 +55,7 @@ export function InfoPage() {
         "indicator-types": <IndicatorInfo/>,
         "moving-average-crossover": <MovingAverageCrossoverInfo/>,
         "breakout": <BreakoutInfo/>,
+        "macd": <MacdInfo/>,
         "default": <DefaultInfo/>,
         "stock-metrics": <StockMetricsInfo/>,
         "returns": <ReturnsInfo/>,
@@ -108,6 +110,11 @@ export function InfoPage() {
                                     icon={<CircleIcon sx={{fontSize: '0.5rem'}}/>}
                                     text="Breakout"
                                     onClick={() => handleSelectTab("breakout")}
+                                />
+                                <SubListItem
+                                    icon={<CircleIcon sx={{fontSize: '0.5rem'}}/>}
+                                    text="MACD"
+                                    onClick={() => handleSelectTab("macd")}
                                 />
                             </List>
                         )}

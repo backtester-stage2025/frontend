@@ -23,7 +23,9 @@ export const TOOLTIP_MESSAGES = {
             breakoutDays: "The number of days used for calculating the breakout zones." +
                 " When the zones are broken through, the simulation will sell all stocks.",
             maShortDays: "The number of days used for calculating the short moving average.",
-            maLongDays: "The number of days used for calculating the long moving average."
+            maLongDays: "The number of days used for calculating the long moving average.",
+            macdShortDays: "The number of days used for calculating the first ema for the MACD.",
+            macdLongDays: "The number of days used for calculating the second ema for the MACD."
         },
         brokerTitle: "Broker",
         brokerInfo: "The broker you are using to buy and sell stocks. This decides the fee every time you buy or sell.",

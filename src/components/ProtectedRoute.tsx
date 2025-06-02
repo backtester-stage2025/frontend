@@ -1,4 +1,4 @@
-import { Outlet } from "react-router-dom";
+import {Outlet} from "react-router-dom";
 import {useAuth} from "../context/AuthContext.tsx";
 import {LoginRequired} from "./LoginRequired.tsx";
 

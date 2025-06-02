@@ -66,6 +66,27 @@ export function IndicatorRow({index, control, errors, onRemove}: Readonly<Indica
                 description: TOOLTIP_MESSAGES.simulation.indicator.breakoutDays
             }
         });
+    } else if (selected === IndicatorType.MACD) {
+        extraConfigs.push(
+            {
+                name: `indicators.${index}.macdShortDays`,
+                type: "number",
+                placeholder: "Short MACD Days",
+                required: true,
+                tooltip: {
+                    description: TOOLTIP_MESSAGES.simulation.indicator.macdShortDays
+                }
+            },
+            {
+                name: `indicators.${index}.macdLongDays`,
+                type: "number",
+                placeholder: "Long MACD Days",
+                required: true,
+                tooltip: {
+                    description: TOOLTIP_MESSAGES.simulation.indicator.macdLongDays
+                }
+            }
+        );
     }
 
     return (

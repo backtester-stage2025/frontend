@@ -24,6 +24,8 @@ const indicatorSchema = z.object({
     movingAverageShortDays: coerceNumber("Short moving average day count").optional(),
     movingAverageLongDays: coerceNumber("Long moving average day count").optional(),
     breakoutDays: coerceNumber("Breakout day count").optional(),
+    macdShortDays: coerceNumber("MACD short day count").optional(),
+    macdLongDays: coerceNumber("MACD long day count").optional(),
 });
 
 
@@ -120,6 +122,48 @@ export const simulationRequestSchema = z.object({
                     ctx.addIssue({
                         path: ["indicators", idx, "breakoutDays"],
                         message: "Breakout days must be positive",
+                        code: z.ZodIssueCode.custom,
+                    });
+                }
+            }
+
+            if (ind.indicator === IndicatorType.MACD) {
+                if (ind.macdShortDays === undefined) {
+                    ctx.addIssue({
+                        path: ["indicators", idx, "macdShortDays"],
+                        message: "Short MACD days required for calculation",
+                        code: z.ZodIssueCode.custom,
+                    });
+                } else if (ind.macdShortDays <= 0) {
+                    ctx.addIssue({
+                        path: ["indicators", idx, "macdShortDays"],
+                        message: "Short MACD must be positive",
+                        code: z.ZodIssueCode.custom,
+                    });
+                }
+
+                if (ind.macdLongDays === undefined) {
+                    ctx.addIssue({
+                        path: ["indicators", idx, "macdLongDays"],
+                        message: "Long MACD days required for calculation",
+                        code: z.ZodIssueCode.custom,
+                    });
+                } else if (ind.macdLongDays <= 0) {
+                    ctx.addIssue({
+                        path: ["indicators", idx, "macdLongDays"],
+                        message: "Long MACD must be positive",
+                        code: z.ZodIssueCode.custom,
+                    });
+                }
+
+                if (
+                    ind.macdShortDays !== undefined &&
+                    ind.macdLongDays !== undefined &&
+                    ind.macdShortDays >= ind.macdLongDays
+                ) {
+                    ctx.addIssue({
+                        path: ["indicators", idx, "macdLongDays"],
+                        message: "Long MACD must be greater than Short MACD",
                         code: z.ZodIssueCode.custom,
                     });
                 }
