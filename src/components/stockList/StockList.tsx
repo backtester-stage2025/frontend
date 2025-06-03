@@ -38,6 +38,11 @@ export function StockList() {
         refetchStockData();
     }, [isAuthenticated, refetchStockData]);
 
+    useEffect(() => {
+        if(!isAuthenticated)
+            setTabValue(0);
+    }, [isAuthenticated]);
+
     const handleDeleteConfirm = (officialName: string) => {
         setStockToDelete(officialName);
         setDeleteDialogOpen(true);
@@ -134,13 +139,15 @@ export function StockList() {
                 )}
             </Box>
 
-            <Box sx={{borderBottom: 1, borderColor: 'divider', width: '100%', maxWidth: 500, mx: 'auto', mb: 3}}>
-                <Tabs value={tabValue} onChange={(_, newValue) => setTabValue(newValue)} centered>
-                    <Tab label={`All (${allStocks.length})`}/>
-                    <Tab label={`Public (${allStocks.filter(s => s.publiclyAvailable).length})`}/>
-                    <Tab label={`Your Uploads (${allStocks.filter(s => !s.publiclyAvailable).length})`}/>
-                </Tabs>
-            </Box>
+            {isAuthenticated && (
+                <Box sx={{borderBottom: 1, borderColor: 'divider', width: '100%', maxWidth: 500, mx: 'auto', mb: 3}}>
+                    <Tabs value={tabValue} onChange={(_, newValue) => setTabValue(newValue)} centered>
+                        <Tab label={`All (${allStocks.length})`}/>
+                        <Tab label={`Public (${allStocks.filter(s => s.publiclyAvailable).length})`}/>
+                        <Tab label={`Your Uploads (${allStocks.filter(s => !s.publiclyAvailable).length})`}/>
+                    </Tabs>
+                </Box>
+            )}
 
             {filteredStocks.length === 0 ? (
                 <Box sx={{textAlign: 'center', py: 4}}>
