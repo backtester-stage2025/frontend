@@ -1,7 +1,11 @@
 import {Box, Divider, Grid, Paper, Typography} from "@mui/material";
 import {Fragment} from "react";
 import {SimulationResult} from "../../model/simulation/SimulationResult.ts";
-import {extractRequestDetails, extractResults} from "../../services/comparison/comparisonMetricsFormatService.ts";
+import {
+    DISPLAY_NONE,
+    extractRequestDetails,
+    extractResults
+} from "../../services/comparison/comparisonMetricsFormatService.ts";
 
 interface MetricsComparisonProps {
     results: SimulationResult[];
@@ -57,6 +61,9 @@ interface MetricsGridProps {
 
 function MetricsGrid({contents, colors}: Readonly<MetricsGridProps>) {
     const keys = Object.keys(contents[0]);
+    const filteredKeys = keys.filter(key => contents
+        .some(record => record[key] != DISPLAY_NONE));
+
     return (
         <Box
             sx={{
@@ -67,7 +74,7 @@ function MetricsGrid({contents, colors}: Readonly<MetricsGridProps>) {
             }}
         >
             <MetricsHeader metricsPerSimulation={contents} colors={colors}/>
-            {keys.map((key) => (
+            {filteredKeys.map((key) => (
                 <MetricRow
                     key={key}
                     metricKey={key}
@@ -123,11 +130,12 @@ function MetricRow({metricKey, values, colors}: Readonly<MetricRowProps>) {
                 {metricKey}
             </Box>
 
-            {values.map((metricsForSimulation, simulationIndex) => (
+
+            {values
+                .map((metricsForSimulation, simulationIndex) => (
                 <MetricCell
                     key={`${metricKey}_${simulationIndex}`}
-                    metricsForSimulation={metricsForSimulation}
-                    metricKey={metricKey}
+                    value={metricsForSimulation[metricKey]}
                     simulationIndex={simulationIndex}
                     colors={colors}
                 />
@@ -137,13 +145,12 @@ function MetricRow({metricKey, values, colors}: Readonly<MetricRowProps>) {
 }
 
 interface MetricCellProps {
-    metricsForSimulation: Record<string, string>;
-    metricKey: string;
+    value: string;
     simulationIndex: number;
     colors: string[];
 }
 
-function MetricCell({metricsForSimulation, metricKey, simulationIndex, colors}: Readonly<MetricCellProps>) {
+function MetricCell({value, simulationIndex, colors}: Readonly<MetricCellProps>) {
     return (
         <Box sx={{
             p: 1,
@@ -154,7 +161,7 @@ function MetricCell({metricsForSimulation, metricKey, simulationIndex, colors}: 
             justifyContent: "space-between",
             textAlign: "center",
         }}>
-            <Typography variant="body2">{metricsForSimulation[metricKey]}</Typography>
+            <Typography variant="body2">{value}</Typography>
 
             <Divider
                 sx={{

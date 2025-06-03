@@ -5,11 +5,33 @@ import {SimulationResult} from "../../model/simulation/SimulationResult.ts";
 import {formatCurrency} from "../formatService.ts";
 import {countDaysSimulated} from "./dayCountService.ts";
 
+export const DISPLAY_NONE = "/";
+
+function showConditional(shouldShow: boolean, value: string) {
+    if (!shouldShow) {
+        return DISPLAY_NONE;
+    }
+    return value;
+}
+
 export function extractRequestDetails(result: SimulationResult): Record<string, string> {
     const {
-        startDate, endDate, brokerName, stockNames, startCapital, indicators,
-        tradingWeekdays
+        startDate,
+        endDate,
+        brokerName,
+        stockNames,
+        startCapital,
+        indicators,
+        tradingWeekdays,
+        transactionBufferPercentage,
+        riskTolerance
     } = result.stockSimulationRequest;
+
+    const type = result.stockSimulationRequest.simulationType;
+    const transactionBuffer = showConditional(type === SimulationTypes.RISK_BASED,
+        transactionBufferPercentage.toFixed(1));
+    const risk = showConditional(type === SimulationTypes.RISK_BASED || type === SimulationTypes.STATIC,
+        riskTolerance?.toFixed(1) ?? '0');
 
     return {
         "Strategy": positionAdjustment(result.stockSimulationRequest),
@@ -17,6 +39,8 @@ export function extractRequestDetails(result: SimulationResult): Record<string, 
         "Stocks Used": stockNames.join("\n"),
         "Start Capital": formatCurrency(startCapital, result.currencyType),
         "Trading Week Days": tradingWeekdays.join("\n"),
+        "Transaction Buffer Percentage": transactionBuffer,
+        "Risk Tolerance": risk,
         "Broker Name": brokerName,
         "Start Date": startDate.toString(),
         "End Date": endDate.toString()
