@@ -128,7 +128,8 @@ export function SimulationDialog({
             options: simulationTypeOptions,
             tooltip: {
                 title: TOOLTIP_MESSAGES.simulation.simulationTypeTitle,
-                description: TOOLTIP_MESSAGES.simulation.simulationTypeInfo
+                description: TOOLTIP_MESSAGES.simulation.simulationTypeInfo,
+                link: TOOLTIP_MESSAGES.simulation.simulationTypeLink
             }
         },
         {
@@ -136,7 +137,8 @@ export function SimulationDialog({
             shouldRender: shouldRenderRiskTolerance,
             tooltip: {
                 title: TOOLTIP_MESSAGES.simulation.riskToleranceTitle,
-                description: TOOLTIP_MESSAGES.simulation.riskToleranceInfo
+                description: TOOLTIP_MESSAGES.simulation.riskToleranceInfo,
+                link: TOOLTIP_MESSAGES.simulation.riskToleranceLink
             }
         },
         {

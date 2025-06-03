@@ -20,6 +20,7 @@ import {MacdInfo} from "./pages/MacdInfo.tsx";
 import {PositionAdjustmentInfo} from "./pages/PositionAdjustmentInfo.tsx";
 import {RiskBasedInfo} from "./pages/RiskBasedInfo.tsx";
 import CurrencyExchangeIcon from '@mui/icons-material/CurrencyExchange';
+import {BuyAndHoldInfo} from "./pages/BuyAndHoldInfo.tsx";
 
 const panelWidth = 240;
 
@@ -71,6 +72,7 @@ export function InfoPage() {
         "drawdown": <DrawdownInfo/>,
         "skewness": <SkewnessInfo/>,
         "position-adjustment": <PositionAdjustmentInfo/>,
+        "buy-and-hold": <BuyAndHoldInfo/>,
         "risk-based": <RiskBasedInfo/>
     };
 
@@ -176,6 +178,11 @@ export function InfoPage() {
                         />
                         {openPositionAdjustment && (
                             <List component="div" disablePadding sx={{pl: 4}}>
+                                <SubListItem
+                                    icon={<CircleIcon sx={{fontSize: "0.5rem"}}/>}
+                                    text="Buy and Hold"
+                                    onClick={() => handleSelectTab("buy-and-hold")}
+                                />
                                 <SubListItem
                                     icon={<CircleIcon sx={{fontSize: "0.5rem"}}/>}
                                     text="Risk Based"

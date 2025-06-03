@@ -33,10 +33,20 @@ export function RiskBasedInfo() {
                 </Box>
                 <Box sx={{mt: 3}}>
                     <Typography variant="h6" gutterBottom align="left">
+                        Dynamic vs. Static Position
+                    </Typography>
+                    <Typography variant="body1" align="left" sx={{mb: 2}}>
+                        <strong>Static position</strong> means you calculate the risk and number of shares to buy on day 1, and then hold that amount throughout the investment period, regardless of how the risk or price changes.
+                        <br/><br/>
+                        <strong>Dynamic position</strong> means you recalculate the risk and adjust your position every day. This allows your position size to change dynamically in response to changes in the stock's risk or price, helping you stay aligned with your risk tolerance as market conditions evolve.
+                    </Typography>
+                </Box>
+                <Box sx={{mt: 3}}>
+                    <Typography variant="h6" gutterBottom align="left">
                         Risk Tolerance
                     </Typography>
                     <Typography variant="body1" align="left" sx={{mb: 2}}>
-                        The table below shows how many shares you can hold for different stocks, based on your capital, target risk, share price, and the stock's risk (standard deviation). If the calculated number of shares would require investing more than your capital, you are capped at investing your full capital.
+                        The table below shows how many shares you can hold for different stocks, based on your capital, risk tolerance, share price, and the stock's risk (standard deviation). If the calculated number of shares would require investing more than your capital, you are capped at investing your full capital.
                     </Typography>
                     <TableContainer component={Paper} sx={{maxWidth: 900, mt: 2}}>
                         <Table>

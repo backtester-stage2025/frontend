@@ -13,9 +13,11 @@ export const TOOLTIP_MESSAGES = {
     simulation: {
         simulationTypeTitle: "Position adjustment",
         simulationTypeInfo: simulationTypeInfo,
+        simulationTypeLink: "/infopages?section=position-adjustment",
         riskToleranceTitle: "Risk Tolerance",
         riskToleranceInfo: "The risk tolerance is used to calculate the maximum number of shares to buy for a stock," +
             " ensuring the investment aligns with your acceptable risk level based on the stock's volatility.",
+        riskToleranceLink: "/infopages?section=risk-based",
         indicator: {
             title: "Indicator Type",
             description: "Deciding factor in when to continue current strategy or sell all stocks.",
