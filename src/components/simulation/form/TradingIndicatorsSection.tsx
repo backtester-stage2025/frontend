@@ -19,8 +19,8 @@ export function TradingIndicatorsSection({control, errors}: Readonly<TradingIndi
     const addIndicator = () =>
         append({
             indicator: IndicatorType.BREAKOUT,
-            movingAverageShortDays: 20,
-            movingAverageLongDays: 50,
+            movingAverageShortDays: 12,
+            movingAverageLongDays: 26,
             breakoutDays: 30,
             macdShortDays: 12,
             macdLongDays: 26
