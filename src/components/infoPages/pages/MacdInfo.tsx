@@ -42,7 +42,8 @@ export function MacdInfo() {
                     </Box>
 
                     <Typography variant="body1" align="left" sx={{fontStyle: 'italic', color: 'primary.main', mt: 1}}>
-                        Note: These periods (12 and 26 days) are commonly used, but they can be customized to suit different
+                        Note: These periods (12 and 26 days) are commonly used, but they can be customized to suit
+                        different
                         trading strategies.
                     </Typography>
 
