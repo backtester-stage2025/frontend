@@ -9,18 +9,19 @@ import {CurrencyTypeDisplay} from "../../../../model/CurrencyType.ts";
 interface InvestmentPerformanceViewProps {
     portfolioData: UserPortfolio[];
     currencyPreference?: string;
+    startCapital?: number | null;
 }
 
 export function InvestmentPerformanceView({
                                               portfolioData,
-                                              currencyPreference
+                                              currencyPreference,
+                                              startCapital
                                           }: Readonly<InvestmentPerformanceViewProps>) {
     const summaryData = useMemo(() => {
         if (!portfolioData || portfolioData.length === 0) return null;
 
-        const initial = portfolioData[0];
         const latest = portfolioData[portfolioData.length - 1];
-        const initialValue = initial.totalPortfolioValue;
+        const initialValue = startCapital ?? 0;
         const finalValue = latest.totalPortfolioValue;
 
         const totalProfit = finalValue - initialValue;

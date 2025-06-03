@@ -52,7 +52,8 @@ export function SimulationTabs({
                     {isRunning ? (
                         <Loader/>
                     ) : (
-                        result && <InvestmentPerformanceView portfolioData={result} currencyPreference={currencyType}/>
+                        result && <InvestmentPerformanceView portfolioData={result} currencyPreference={currencyType}
+                        startCapital={lastSimulationRequest?.startCapital}/>
                     )}
                 </Box>
             )}
