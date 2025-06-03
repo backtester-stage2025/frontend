@@ -47,8 +47,16 @@ export function StockCard({details, onDelete}: Readonly<StockCardProps>) {
         >
             <CardContent sx={{p: 1}}>
                 <Box sx={{display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start'}}>
-                    <Box>
-                        <Typography variant="h6" fontWeight="bold" sx={{mb: 0.5}}>
+                    <Box sx={{width: "100%"}}>
+                        <Typography
+                            variant="h6"
+                            fontWeight="bold"
+                            sx={{
+                                mb: 0.5,
+                                minHeight: '80px',
+                                alignItems: 'center'
+                            }}
+                        >
                             {details.companyName}
                         </Typography>
                         <Typography variant="body2" color="text.secondary">
