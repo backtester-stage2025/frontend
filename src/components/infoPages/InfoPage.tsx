@@ -17,7 +17,9 @@ import {TopLevelListItem} from "./TopLevelListItem";
 import {SubListItem} from "./SubListItem";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import {MacdInfo} from "./pages/MacdInfo.tsx";
-
+import {PositionAdjustmentInfo} from "./pages/PositionAdjustmentInfo.tsx";
+import {RiskBasedInfo} from "./pages/RiskBasedInfo.tsx";
+import CurrencyExchangeIcon from '@mui/icons-material/CurrencyExchange';
 
 const panelWidth = 240;
 
@@ -25,6 +27,7 @@ export function InfoPage() {
     const [searchParams] = useSearchParams();
     const [openIndicators, setOpenIndicators] = useState(false);
     const [openStockMetrics, setOpenStockMetrics] = useState(false);
+    const [openPositionAdjustment, setOpenPositionAdjustment] = useState(false);
     const [activeTab, setActiveTab] = useState<string | null>(null);
 
     useEffect(() => {
@@ -36,6 +39,8 @@ export function InfoPage() {
                 setOpenIndicators(true);
             } else if (["returns", "risk", "drawdown", "skewness", "stock-metrics"].includes(section)) {
                 setOpenStockMetrics(true);
+            } else if (["position-adjustment", "risk-based"].includes(section)) {
+                setOpenPositionAdjustment(true);
             }
         }
     }, [searchParams]);
@@ -45,6 +50,9 @@ export function InfoPage() {
     };
     const handleToggleStockMetrics = () => {
         setOpenStockMetrics(!openStockMetrics);
+    };
+    const handleTogglePositionAdjustment = () => {
+        setOpenPositionAdjustment(!openPositionAdjustment);
     };
 
     const handleSelectTab = (tab: string) => {
@@ -61,7 +69,9 @@ export function InfoPage() {
         "returns": <ReturnsInfo/>,
         "risk": <RiskInfo/>,
         "drawdown": <DrawdownInfo/>,
-        "skewness": <SkewnessInfo/>
+        "skewness": <SkewnessInfo/>,
+        "position-adjustment": <PositionAdjustmentInfo/>,
+        "risk-based": <RiskBasedInfo/>
     };
 
     return (
@@ -71,7 +81,7 @@ export function InfoPage() {
                 elevation={3}
                 sx={{
                     width: panelWidth,
-                    height: '65vh',
+                    height: '80vh',
                     position: 'fixed',
                     top: '10vh',
                     left: '1vw',
@@ -150,6 +160,26 @@ export function InfoPage() {
                                     icon={<CircleIcon sx={{fontSize: "0.5rem"}}/>}
                                     text="Skewness"
                                     onClick={() => handleSelectTab("skewness")}
+                                />
+                            </List>
+                        )}
+                        <TopLevelListItem
+                            icon={<CurrencyExchangeIcon sx={{color: "primary.main"}}/>}
+                            text="Position Adjustment"
+                            onNavigate={() => {
+                                handleSelectTab("position-adjustment");
+                                setOpenPositionAdjustment(true);
+                            }}
+                            onToggleDropdown={handleTogglePositionAdjustment}
+                            expandable
+                            expanded={openPositionAdjustment}
+                        />
+                        {openPositionAdjustment && (
+                            <List component="div" disablePadding sx={{pl: 4}}>
+                                <SubListItem
+                                    icon={<CircleIcon sx={{fontSize: "0.5rem"}}/>}
+                                    text="Risk Based"
+                                    onClick={() => handleSelectTab("risk-based")}
                                 />
                             </List>
                         )}

@@ -11,7 +11,7 @@ export const TOOLTIP_MESSAGES = {
         longMAInfo: "The average price of the stock for every day, calculated going back the selected number of days.",
     },
     simulation: {
-        simulationTypeTitle: "Simulation Type",
+        simulationTypeTitle: "Position adjustment",
         simulationTypeInfo: simulationTypeInfo,
         riskToleranceTitle: "Risk Tolerance",
         riskToleranceInfo: "The risk tolerance is used to calculate the maximum number of shares to buy for a stock," +
