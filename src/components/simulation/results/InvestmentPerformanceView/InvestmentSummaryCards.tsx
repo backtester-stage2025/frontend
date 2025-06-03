@@ -16,7 +16,6 @@ interface InvestmentSummaryCardsProps {
         totalTradeCount: number;
     };
     currencyPreference?: string;
-    currencyLabel?: string;
 }
 
 export function InvestmentSummaryCards({summaryData, currencyPreference}: Readonly<InvestmentSummaryCardsProps>) {

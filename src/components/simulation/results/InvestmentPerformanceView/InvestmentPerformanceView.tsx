@@ -75,7 +75,6 @@ export function InvestmentPerformanceView({
                     <InvestmentSummaryCards
                         summaryData={summaryData}
                         currencyPreference={currencyPreference}
-                        currencyLabel={currencyLabel}
                     />
                 </Box>
             }
