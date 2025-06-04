@@ -4,6 +4,9 @@ import {StockQuote} from "../../model/StockQuote.ts";
 import CanvasJSReact from "@canvasjs/react-stockcharts";
 import {ErrorAlert} from "../util/Alerts.tsx";
 import {ChartSettings} from "./StockChart.tsx";
+import {subMonths} from "date-fns";
+import {useCurrencyForStock} from "../../hooks/useCurrencyForStock.ts";
+import {CurrencyTypeDisplay} from "../../model/CurrencyType.ts";
 
 const CanvasJSStockChart = CanvasJSReact.CanvasJSStockChart;
 
@@ -18,6 +21,9 @@ interface MovingAverageChartProps {
 }
 
 export function MovingAverageChart({stockName, stockQuotes, dateRange, settings}: Readonly<MovingAverageChartProps>) {
+    const currencyType = useCurrencyForStock(stockName);
+    const currencySymbol = CurrencyTypeDisplay[currencyType];
+
     const {
         isLoading: isLoadingMovingAverageShort,
         isError: isErrorMovingAverageShort,
@@ -92,6 +98,11 @@ export function MovingAverageChart({stockName, stockQuotes, dateRange, settings}
         return data;
     };
 
+    const endDate = new Date(stockQuotes[stockQuotes.length - 1].dateTime);
+    const idealStartDate = subMonths(endDate, 6);
+    const firstDate = new Date(stockQuotes[0].dateTime);
+    const startDate = idealStartDate > firstDate ? idealStartDate : firstDate;
+
     const priceChartOptions = {
         theme: "light2",
         title: {
@@ -111,7 +122,7 @@ export function MovingAverageChart({stockName, stockQuotes, dateRange, settings}
                     },
                 },
                 axisY: {
-                    title: "Price ($)",
+                    title: `Price (${currencySymbol})`,
                     crosshair: {
                         enabled: true,
                     },
@@ -128,8 +139,8 @@ export function MovingAverageChart({stockName, stockQuotes, dateRange, settings}
         ],
         rangeSelector: {
             inputFields: {
-                startValue: new Date(stockQuotes[0].dateTime),
-                endValue: new Date(stockQuotes[stockQuotes.length - 1].dateTime),
+                startValue: startDate,
+                endValue: endDate,
                 valueFormatString: "MMM DD, YYYY",
             },
             buttons: [
@@ -157,10 +168,10 @@ export function MovingAverageChart({stockName, stockQuotes, dateRange, settings}
         navigator: {
             enabled: true,
             slider: {
-                minimum: new Date(stockQuotes[0].dateTime),
-                maximum: new Date(stockQuotes[stockQuotes.length - 1].dateTime)
-            }
-        }
+                minimum: startDate,
+                maximum: endDate,
+            },
+        },
     };
 
     const containerProps = {
