@@ -7,6 +7,7 @@ import {
     getSimulationTypeLabel,
     getWeekdayLabel
 } from "../../../services/formatService.ts";
+import {IndicatorType} from "../../../model/request/IndicatorType.ts";
 
 interface SimulationConfigurationViewProps {
     simulationRequest: SimulationRequest;
@@ -115,31 +116,36 @@ export function SimulationConfigurationView({
                                                 {getIndicatorTypeLabel(indicator.indicator)}
                                             </Typography>
                                             <Box sx={{ml: 2}}>
-                                                {indicator.movingAverageShortDays && (
+                                                {indicator.indicator == IndicatorType.MOVING_AVERAGE_CROSSOVER &&
+                                                    indicator.movingAverageShortDays &&
                                                     <Typography variant="body2" color="text.secondary">
                                                         Short MA: {indicator.movingAverageShortDays} days
                                                     </Typography>
-                                                )}
-                                                {indicator.movingAverageLongDays && (
+                                                }
+                                                {indicator.indicator == IndicatorType.MOVING_AVERAGE_CROSSOVER &&
+                                                    indicator.movingAverageLongDays &&
                                                     <Typography variant="body2" color="text.secondary">
                                                         Long MA: {indicator.movingAverageLongDays} days
                                                     </Typography>
-                                                )}
-                                                {indicator.breakoutDays && (
+                                                }
+                                                {indicator.indicator == IndicatorType.BREAKOUT &&
+                                                    indicator.breakoutDays &&
                                                     <Typography variant="body2" color="text.secondary">
                                                         Breakout Period: {indicator.breakoutDays} days
                                                     </Typography>
-                                                )}
-                                                {indicator.macdShortDays && (
+                                                }
+                                                {indicator.indicator == IndicatorType.MACD &&
+                                                    indicator.macdShortDays &&
                                                     <Typography variant="body2" color="text.secondary">
                                                         Short MACD: {indicator.macdShortDays} days
                                                     </Typography>
-                                                )}
-                                                {indicator.macdLongDays && (
+                                                }
+                                                {indicator.indicator == IndicatorType.MACD &&
+                                                    indicator.macdLongDays &&
                                                     <Typography variant="body2" color="text.secondary">
                                                         Long MACD: {indicator.macdLongDays} days
                                                     </Typography>
-                                                )}
+                                                }
                                             </Box>
                                             {index < simulationRequest.indicators.length - 1 && (
                                                 <Divider sx={{mt: 1}}/>
