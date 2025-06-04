@@ -7,7 +7,7 @@ import {
     DialogContent,
     DialogTitle,
     FormControl,
-    FormHelperText,
+    FormHelperText, IconButton, InputAdornment,
     InputLabel,
     MenuItem,
     Select,
@@ -19,6 +19,9 @@ import {useUploadCsv} from "../../../hooks/useCsvMutations.ts";
 import {SelectChangeEvent} from "@mui/material/Select";
 import {OverwriteTableDialog} from "./OverwriteTableDialog.tsx";
 import {CurrencyType} from "../../../model/CurrencyType.ts";
+import {TooltipHtml} from "../../util/TooltipHtml.tsx";
+import InfoIcon from "@mui/icons-material/Info";
+import {TOOLTIP_MESSAGES} from "../../../constants/tooltipMessages.ts";
 
 type CsvUploadDialogProps = {
     open: boolean;
@@ -219,6 +222,18 @@ export function CsvUploadDialog({open, onClose}: Readonly<CsvUploadDialogProps>)
 
     const isFormValid = !Object.values(errors).some(err => err !== "");
 
+    function renderTooltipAdornment(title: string, description: string) {
+        return (
+            <InputAdornment position="end">
+                <TooltipHtml title={title} description={description}>
+                    <IconButton sx={{marginRight: 1, color: 'rgba(0, 0, 0, 0.3)'}}>
+                        <InfoIcon sx={{fontSize: '1.4rem'}}/>
+                    </IconButton>
+                </TooltipHtml>
+            </InputAdornment>
+        );
+    }
+
     return (
         <>
             <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
@@ -236,6 +251,14 @@ export function CsvUploadDialog({open, onClose}: Readonly<CsvUploadDialogProps>)
                             error={touched.exchange && !!errors.exchange}
                             helperText={touched.exchange && errors.exchange}
                             required
+                            slotProps={{
+                                input: {
+                                    endAdornment: renderTooltipAdornment(
+                                        TOOLTIP_MESSAGES.csvUpload.exchangeTitle,
+                                        TOOLTIP_MESSAGES.csvUpload.exchangeInfo
+                                    )
+                                }
+                            }}
                         />
                         <TextField
                             label="Ticker"
@@ -248,6 +271,14 @@ export function CsvUploadDialog({open, onClose}: Readonly<CsvUploadDialogProps>)
                             error={touched.ticker && !!errors.ticker}
                             helperText={touched.ticker && errors.ticker}
                             required
+                            slotProps={{
+                                input: {
+                                    endAdornment: renderTooltipAdornment(
+                                        TOOLTIP_MESSAGES.csvUpload.tickerTitle,
+                                        TOOLTIP_MESSAGES.csvUpload.tickerInfo
+                                    )
+                                }
+                            }}
                         />
                         <TextField
                             label="Company Name"
@@ -260,6 +291,14 @@ export function CsvUploadDialog({open, onClose}: Readonly<CsvUploadDialogProps>)
                             error={touched.companyName && !!errors.companyName}
                             helperText={touched.companyName && errors.companyName}
                             required
+                            slotProps={{
+                                input: {
+                                    endAdornment: renderTooltipAdornment(
+                                        TOOLTIP_MESSAGES.csvUpload.companyNameTitle,
+                                        TOOLTIP_MESSAGES.csvUpload.companyNameInfo
+                                    )
+                                }
+                            }}
                         />
                         <FormControl fullWidth>
                             <InputLabel id="currency-type-label" disabled={isRunning}>Currency</InputLabel>
