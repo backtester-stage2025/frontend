@@ -84,7 +84,7 @@ export function StockChart({stockName}: Readonly<StockChartProps>) {
     };
 
     return (
-        <Paper elevation={3} sx={{p: 3, borderRadius: 2, mt: 14, mb: 2}}>
+        <Paper elevation={3} sx={{p: 3, borderRadius: 2, mt: 3, mb: 2}}>
             {/* Header */}
             <Box sx={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3, width: '75vw'}}>
                 <Typography variant="h5" component="h2" sx={{display: 'flex', alignItems: 'center'}}>
