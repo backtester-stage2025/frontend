@@ -53,14 +53,20 @@ export const TOOLTIP_MESSAGES = {
         distributionLink: "/infopages?section=skewness"
     },
     csvUpload: {
-        exchangeTitle: "Stock Exchange",
-        exchangeInfo: "The stock exchange where the stock is listed. This is used to find the correct ticker symbol." +
-            " (e.g. NASDAQ, NYSE)",
-        tickerTitle: "Stock Ticker Symbol",
-        tickerInfo: "The stock ticker symbol, which is a unique identifier for the stock on the exchange." +
-            " (e.g. AAPL)",
-        companyNameTitle: "Company Name",
-        companyNameInfo: "The name of the company associated with the stock ticker." +
-            " (e.g. Apple Inc.)"
+        exchange: {
+            title: "Stock Exchange",
+            info: "The stock exchange where the stock is listed. This is used to find the correct ticker symbol." +
+                " (e.g. NASDAQ, NYSE)"
+        },
+        ticker: {
+            title: "Stock Ticker Symbol",
+            info: "The stock ticker symbol, which is a unique identifier for the stock on the exchange." +
+                " (e.g. AAPL)"
+        },
+        companyName: {
+            title: "Company Name",
+            info: "The name of the company associated with the stock ticker." +
+                " (e.g. Apple Inc.)"
+        }
     }
 }

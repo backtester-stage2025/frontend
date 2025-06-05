@@ -1,5 +1,4 @@
 import {
-    Alert,
     Box,
     Button,
     Dialog,
@@ -7,232 +6,90 @@ import {
     DialogContent,
     DialogTitle,
     FormControl,
-    FormHelperText, IconButton, InputAdornment,
+    FormHelperText,
     InputLabel,
     MenuItem,
-    Select,
-    Snackbar,
-    TextField
+    Select
 } from "@mui/material";
-import {ChangeEvent, FocusEvent, useState} from "react";
-import {useUploadCsv} from "../../../hooks/useCsvMutations.ts";
-import {SelectChangeEvent} from "@mui/material/Select";
+import {Controller, useForm} from "react-hook-form";
+import {zodResolver} from "@hookform/resolvers/zod";
+import {CsvUploadSuccessBar} from "./CsvUploadSuccessBar.tsx";
+import {CsvUploadErrorBar} from "./CsvUploadErrorBar.tsx";
 import {OverwriteTableDialog} from "./OverwriteTableDialog.tsx";
 import {CurrencyType} from "../../../model/CurrencyType.ts";
-import {TooltipHtml} from "../../util/TooltipHtml.tsx";
-import InfoIcon from "@mui/icons-material/Info";
 import {TOOLTIP_MESSAGES} from "../../../constants/tooltipMessages.ts";
+import {useUploadCsv} from "../../../hooks/useCsvMutations.ts";
+import {z} from "zod";
+import {useState} from "react";
+import {RequiredTextInput} from "./RequiredTextInput.tsx";
+import {csvUploadSchema} from "./csvUploadSchema.ts";
 
 type CsvUploadDialogProps = {
     open: boolean;
     onClose: () => void;
 };
 
-interface FormErrors {
-    exchange: string;
-    ticker: string;
-    companyName: string;
-    file: string;
-}
 
-const MAX_FILE_SIZE = 5 * 1024 * 1024;
+type FormData = z.infer<typeof csvUploadSchema>;
 
 export function CsvUploadDialog({open, onClose}: Readonly<CsvUploadDialogProps>) {
     const {sendRequest, isRunning, isError, error} = useUploadCsv();
-    const [form, setForm] = useState({
-        exchange: "",
-        ticker: "",
-        companyName: "",
-        currencyType: CurrencyType.EUR,
-        file: null as File | null
-    });
-    const [errors, setErrors] = useState<FormErrors>({
-        exchange: "",
-        ticker: "",
-        companyName: "",
-        file: ""
-    });
-    const [touched, setTouched] = useState({
-        exchange: false,
-        ticker: false,
-        companyName: false,
-        file: false
-    });
+
     const [successMsg, setSuccessMsg] = useState("");
     const [showError, setShowError] = useState(false);
-
     const [showOverwriteDialog, setShowOverwriteDialog] = useState(false);
-    const [lastFormData, setLastFormData] = useState<typeof form | null>(null);
 
-    const validateField = (name: string, value: string | File | null): string => {
-        switch (name) {
-            case "exchange":
-                if (!value) return "Exchange is required";
-                if (typeof value == "string" && (value.length < 2 || value.length > 10))
-                    return "Exchange must be between 2 and 10 characters";
-                return "";
-
-            case "ticker":
-                if (!value) return "Ticker is required";
-                if (typeof value == "string" && (value.length < 2 || value.length > 10))
-                    return "Ticker must be between 2 and 10 characters";
-                return "";
-
-            case "companyName":
-                if (!value) return "Company name is required";
-                if (typeof value == "string") {
-                    if (value.length < 2) return "Company name is too short";
-                    if (value.length > 40) return "Company name is too long";
-                }
-                return "";
-
-            case "file":
-                if (!value) return "File is required";
-                if (value instanceof File) {
-                    if (!value.name.endsWith('.csv')) return "File must be a CSV";
-                    if (value.size > MAX_FILE_SIZE) return "File must be smaller than 5MB";
-                }
-                return "";
-
-            default:
-                return "";
+    const {control, register, handleSubmit, reset, watch, getValues, formState: {errors}} = useForm<FormData>({
+        resolver: zodResolver(csvUploadSchema),
+        defaultValues: {
+            exchange: "",
+            ticker: "",
+            companyName: "",
+            currencyType: CurrencyType.EUR,
+            file: undefined
         }
-    };
+    });
 
-    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-        const {name, value} = e.target;
-        setForm(prev => ({...prev, [name]: value}));
+    const watchFile = watch("file");
 
-        if (touched[name as keyof typeof touched]) {
-            setErrors(prev => ({
-                ...prev,
-                [name]: validateField(name, value)
-            }));
-        }
-    };
-
-    const handleBlur = (e: FocusEvent<HTMLInputElement>) => {
-        const {name} = e.target;
-        setTouched(prev => ({...prev, [name]: true}));
-        setErrors(prev => ({
-            ...prev,
-            [name]: validateField(name, form[name as keyof typeof form])
-        }));
-    };
-
-    const handleCurrencyChange = (event: SelectChangeEvent) => {
-        setForm(prev => ({
-                ...prev,
-                currencyType: event.target.value as CurrencyType
-            })
-        );
-    };
-
-    const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0] || null;
-        setForm(prev => ({...prev, file}));
-        setTouched(prev => ({...prev, file: true}));
-        setErrors(prev => ({
-            ...prev,
-            file: validateField("file", file)
-        }));
-    };
-
-    const validateForm = (): boolean => {
-        const newErrors = {
-            exchange: validateField("exchange", form.exchange),
-            ticker: validateField("ticker", form.ticker),
-            companyName: validateField("companyName", form.companyName),
-            file: validateField("file", form.file)
-        };
-
-        setErrors(newErrors);
-        setTouched({exchange: true, ticker: true, companyName: true, file: true});
-
-        return !Object.values(newErrors).some(error => error !== "");
-    };
-
-    const handleSubmit = () => {
-        if (!validateForm()) return;
-        if (!form.file) return;
-
-        setLastFormData(form);
+    const submit = (overwriteEnabled: boolean) => {
+        const data = getValues();
+        const file = data.file.item(0);
+        if (!file) return;
 
         sendRequest(
+            { ...data, file: file, overwrite: overwriteEnabled },
             {
-                file: form.file,
-                exchange: form.exchange,
-                ticker: form.ticker,
-                companyName: form.companyName,
-                currencyType: form.currencyType,
-                overwrite: false
-            },
-            {
-                onSuccess: (response) => {
-                    setSuccessMsg(`Successfully uploaded ${response.filename} with ${response.dataPointsCount} data points from ${response.startDate} to ${response.endDate}`);
-                    setForm({exchange: "", ticker: "", companyName: "", currencyType: CurrencyType.EUR, file: null});
-                    setTouched({exchange: false, ticker: false, companyName: false, file: false});
-                    setErrors({exchange: "", ticker: "", companyName: "", file: ""});
+                onSuccess: (res) => {
+                    const msg = overwriteEnabled
+                        ? `Successfully replaced table with ${res.filename} containing ${res.dataPointsCount} data points.`
+                        : `Successfully uploaded ${res.filename} with ${res.dataPointsCount} data points from ${res.startDate} to ${res.endDate}`;
+                    setSuccessMsg(msg);
+                    reset();
                     onClose();
                 },
-                onError: (error) => {
-                    if (error?.message.includes("continue")) {
-                        setShowOverwriteDialog(true);
-                    } else {
-                        setShowError(true);
-                    }
+                onError: (err) => {
+                    const isOverwriteConflict = err?.message.includes("continue");
+                    if (isOverwriteConflict && !overwriteEnabled) setShowOverwriteDialog(true);
+                    else setShowError(true);
                 }
             }
         );
+    };
+
+    const onSubmit = (data: FormData) => {
+        const file = data.file.item(0);
+        if (!file) return;
+        submit(false);
     };
 
     const handleOverwriteConfirm = () => {
         setShowOverwriteDialog(false);
-        if (!lastFormData?.file) return;
-
-        sendRequest(
-            {
-                file: lastFormData.file,
-                exchange: lastFormData.exchange,
-                ticker: lastFormData.ticker,
-                companyName: lastFormData.companyName,
-                currencyType: lastFormData.currencyType,
-                overwrite: true
-            },
-            {
-                onSuccess: (response) => {
-                    setSuccessMsg(`Successfully replaced table with ${response.filename} containing ${response.dataPointsCount} data points.`);
-                    setForm({exchange: "", ticker: "", companyName: "", currencyType: CurrencyType.EUR, file: null});
-                    setTouched({exchange: false, ticker: false, companyName: false, file: false});
-                    setErrors({exchange: "", ticker: "", companyName: "", file: ""});
-                    onClose();
-                },
-                onError: () => setShowError(true)
-            }
-        );
+        submit(true);
     };
-
-    const handleOverwriteCancel = () => {
-        setShowOverwriteDialog(false);
-    };
-
 
     const handleCloseSnackbar = () => setSuccessMsg("");
     const handleCloseError = () => setShowError(false);
-
-    const isFormValid = !Object.values(errors).some(err => err !== "");
-
-    function renderTooltipAdornment(title: string, description: string) {
-        return (
-            <InputAdornment position="end">
-                <TooltipHtml title={title} description={description}>
-                    <IconButton sx={{marginRight: 1, color: 'rgba(0, 0, 0, 0.3)'}}>
-                        <InfoIcon sx={{fontSize: '1.4rem'}}/>
-                    </IconButton>
-                </TooltipHtml>
-            </InputAdornment>
-        );
-    }
 
     return (
         <>
@@ -240,145 +97,69 @@ export function CsvUploadDialog({open, onClose}: Readonly<CsvUploadDialogProps>)
                 <DialogTitle>Upload CSV</DialogTitle>
                 <DialogContent>
                     <Box sx={{display: "flex", flexDirection: "column", gap: 2, mt: 1}}>
-                        <TextField
-                            label="Exchange"
-                            name="exchange"
-                            value={form.exchange}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            fullWidth
-                            disabled={isRunning}
-                            error={touched.exchange && !!errors.exchange}
-                            helperText={touched.exchange && errors.exchange}
-                            required
-                            slotProps={{
-                                input: {
-                                    endAdornment: renderTooltipAdornment(
-                                        TOOLTIP_MESSAGES.csvUpload.exchangeTitle,
-                                        TOOLTIP_MESSAGES.csvUpload.exchangeInfo
-                                    )
-                                }
-                            }}
+
+                        <RequiredTextInput
+                            label={"Exchange"} registration={register("exchange")} disabled={isRunning}
+                            error={errors.exchange} tooltip={TOOLTIP_MESSAGES.csvUpload.exchange}
                         />
-                        <TextField
-                            label="Ticker"
-                            name="ticker"
-                            value={form.ticker}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            fullWidth
-                            disabled={isRunning}
-                            error={touched.ticker && !!errors.ticker}
-                            helperText={touched.ticker && errors.ticker}
-                            required
-                            slotProps={{
-                                input: {
-                                    endAdornment: renderTooltipAdornment(
-                                        TOOLTIP_MESSAGES.csvUpload.tickerTitle,
-                                        TOOLTIP_MESSAGES.csvUpload.tickerInfo
-                                    )
-                                }
-                            }}
+
+                        <RequiredTextInput
+                            label={"Ticker"} registration={register("ticker")} disabled={isRunning}
+                            error={errors.ticker} tooltip={TOOLTIP_MESSAGES.csvUpload.ticker}
                         />
-                        <TextField
-                            label="Company Name"
-                            name="companyName"
-                            value={form.companyName}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            fullWidth
-                            disabled={isRunning}
-                            error={touched.companyName && !!errors.companyName}
-                            helperText={touched.companyName && errors.companyName}
-                            required
-                            slotProps={{
-                                input: {
-                                    endAdornment: renderTooltipAdornment(
-                                        TOOLTIP_MESSAGES.csvUpload.companyNameTitle,
-                                        TOOLTIP_MESSAGES.csvUpload.companyNameInfo
-                                    )
-                                }
-                            }}
+
+                        <RequiredTextInput
+                            label={"Company Name"} registration={register("companyName")} disabled={isRunning}
+                            error={errors.companyName} tooltip={TOOLTIP_MESSAGES.csvUpload.companyName}
                         />
-                        <FormControl fullWidth>
-                            <InputLabel id="currency-type-label" disabled={isRunning}>Currency</InputLabel>
-                            <Select
-                                labelId="currency-type-label"
-                                label="Currency"
+
+                        <FormControl fullWidth error={!!errors.currencyType}>
+                            <InputLabel>Currency</InputLabel>
+                            <Controller
                                 name="currencyType"
-                                value={form.currencyType}
-                                onChange={handleCurrencyChange}
-                                disabled={isRunning}
-                                variant={"outlined"}>
-                                {Object.values(CurrencyType).map((currency) => (
-                                    <MenuItem key={currency} value={currency}>
-                                        {currency}
-                                    </MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
-                        <Button
-                            variant="outlined"
-                            component="label"
-                            disabled={isRunning}
-                            color={touched.file && errors.file ? "error" : "primary"}
-                        >
-                            {form.file ? form.file.name : "Select CSV File"}
-                            <input
-                                type="file"
-                                accept=".csv"
-                                hidden
-                                onChange={handleFileChange}
+                                control={control}
+                                render={({field}) => (
+                                    <Select label="Currency" {...field} disabled={isRunning}>
+                                        {Object.values(CurrencyType).map((type) => (
+                                            <MenuItem key={type} value={type}>
+                                                {type}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                )}
                             />
-                        </Button>
-                        {touched.file && errors.file && (
-                            <FormHelperText error>{errors.file}</FormHelperText>
-                        )}
+                            <FormHelperText>{errors.currencyType?.message}</FormHelperText>
+                        </FormControl>
+                        <FormControl fullWidth error={!!errors.file}>
+                            <Button
+                                variant="outlined"
+                                component="label"
+                                disabled={isRunning}
+                                color={errors.file ? "error" : "primary"}
+                            >
+                                {watchFile?.item(0)?.name ?? "Select CSV File"}
+                                <input type="file" accept=".csv" hidden={true} {...register("file")}/>
+                            </Button>
+
+                            <FormHelperText><>{errors.file?.message}</></FormHelperText>
+                        </FormControl>
                     </Box>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={onClose} disabled={isRunning}>Cancel</Button>
-                    <Button
-                        onClick={handleSubmit}
-                        variant="contained"
-                        disabled={isRunning || !isFormValid}
-                    >
-                        {isRunning ? "Uploading..." : "Upload"}
+                    <Button onClick={onClose}>Cancel</Button>
+                    <Button onClick={handleSubmit(onSubmit)} variant="contained" disabled={isRunning}>
+                        Upload
                     </Button>
                 </DialogActions>
             </Dialog>
+
+            <CsvUploadSuccessBar message={successMsg} onClose={handleCloseSnackbar}/>
+            <CsvUploadErrorBar open={showError && isError} onClose={handleCloseError} errorMessage={(error?.message) ?? "Unknown error"}/>
             <OverwriteTableDialog
                 open={showOverwriteDialog}
+                onCancel={() => setShowOverwriteDialog(false)}
                 onConfirm={handleOverwriteConfirm}
-                onCancel={handleOverwriteCancel}
             />
-            <Snackbar
-                open={!!successMsg}
-                autoHideDuration={6000}
-                onClose={handleCloseSnackbar}
-                anchorOrigin={{vertical: 'top', horizontal: 'center'}}
-            >
-                <Alert onClose={handleCloseSnackbar} severity="success" sx={{width: '100%', mt: 6}}>
-                    {successMsg}
-                </Alert>
-            </Snackbar>
-            <Snackbar
-                open={isError && showError}
-                autoHideDuration={6000}
-                onClose={handleCloseError}
-                anchorOrigin={{vertical: 'top', horizontal: 'center'}}
-            >
-                <Alert
-                    onClose={handleCloseError}
-                    severity="error"
-                    sx={{width: '100%', mt: 6}}
-                >
-                    {/* Split lines */}
-                    {(error?.message ?? "Unknown error").split('\n').map((line) => (
-                        <span key={line}>{line}<br/></span>
-                    ))}
-                </Alert>
-            </Snackbar>
         </>
     );
 }
