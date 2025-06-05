@@ -4,6 +4,7 @@ import {SimulationTypes} from "../../model/request/SimulationTypes.ts";
 import {SimulationResult} from "../../model/simulation/SimulationResult.ts";
 import {formatCurrency} from "../formatService.ts";
 import {countDaysSimulated} from "./dayCountService.ts";
+import {getAverageDailyGrowth} from "../calculations/SimulationResultCalculations.ts";
 
 export const DISPLAY_NONE = "/";
 
@@ -52,10 +53,7 @@ export function extractResults(result: SimulationResult): Record<string, string>
     const portfolios = result.userPortfolios;
     const finalValue = portfolios[portfolios.length - 1]?.totalPortfolioValue || 0;
     const profitMargin = ((finalValue - startCapital) / startCapital) * 100;
-
-    const avgGrowth = portfolios.length > 1
-        ? ((finalValue / startCapital) ** (1 / (portfolios.length - 1)) - 1) * 100
-        : 0;
+    const avgGrowth = getAverageDailyGrowth(result);
 
     let transactionCount = 0;
     let totalFees = 0;
@@ -70,7 +68,7 @@ export function extractResults(result: SimulationResult): Record<string, string>
         "Simulation Length": `${days} days`,
         "Final Portfolio Value": formatCurrency(finalValue, result.currencyType),
         "Profit Margin": `${profitMargin.toFixed(2)}%`,
-        "Avg Daily Growth": `${avgGrowth.toFixed(2)}%`,
+        "Avg Daily Growth": `${avgGrowth.toFixed(3)}%`,
         "Total Transactions": transactionCount.toString(),
         "Total Transaction Fees": formatCurrency(totalFees, result.currencyType)
     };

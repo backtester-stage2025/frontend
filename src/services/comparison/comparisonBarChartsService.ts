@@ -1,5 +1,11 @@
 import {SimulationResult} from "../../model/simulation/SimulationResult.ts";
 import {countDaysBetween} from "./dayCountService.ts";
+import {
+    getAverageDailyGrowth,
+    getProfitMarginPercentage,
+    getProfitMarginPercentageIgnoreFees,
+    getTransactionCount
+} from "../calculations/SimulationResultCalculations.ts";
 
 export function getSingleMetricChartOptions(label: string, values: number[], colors: string[], formatter: (x: number) => string) {
     const minVal = Math.min(...values);
@@ -71,30 +77,4 @@ export function getMetricsForBarCharts(results: SimulationResult[]) {
             formatter: (x: number) => x.toFixed() + " transactions"
         }
     ];
-}
-
-function getProfitMarginPercentage(result: SimulationResult): number {
-    const start = result.stockSimulationRequest.startCapital;
-    const end = result.userPortfolios[result.userPortfolios.length - 1]?.totalPortfolioValue ?? start;
-    return ((end - start) / start) * 100;
-}
-
-function getAverageDailyGrowth(result: SimulationResult): number {
-    const days = (new Date(result.stockSimulationRequest.endDate).getTime() - new Date(result.stockSimulationRequest.startDate).getTime()) / (1000 * 3600 * 24);
-    const start = result.stockSimulationRequest.startCapital;
-    const end = result.userPortfolios[result.userPortfolios.length - 1]?.totalPortfolioValue ?? start;
-    return ((end / start) ** (1 / days) - 1) * 100;
-}
-
-function getTransactionCount(result: SimulationResult): number {
-    return result.userPortfolios.reduce((sum, p) => sum + p.sharesBought.filter(st => st.totalSharesBought != 0).length, 0);
-}
-
-function getProfitMarginPercentageIgnoreFees(result: SimulationResult): number {
-    const totalFee = result.userPortfolios.flatMap(p => p.sharesBought)
-        .reduce((sum, tx) => sum + tx.transactionFee, 0);
-    const start = result.stockSimulationRequest.startCapital;
-    const end = result.userPortfolios[result.userPortfolios.length - 1]?.totalPortfolioValue ?? start;
-    const totalProfits = end + totalFee - start;
-    return totalProfits / start * 100;
 }
