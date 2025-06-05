@@ -146,7 +146,7 @@ export function CsvUploadDialog({open, onClose}: Readonly<CsvUploadDialogProps>)
                     </Box>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={onClose}>{isRunning ? "Close" : "Cancel"}</Button>
+                    <Button onClick={onClose}>Close</Button>
                     <Button onClick={handleSubmit(onSubmit)} variant="contained" disabled={isRunning}>
                         {isRunning ? "Uploading..." : "Upload"}
                     </Button>
