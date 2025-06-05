@@ -1,4 +1,4 @@
-import {useSearchParams, useNavigate} from "react-router-dom";
+import {useNavigate, useSearchParams} from "react-router-dom";
 import {StockChart} from "./StockChart";
 import {Box, Button} from "@mui/material";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
@@ -14,17 +14,17 @@ export function StockOverview() {
 
     return (
         <Box sx={{px: 3}}>
-            <Box sx={{ display: 'flex', justifyContent: 'flex-start' }}>
+            <Box sx={{display: 'flex', justifyContent: 'flex-start'}}>
                 <Button
                     variant="outlined"
-                    startIcon={<ArrowBackIcon />}
+                    startIcon={<ArrowBackIcon/>}
                     onClick={() => navigate("/stock-list")}
                     sx={{mt: 2}}
                 >
                     Back
                 </Button>
             </Box>
-            <StockChart stockName={stockName} />
+            <StockChart stockName={stockName}/>
         </Box>
     );
 }
