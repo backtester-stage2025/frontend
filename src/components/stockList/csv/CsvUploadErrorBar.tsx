@@ -6,7 +6,7 @@ interface CsvUploadErrorBarProps {
     errorMessage: string;
 }
 
-export function CsvUploadErrorBar({open, onClose, errorMessage}: Readonly<CsvUploadErrorBarProps>){
+export function CsvUploadErrorBar({open, onClose, errorMessage}: Readonly<CsvUploadErrorBarProps>) {
     return (
         <Snackbar
             open={open}

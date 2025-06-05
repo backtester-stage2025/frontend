@@ -133,13 +133,13 @@ function MetricRow({metricKey, values, colors}: Readonly<MetricRowProps>) {
 
             {values
                 .map((metricsForSimulation, simulationIndex) => (
-                <MetricCell
-                    key={`${metricKey}_${simulationIndex}`}
-                    value={metricsForSimulation[metricKey]}
-                    simulationIndex={simulationIndex}
-                    colors={colors}
-                />
-            ))}
+                    <MetricCell
+                        key={`${metricKey}_${simulationIndex}`}
+                        value={metricsForSimulation[metricKey]}
+                        simulationIndex={simulationIndex}
+                        colors={colors}
+                    />
+                ))}
         </Fragment>
     );
 }

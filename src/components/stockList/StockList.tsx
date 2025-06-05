@@ -39,7 +39,7 @@ export function StockList() {
     }, [isAuthenticated, refetchStockData]);
 
     useEffect(() => {
-        if(!isAuthenticated)
+        if (!isAuthenticated)
             setTabValue(0);
     }, [isAuthenticated]);
 

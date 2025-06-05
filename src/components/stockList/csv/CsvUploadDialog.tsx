@@ -58,7 +58,7 @@ export function CsvUploadDialog({open, onClose}: Readonly<CsvUploadDialogProps>)
         if (!file) return;
 
         sendRequest(
-            { ...data, file: file, overwrite: overwriteEnabled },
+            {...data, file: file, overwrite: overwriteEnabled},
             {
                 onSuccess: (res) => {
                     const msg = overwriteEnabled
@@ -141,7 +141,8 @@ export function CsvUploadDialog({open, onClose}: Readonly<CsvUploadDialogProps>)
                                 <input type="file" accept=".csv" hidden={true} {...register("file")}/>
                             </Button>
 
-                            <FormHelperText><>{errors.file?.message}</></FormHelperText>
+                            <FormHelperText><>{errors.file?.message}</>
+                            </FormHelperText>
                         </FormControl>
                     </Box>
                 </DialogContent>
@@ -154,7 +155,8 @@ export function CsvUploadDialog({open, onClose}: Readonly<CsvUploadDialogProps>)
             </Dialog>
 
             <CsvUploadSuccessBar message={successMsg} onClose={handleCloseSnackbar}/>
-            <CsvUploadErrorBar open={showError && isError} onClose={handleCloseError} errorMessage={(error?.message) ?? "Unknown error"}/>
+            <CsvUploadErrorBar open={showError && isError} onClose={handleCloseError}
+                               errorMessage={(error?.message) ?? "Unknown error"}/>
             <OverwriteTableDialog
                 open={showOverwriteDialog}
                 onCancel={() => setShowOverwriteDialog(false)}
