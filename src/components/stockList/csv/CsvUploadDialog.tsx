@@ -114,7 +114,7 @@ export function CsvUploadDialog({open, onClose}: Readonly<CsvUploadDialogProps>)
                         />
 
                         <FormControl fullWidth error={!!errors.currencyType}>
-                            <InputLabel>Currency</InputLabel>
+                            <InputLabel disabled={isRunning}>Currency</InputLabel>
                             <Controller
                                 name="currencyType"
                                 control={control}
@@ -146,9 +146,9 @@ export function CsvUploadDialog({open, onClose}: Readonly<CsvUploadDialogProps>)
                     </Box>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={onClose}>Cancel</Button>
+                    <Button onClick={onClose}>{isRunning ? "Close" : "Cancel"}</Button>
                     <Button onClick={handleSubmit(onSubmit)} variant="contained" disabled={isRunning}>
-                        Upload
+                        {isRunning ? "Uploading..." : "Upload"}
                     </Button>
                 </DialogActions>
             </Dialog>
