@@ -3,12 +3,12 @@ import {Link, Tooltip, Typography} from '@mui/material';
 
 interface TooltipHtmlProps {
     title?: string;
-    description: string;
+    info: string;
     link?: string;
     children: ReactElement;
 }
 
-export function TooltipHtml({title, description, link, children}: Readonly<TooltipHtmlProps>) {
+export function TooltipHtml({title, info, link, children}: Readonly<TooltipHtmlProps>) {
     return (
         <Tooltip
             title={
@@ -26,7 +26,7 @@ export function TooltipHtml({title, description, link, children}: Readonly<Toolt
                     <Typography
                         variant="body2"
                         sx={{fontSize: '0.75rem'}}
-                        dangerouslySetInnerHTML={{__html: description}}
+                        dangerouslySetInnerHTML={{__html: info}}
                     />
                 </div>
             }

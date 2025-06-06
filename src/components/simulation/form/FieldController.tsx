@@ -25,7 +25,7 @@ export function FieldController<T extends FieldValues>({control, errors, field}:
                     <InputAdornment position="end">
                         <TooltipHtml
                             title={field.tooltip.title ?? ""}
-                            description={field.tooltip.description}
+                            info={field.tooltip.info}
                             link={field.tooltip.link}
                         >
                             <IconButton sx={{marginRight: 1, color: 'rgba(0, 0, 0, 0.3)'}}>

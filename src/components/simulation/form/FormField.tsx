@@ -20,7 +20,7 @@ export interface FormField<
     multiple?: boolean;
     tooltip?: {
         title?: string;
-        description: string;
+        info: string;
         link?: string;
     };
 }
@@ -133,7 +133,7 @@ export function FormAutoComplete<T extends FieldValues>(
                 field.tooltip ? (
                     <>
                         <strong>{field.tooltip.title}</strong>
-                        <p>{field.tooltip.description}</p>
+                        <p>{field.tooltip.info}</p>
                         {field.tooltip.link && <a href={field.tooltip.link}>Learn more</a>}
                     </>
                 ) : ""

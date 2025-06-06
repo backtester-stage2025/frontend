@@ -99,10 +99,7 @@ export function SimulationDialog({
                     : "€";
                 return `${b.name} (Fee: ${b.transactionFee.toFixed(2)}${currencySymbol})`;
             }),
-            tooltip: {
-                title: TOOLTIP_MESSAGES.simulation.brokerTitle,
-                description: TOOLTIP_MESSAGES.simulation.brokerInfo
-            }
+            tooltip: TOOLTIP_MESSAGES.simulation.broker,
         },
         {
             name: "stockNames", type: "autocomplete", placeholder: "Stock Names", required: true,
@@ -126,27 +123,17 @@ export function SimulationDialog({
         {
             name: "simulationType", type: "select", placeholder: "Position Adjustment", required: true,
             options: simulationTypeOptions,
-            tooltip: {
-                title: TOOLTIP_MESSAGES.simulation.simulationTypeTitle,
-                description: TOOLTIP_MESSAGES.simulation.simulationTypeInfo,
-                link: TOOLTIP_MESSAGES.simulation.simulationTypeLink
-            }
+            tooltip: TOOLTIP_MESSAGES.simulation.simulationType
         },
         {
             name: "riskTolerance", type: "number", placeholder: "Risk Tolerance (%)", required: false,
             shouldRender: shouldRenderRiskTolerance,
-            tooltip: {
-                title: TOOLTIP_MESSAGES.simulation.riskToleranceTitle,
-                description: TOOLTIP_MESSAGES.simulation.riskToleranceInfo,
-                link: TOOLTIP_MESSAGES.simulation.riskToleranceLink
-            }
+            tooltip: TOOLTIP_MESSAGES.simulation.riskTolerance
         },
         {
             name: "transactionBufferPercentage", type: "number", placeholder: "Transaction Buffer (%)", required: true,
             shouldRender: shouldRenderTransactionBuffer,
-            tooltip: {
-                description: TOOLTIP_MESSAGES.simulation.transactionBufferInfo
-            }
+            tooltip: TOOLTIP_MESSAGES.simulation.transactionBuffer
         }
     ];
 

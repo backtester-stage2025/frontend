@@ -21,11 +21,7 @@ export function IndicatorRow({index, control, errors, onRemove}: Readonly<Indica
         placeholder: "Indicator Type",
         required: true,
         options: indicatorTypeOptions,
-        tooltip: {
-            title: TOOLTIP_MESSAGES.simulation.indicator.title,
-            description: TOOLTIP_MESSAGES.simulation.indicator.description,
-            link: TOOLTIP_MESSAGES.simulation.indicator.link
-        }
+        tooltip: TOOLTIP_MESSAGES.simulation.indicator,
     };
 
     const selected = useWatch({
@@ -42,18 +38,14 @@ export function IndicatorRow({index, control, errors, onRemove}: Readonly<Indica
                 type: "number",
                 placeholder: "Short MA Days",
                 required: true,
-                tooltip: {
-                    description: TOOLTIP_MESSAGES.simulation.indicator.maShortDays
-                }
+                tooltip: TOOLTIP_MESSAGES.simulation.indicator.maShortDays
             },
             {
                 name: `indicators.${index}.movingAverageLongDays`,
                 type: "number",
                 placeholder: "Long MA Days",
                 required: true,
-                tooltip: {
-                    description: TOOLTIP_MESSAGES.simulation.indicator.maLongDays
-                }
+                tooltip: TOOLTIP_MESSAGES.simulation.indicator.maLongDays
             }
         );
     } else if (selected === IndicatorType.BREAKOUT) {
@@ -62,9 +54,7 @@ export function IndicatorRow({index, control, errors, onRemove}: Readonly<Indica
             type: "number",
             placeholder: "Breakout Days",
             required: true,
-            tooltip: {
-                description: TOOLTIP_MESSAGES.simulation.indicator.breakoutDays
-            }
+            tooltip: TOOLTIP_MESSAGES.simulation.indicator.breakoutDays
         });
     } else if (selected === IndicatorType.MACD) {
         extraConfigs.push(
@@ -73,18 +63,14 @@ export function IndicatorRow({index, control, errors, onRemove}: Readonly<Indica
                 type: "number",
                 placeholder: "Short MACD Days",
                 required: true,
-                tooltip: {
-                    description: TOOLTIP_MESSAGES.simulation.indicator.macdShortDays
-                }
+                tooltip: TOOLTIP_MESSAGES.simulation.indicator.macdShortDays
             },
             {
                 name: `indicators.${index}.macdLongDays`,
                 type: "number",
                 placeholder: "Long MACD Days",
                 required: true,
-                tooltip: {
-                    description: TOOLTIP_MESSAGES.simulation.indicator.macdLongDays
-                }
+                tooltip: TOOLTIP_MESSAGES.simulation.indicator.macdLongDays
             }
         );
     }
