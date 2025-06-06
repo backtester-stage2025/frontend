@@ -39,7 +39,7 @@ export function TradingIndicatorsSection({control, errors}: Readonly<TradingIndi
             <Divider sx={{mb: 2}}/>
 
             {fields.length === 0 && (
-                <InfoAlert message="No indicators added yet. Add one to get started."/>
+                <InfoAlert message="No indicators added yet. Add one to get started." maxWidth={"100%"}/>
             )}
 
             <Stack spacing={3} sx={{mb: 3}}>
