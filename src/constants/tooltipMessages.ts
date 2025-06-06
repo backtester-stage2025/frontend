@@ -30,12 +30,22 @@ export const TOOLTIP_MESSAGES = {
             title: "Indicator Type",
             info: "Deciding factor in when to continue current strategy or sell all stocks.",
             link: "/infopages?section=indicator-types",
-            breakoutDays: "The number of days used for calculating the breakout zones." +
-                " When the zones are broken through, the simulation will sell all stocks.",
-            maShortDays: "The number of days used for calculating the short moving average.",
-            maLongDays: "The number of days used for calculating the long moving average.",
-            macdShortDays: "The number of days used for calculating the first ema for the MACD.",
-            macdLongDays: "The number of days used for calculating the second ema for the MACD."
+            breakoutDays: {
+                info: "The number of days used for calculating the breakout zones." +
+                    " When the zones are broken through, the simulation will sell all stocks."
+            },
+            maShortDays: {
+                info: "The number of days used for calculating the short moving average."
+            },
+            maLongDays: {
+                info: "The number of days used for calculating the long moving average."
+            },
+            macdShortDays: {
+                info: "The number of days used for calculating the first ema for the MACD."
+            },
+            macdLongDays: {
+                info: "The number of days used for calculating the second ema for the MACD."
+            }
         },
         broker: {
             title: "Broker",
