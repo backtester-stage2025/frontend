@@ -100,8 +100,8 @@ export function SimulationDialog({
                 return `${b.name} (Fee: ${b.transactionFee.toFixed(2)}${currencySymbol})`;
             }),
             tooltip: {
-                title: TOOLTIP_MESSAGES.simulation.brokerTitle,
-                description: TOOLTIP_MESSAGES.simulation.brokerInfo
+                title: TOOLTIP_MESSAGES.simulation.broker.title,
+                description: TOOLTIP_MESSAGES.simulation.broker.info
             }
         },
         {
@@ -127,25 +127,25 @@ export function SimulationDialog({
             name: "simulationType", type: "select", placeholder: "Position Adjustment", required: true,
             options: simulationTypeOptions,
             tooltip: {
-                title: TOOLTIP_MESSAGES.simulation.simulationTypeTitle,
-                description: TOOLTIP_MESSAGES.simulation.simulationTypeInfo,
-                link: TOOLTIP_MESSAGES.simulation.simulationTypeLink
+                title: TOOLTIP_MESSAGES.simulation.simulationType.title,
+                description: TOOLTIP_MESSAGES.simulation.simulationType.info,
+                link: TOOLTIP_MESSAGES.simulation.simulationType.link
             }
         },
         {
             name: "riskTolerance", type: "number", placeholder: "Risk Tolerance (%)", required: false,
             shouldRender: shouldRenderRiskTolerance,
             tooltip: {
-                title: TOOLTIP_MESSAGES.simulation.riskToleranceTitle,
-                description: TOOLTIP_MESSAGES.simulation.riskToleranceInfo,
-                link: TOOLTIP_MESSAGES.simulation.riskToleranceLink
+                title: TOOLTIP_MESSAGES.simulation.riskTolerance.title,
+                description: TOOLTIP_MESSAGES.simulation.riskTolerance.info,
+                link: TOOLTIP_MESSAGES.simulation.riskTolerance.link
             }
         },
         {
             name: "transactionBufferPercentage", type: "number", placeholder: "Transaction Buffer (%)", required: true,
             shouldRender: shouldRenderTransactionBuffer,
             tooltip: {
-                description: TOOLTIP_MESSAGES.simulation.transactionBufferInfo
+                description: TOOLTIP_MESSAGES.simulation.transactionBuffer.info
             }
         }
     ];

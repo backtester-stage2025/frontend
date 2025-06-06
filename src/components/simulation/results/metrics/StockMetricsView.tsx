@@ -26,9 +26,9 @@ export function StockMetricsView({simulationReport}: Readonly<StockMetricsViewPr
             ],
             color: "success.main",
             tooltip: {
-                title: TOOLTIP_MESSAGES.stockMetrics.returnsTitle,
-                description: TOOLTIP_MESSAGES.stockMetrics.returnsInfo,
-                link: TOOLTIP_MESSAGES.stockMetrics.returnsLink
+                title: TOOLTIP_MESSAGES.stockMetrics.returns.title,
+                description: TOOLTIP_MESSAGES.stockMetrics.returns.info,
+                link: TOOLTIP_MESSAGES.stockMetrics.returns.link
             }
         },
         {
@@ -39,9 +39,9 @@ export function StockMetricsView({simulationReport}: Readonly<StockMetricsViewPr
             ],
             color: "warning.main",
             tooltip: {
-                title: TOOLTIP_MESSAGES.stockMetrics.riskTitle,
-                description: TOOLTIP_MESSAGES.stockMetrics.riskInfo,
-                link: TOOLTIP_MESSAGES.stockMetrics.riskLink
+                title: TOOLTIP_MESSAGES.stockMetrics.risk.title,
+                description: TOOLTIP_MESSAGES.stockMetrics.risk.info,
+                link: TOOLTIP_MESSAGES.stockMetrics.risk.link
             }
         },
         {
@@ -52,9 +52,9 @@ export function StockMetricsView({simulationReport}: Readonly<StockMetricsViewPr
             ],
             color: "error.main",
             tooltip: {
-                title: TOOLTIP_MESSAGES.stockMetrics.drawdownsTitle,
-                description: TOOLTIP_MESSAGES.stockMetrics.drawdownsInfo,
-                link: TOOLTIP_MESSAGES.stockMetrics.drawdownsLink
+                title: TOOLTIP_MESSAGES.stockMetrics.drawdown.title,
+                description: TOOLTIP_MESSAGES.stockMetrics.drawdown.info,
+                link: TOOLTIP_MESSAGES.stockMetrics.drawdown.link
             }
         },
         {
@@ -68,9 +68,9 @@ export function StockMetricsView({simulationReport}: Readonly<StockMetricsViewPr
             ],
             color: "info.main",
             tooltip: {
-                title: TOOLTIP_MESSAGES.stockMetrics.distributionTitle,
-                description: TOOLTIP_MESSAGES.stockMetrics.distributionInfo,
-                link: TOOLTIP_MESSAGES.stockMetrics.distributionLink
+                title: TOOLTIP_MESSAGES.stockMetrics.distribution.title,
+                description: TOOLTIP_MESSAGES.stockMetrics.distribution.info,
+                link: TOOLTIP_MESSAGES.stockMetrics.distribution.link
             }
         }
     ]

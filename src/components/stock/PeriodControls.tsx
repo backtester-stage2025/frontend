@@ -105,8 +105,8 @@ export function PeriodControls({
             <Grid container spacing={2} alignItems="top">
                 <Grid size={{xs: 15, md: 5}}>
                     <TooltipHtml
-                        title={TOOLTIP_MESSAGES.movingAverageControls.shortMATitle}
-                        description={TOOLTIP_MESSAGES.movingAverageControls.shortMAInfo}>
+                        title={TOOLTIP_MESSAGES.movingAverageControls.shortMA.title}
+                        description={TOOLTIP_MESSAGES.movingAverageControls.shortMA.info}>
                         <TextField
                             id="shortPeriod"
                             label="Short MA Period"
@@ -136,8 +136,8 @@ export function PeriodControls({
                 </Grid>
                 <Grid size={{xs: 15, md: 5}}>
                     <TooltipHtml
-                        title={TOOLTIP_MESSAGES.movingAverageControls.longMATitle}
-                        description={TOOLTIP_MESSAGES.movingAverageControls.longMAInfo}>
+                        title={TOOLTIP_MESSAGES.movingAverageControls.longMA.title}
+                        description={TOOLTIP_MESSAGES.movingAverageControls.longMA.info}>
                         <TextField
                             id="longPeriod"
                             label="Long MA Period"
