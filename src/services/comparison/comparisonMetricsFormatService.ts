@@ -2,10 +2,9 @@ import {IndicatorDetails, SimulationRequest} from "../../model/request/Simulatio
 import {IndicatorType} from "../../model/request/IndicatorType.ts";
 import {SimulationTypes} from "../../model/request/SimulationTypes.ts";
 import {SimulationResult} from "../../model/simulation/SimulationResult.ts";
-import {formatCurrency} from "../formatService.ts";
+import {formatCurrency, formatWeekdays} from "../formatService.ts";
 import {countDaysSimulated} from "./dayCountService.ts";
 import {getAverageDailyGrowth} from "../calculations/SimulationResultCalculations.ts";
-import {Weekday, weekdayOptions} from "../../model/Weekday.ts";
 
 export const DISPLAY_NONE = "/";
 
@@ -35,18 +34,12 @@ export function extractRequestDetails(result: SimulationResult): Record<string, 
     const risk = showConditional(type === SimulationTypes.RISK_BASED || type === SimulationTypes.STATIC,
         riskTolerance?.toFixed(1) ?? '0');
 
-    const weekdayOrder = Object.values(Weekday);
-    const sortedWeekdayNames = [...tradingWeekdays]
-        .sort((a, b) => weekdayOrder.indexOf(a) - weekdayOrder.indexOf(b))
-        .map(day => weekdayOptions.find(
-            (option) => option.value === day)?.label);
-
     return {
         "Strategy": positionAdjustment(result.stockSimulationRequest),
         "Indicators used": indicatorDescriptions(indicators),
         "Stocks Used": stockNames.join("\n"),
         "Start Capital": formatCurrency(startCapital, result.currencyType),
-        "Trading Week Days": sortedWeekdayNames.join("\n"),
+        "Trading Week Days": formatWeekdays(tradingWeekdays).join("\n"),
         "Transaction Buffer Percentage": transactionBuffer,
         "Risk Tolerance": risk,
         "Broker Name": brokerName,

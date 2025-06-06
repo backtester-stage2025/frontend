@@ -2,10 +2,9 @@ import {Box, Card, CardContent, Chip, Divider, Grid, List, ListItem, ListItemTex
 import {SimulationRequest} from "../../../model/request/SimulationRequest.ts";
 import {
     formatCurrency,
-    formatDateToLocalDateString,
+    formatDateToLocalDateString, formatWeekdays,
     getIndicatorTypeLabel,
-    getSimulationTypeLabel,
-    getWeekdayLabel
+    getSimulationTypeLabel
 } from "../../../services/formatService.ts";
 import {IndicatorType} from "../../../model/request/IndicatorType.ts";
 
@@ -182,8 +181,8 @@ export function SimulationConfigurationView({
                                 Trading Days ({simulationRequest.tradingWeekdays.length})
                             </Typography>
                             <Box sx={{display: 'flex', flexWrap: 'wrap', gap: 1, mt: 1}}>
-                                {simulationRequest.tradingWeekdays.map((day) => (
-                                    <Chip key={day} label={getWeekdayLabel(day)} color="primary" variant="outlined"/>
+                                {formatWeekdays(simulationRequest.tradingWeekdays).map((day) => (
+                                    <Chip key={day} label={day} color="primary" variant="outlined"/>
                                 ))}
                             </Box>
                         </CardContent>

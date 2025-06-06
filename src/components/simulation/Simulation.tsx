@@ -1,5 +1,5 @@
 import {ChangeEvent, useEffect, useState} from "react";
-import {Alert, Box, Button, IconButton, Snackbar, Toolbar, Tooltip, Typography} from "@mui/material";
+import {Alert, Box, Button, IconButton, Snackbar, Tooltip, Typography} from "@mui/material";
 import {Share as ShareIcon} from "@mui/icons-material";
 import {Loader} from "../util/Loader.tsx";
 import {UserPortfolio} from "../../model/simulation/UserPortfolio.ts";
@@ -89,7 +89,6 @@ export function Simulation() {
 
     return (
         <Box sx={{width: "100%", maxWidth: 1200, mx: "auto", p: 3}}>
-            <Toolbar/>
             {allowOpenForm && isAuthenticated &&
                 <>
                     <Box sx={{mb: 4, display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
