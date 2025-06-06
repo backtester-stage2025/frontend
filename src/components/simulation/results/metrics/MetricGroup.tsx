@@ -9,7 +9,7 @@ export interface MetricGroupProps {
     color?: string;
     tooltip?: {
         title?: string;
-        description: string;
+        info: string;
         link?: string;
     }
 }
@@ -25,7 +25,7 @@ export function MetricGroup({title, properties, tooltip}: Readonly<MetricGroupPr
                     </Typography>
                     {tooltip && (
                         <Box sx={{position: 'absolute', right: 0, top: '50%', transform: 'translateY(-50%)'}}>
-                            <TooltipHtml title={tooltip.title} description={tooltip.description} link={tooltip.link}>
+                            <TooltipHtml title={tooltip.title} info={tooltip.info} link={tooltip.link}>
                                 <IconButton sx={{color: 'rgba(0, 0, 0, 0.3)', padding: 0}}>
                                     <InfoIcon sx={{fontSize: '1.2rem'}}/>
                                 </IconButton>

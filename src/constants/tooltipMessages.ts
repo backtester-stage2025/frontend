@@ -28,7 +28,7 @@ export const TOOLTIP_MESSAGES = {
         },
         indicator: {
             title: "Indicator Type",
-            description: "Deciding factor in when to continue current strategy or sell all stocks.",
+            info: "Deciding factor in when to continue current strategy or sell all stocks.",
             link: "/infopages?section=indicator-types",
             breakoutDays: "The number of days used for calculating the breakout zones." +
                 " When the zones are broken through, the simulation will sell all stocks.",
