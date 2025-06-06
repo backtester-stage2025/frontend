@@ -2,7 +2,7 @@ import {IndicatorDetails, SimulationRequest} from "../../model/request/Simulatio
 import {IndicatorType} from "../../model/request/IndicatorType.ts";
 import {SimulationTypes} from "../../model/request/SimulationTypes.ts";
 import {SimulationResult} from "../../model/simulation/SimulationResult.ts";
-import {formatCurrency} from "../formatService.ts";
+import {formatCurrency, formatWeekdays} from "../formatService.ts";
 import {countDaysSimulated} from "./dayCountService.ts";
 import {getAverageDailyGrowth} from "../calculations/SimulationResultCalculations.ts";
 
@@ -39,7 +39,7 @@ export function extractRequestDetails(result: SimulationResult): Record<string, 
         "Indicators used": indicatorDescriptions(indicators),
         "Stocks Used": stockNames.join("\n"),
         "Start Capital": formatCurrency(startCapital, result.currencyType),
-        "Trading Week Days": tradingWeekdays.join("\n"),
+        "Trading Week Days": formatWeekdays(tradingWeekdays).join("\n"),
         "Transaction Buffer Percentage": transactionBuffer,
         "Risk Tolerance": risk,
         "Broker Name": brokerName,

@@ -2,7 +2,7 @@ import {StockDetails} from "../model/StockDetails.ts";
 import {SimulationSummary} from "../model/simulation/SimulationSummary.ts";
 import {SimulationTypes} from "../model/request/SimulationTypes.ts";
 import {IndicatorType} from "../model/request/IndicatorType.ts";
-import {Weekday} from "../model/Weekday.ts";
+import {Weekday, weekdayOptions} from "../model/Weekday.ts";
 
 export function formatDateToLocalDateString(date: Date): string {
     return date.toISOString().split('T')[0];
@@ -14,6 +14,14 @@ export function formatPercent(value: number) {
 
 export function formatCurrency(value: number, currency: string = 'EUR'): string {
     return new Intl.NumberFormat('nl-BE', {style: 'currency', currency: currency}).format(value);
+}
+
+export function formatWeekdays(weekDays: Weekday[]) {
+    const weekdayOrder = Object.values(Weekday);
+    return [...weekDays]
+        .sort((a, b) => weekdayOrder.indexOf(a) - weekdayOrder.indexOf(b))
+        .map(day => weekdayOptions.find(
+            (option) => option.value === day)?.label)
 }
 
 export function formatLargeNumber(value: number): string {
